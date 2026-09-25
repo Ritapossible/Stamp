@@ -345,8 +345,11 @@ READY ── human presses Review ──► QUOTED ──► execution ticket
 READY/AWAITING_SIGNATURE time out (quote TTL) ──► PARKED
 ```
 
-The worker never holds a key. Every state change appends a ticket or event to JSONL, so
-"last weekend" can be replayed on a Wednesday.
+The worker never holds a key. Every state change appends the order's full snapshot to
+`data/standing.jsonl` (the last line per id wins on restart). Each tick does one step per
+order: an expired quote parks the order, and the next tick re-decides it. `FILLED` is
+terminal; the daily cap counts every order filled that UTC day. Implemented in
+`packages/api/src/standing.ts` and `execution.ts`.
 
 ## 10. HTTP surface
 
@@ -359,9 +362,14 @@ Free (judges and web):
 | GET | `/v1/tickets/:hash` | `{ ticket, input }`: the stored ticket plus the exact (trimmed) inputs it was decided from. Re-hashed on read; 500 if it no longer matches. |
 | POST | `/v1/verify` | `{ input, ticket? }` → recomputes the ticket from `input`; `matches` says whether `ticket` is genuine and unchanged. |
 | GET | `/v1/replay` | Recomputes every ticket in `fixtures/golden` and `fixtures/replay/*`. |
-| POST | `/v1/execution` | `{ decisionHash, user }` → execution ticket plus typed data (live path, key on server). |
-| POST | `/v1/execution/:hash/submit` | `{ signature }` → submits the RFQ order. |
-| GET/POST | `/v1/standing` | Read or create the single standing order. |
+| POST | `/v1/execution` | `{ decisionHash, user }` → quote, then `{ wallet, ticket, typedData }`. Only a stored ALLOW decision is quoted (else 409). `typedData` is returned only when the execution ticket is ALLOW. 501 when no wallet is configured. |
+| POST | `/v1/execution/:hash/submit` | `{ signature }` → forwards the human's signature. Refused unless the execution is ALLOW, not yet submitted, and the quote is under 30 s old. |
+| GET | `/v1/execution/:hash` | Status, polled from the wallet (`PENDING` / `FILLED` / `FAILED`). |
+| GET/POST | `/v1/standing` | List orders plus `filledTodayUsd`, or create `{ intent, policy?, user }`. Only one active order at a time (409). |
+| POST | `/v1/standing/:id/{recheck,review,submit,cancel}` | State transitions (§9). `review` re-decides first, because the last decision may be 10 minutes old. |
+
+Wallet selection at startup: `STAMP_TRADING_API_KEY` + `STAMP_TRADING_API_SECRET` → Trading API;
+`STAMP_FAKE_WALLET=1` → the labelled fake wallet; neither → execution routes answer 501.
 
 Paid (agent face only): MCP tool `stamp.ticket` (same body as `POST /v1/tickets`), and
 `POST /x402` using the b402 verify/settle flow at a fixed price of `"0.02"` USDT. **Payment

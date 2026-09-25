@@ -87,6 +87,15 @@ npm run serve                              free HTTP API on :8787 (packages/api)
 `replayAll`. Stored tickets keep trimmed inputs, but only after checking that the trimmed
 input reproduces the same hash.
 
+`packages/api` also has `ExecutionService` (review → sign → submit → status; it never
+signs) and `StandingService` (one active standing order, 10-minute tick, daily cap from
+FILLED). `npm run serve` picks its wallet from env: `STAMP_TRADING_API_KEY` +
+`STAMP_TRADING_API_SECRET` for the live Trading API, `STAMP_FAKE_WALLET=1` for the labelled
+fake, or none, in which case execution returns 501. **Never make the fake wallet the default.**
+
+**Next: the web screen. The user will provide a UI sample; ask for it before writing any
+front-end code.**
+
 **Snapshotter:** GitHub cron never fired on this repo. `.github/workflows/snapshot.yml` is a
 ~5.5 h loop that dispatches its own successor, with the hourly cron as a watchdog. To stop
 it, disable the workflow in the Actions tab, because cancelling a run also dispatches the

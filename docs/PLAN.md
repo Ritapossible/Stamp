@@ -104,7 +104,9 @@ else got built.
       on BSC (the docs list swaps but don't mention stocks). Record the result in DEVEX either way.
   - If yes: add `wallet-baw.ts` behind `StockWallet`, and show it in the video as the agent path.
   - If no: note it in DEVEX, and keep the Trading API RFQ path as the executor.
-- [ ] `standing.ts` state machine, 10-min recheck, daily cap from `FILLED`, and a pill in the web app
+- [x] `standing.ts` state machine, 10-min recheck, daily cap from `FILLED` (tested through two fills and a blocked third) — done Fri 25 Sep
+- [x] execution routes (`/v1/execution`, submit, status) with the fake wallet end to end
+- [ ] pill in the web app
 - **Done when:** the confirm flow works against `FakeWallet` in the browser, and a standing
   order sat `PARKED` through the weekend with tickets appended.
 

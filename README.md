@@ -23,8 +23,9 @@ Signing is only prepared from an `ALLOW` execution ticket tied to a fresh quote,
 exact typed data you sign checked against the ticket. Other agents can buy the same ticket
 over x402, settled through Binance b402.
 
-> Status: **in progress** — the verdict engine and the Binance data client are built and tested
-> (`npm test`); the API, replay, web screen and execution come next. The design is in [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md), the
+> Status: **in progress**. Built and tested (`npm test`): the verdict engine, the Binance data
+> client, the free API with replay and verify, execution tickets and the standing order.
+> Next: the web screen, then a live Trading API quote. The design is in [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md), the
 > schedule in [`docs/PLAN.md`](docs/PLAN.md), and the reasoning in
 > [`docs/DECISIONS.md`](docs/DECISIONS.md). Live API findings are in
 > [`docs/API-NOTES.md`](docs/API-NOTES.md). Built for the

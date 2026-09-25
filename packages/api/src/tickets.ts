@@ -60,6 +60,16 @@ export class TicketStore {
     return rec;
   }
 
+  /** Token price on the most recent decision for this instrument (used by the labelled fake wallet). */
+  latestTokenPrice(contractAddress: string): string | null {
+    let best: DecisionTicket | null = null;
+    for (const { ticket } of this.byHash.values()) {
+      if (ticket.chosen?.contractAddress !== contractAddress.toLowerCase() || !ticket.tokenPriceUsd) continue;
+      if (!best || ticket.asOf > best.asOf) best = ticket;
+    }
+    return best?.tokenPriceUsd ?? null;
+  }
+
   get size(): number {
     return this.byHash.size;
   }
