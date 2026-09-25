@@ -1,21 +1,25 @@
 name: snapshot
-# Records reference prices every 10 min and raw off-hours payloads.
-# Data goes to the `snapshots` branch, never to the code branch.
-# GitHub runs scheduled workflows only from the default branch, and best-effort
-# (runs can be late or skipped). docs/PLAN.md explains the backup loop.
+# Records reference prices every 10 min and raw off-hours payloads, committing each tick
+# to the `snapshots` branch (never the code branch).
+#
+# GitHub's cron did not fire at all for this new repo (only the manual run landed on
+# 2026-09-25), so this workflow does not depend on it: each run loops for ~5.5 h and then
+# dispatches its own successor. The hourly schedule is only a watchdog that restarts the
+# chain if it ever breaks; `concurrency` makes a watchdog start wait for the running loop.
 on:
-  schedule:
-    - cron: "*/10 * * * *"
   workflow_dispatch:
+  schedule:
+    - cron: "17 * * * *"
 concurrency:
   group: snapshot
   cancel-in-progress: false
 permissions:
   contents: write
+  actions: write
 jobs:
-  tick:
+  loop:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 350
     steps:
       - uses: actions/checkout@v4
         with:
@@ -39,20 +43,30 @@ jobs:
             git -C store remote add origin "$url"
             printf '# snapshots\n\nWritten by .github/workflows/snapshot.yml. Do not edit by hand.\n' > store/README.md
           fi
-      - name: Tick
-        run: npx tsx scripts/snapshot.ts --out ../store/data
-        working-directory: code
-      - name: Commit and push
-        working-directory: store
+          git -C store config user.name "stamp-snapshot"
+          git -C store config user.email "stamp-snapshot@users.noreply.github.com"
+      - name: Tick every 10 minutes for ~5.5 hours
         run: |
-          git config user.name "stamp-snapshot"
-          git config user.email "stamp-snapshot@users.noreply.github.com"
-          git add -A
-          git diff --cached --quiet && exit 0
-          git commit -q -m "snapshot $(date -u +%FT%TZ)"
-          for i in 1 2 3 4; do
-            git push origin snapshots && exit 0
-            sleep $((2**i))
-            git pull --rebase --depth 1 origin snapshots || true
+          end=$(( $(date +%s) + 330*60 ))
+          while [ "$(date +%s)" -lt "$end" ]; do
+            (cd code && npx tsx scripts/snapshot.ts --out ../store/data) || echo "tick failed"
+            (
+              cd store
+              git add -A
+              if ! git diff --cached --quiet; then
+                git commit -q -m "snapshot $(date -u +%FT%TZ)"
+                for i in 1 2 3 4; do
+                  git push -q origin HEAD:snapshots && break
+                  sleep $((2**i))
+                  git pull -q --rebase --depth 1 origin snapshots || true
+                done
+              fi
+            ) || echo "push failed"
+            now=$(date +%s)
+            sleep $(( 600 - now % 600 + 5 ))
           done
-          exit 1
+      - name: Start the next loop
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run snapshot.yml --repo "$GITHUB_REPOSITORY" --ref "$GITHUB_REF_NAME"
