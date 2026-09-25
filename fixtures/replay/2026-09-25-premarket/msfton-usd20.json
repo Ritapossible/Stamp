@@ -1,0 +1,164 @@
+{
+  "name": "msfton-usd20",
+  "capture": "fixtures/probe-2026-09-25/capture-101145.json",
+  "input": {
+    "asOf": "2026-09-25T10:11:45.769Z",
+    "universe": [
+      {
+        "chainId": "56",
+        "contractAddress": "0x6bfe75d1ad432050ea973c3a3dcd88f02e2444c3",
+        "symbol": "MSFTon",
+        "ticker": "MSFT",
+        "type": 1,
+        "multiplier": "1.005730856892783903"
+      },
+      {
+        "chainId": "56",
+        "contractAddress": "0x5621737f42dae558b81269fcb9e9e70c19aa6b35",
+        "symbol": "MSFTx",
+        "ticker": "MSFT",
+        "type": 2,
+        "multiplier": "1"
+      },
+      {
+        "chainId": "56",
+        "contractAddress": "0x80106cb3ead06659a5ad19df39d9b4733863b9b0",
+        "symbol": "MSFTB",
+        "ticker": "MSFT",
+        "type": 3,
+        "multiplier": "1.001313964833366845"
+      }
+    ],
+    "views": [
+      {
+        "contractAddress": "0x5621737f42dae558b81269fcb9e9e70c19aa6b35",
+        "complete": true,
+        "tokenPriceUsd": "491.85606822997883867475",
+        "multiplier": "1.0045820905025638",
+        "listMultiplier": "1",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": null,
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": "497.085455",
+        "fetchedAt": "2026-09-25T10:11:45.769Z"
+      },
+      {
+        "contractAddress": "0x6bfe75d1ad432050ea973c3a3dcd88f02e2444c3",
+        "complete": true,
+        "tokenPriceUsd": "499.914614112268523529",
+        "multiplier": "1.005730856892783903",
+        "listMultiplier": "1.005730856892783903",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": "premarket",
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": "497.085455",
+        "fetchedAt": "2026-09-25T10:11:45.769Z"
+      },
+      {
+        "contractAddress": "0x80106cb3ead06659a5ad19df39d9b4733863b9b0",
+        "complete": true,
+        "tokenPriceUsd": "497.96344785128166568695",
+        "multiplier": "1.001313964833366845",
+        "listMultiplier": "1.001313964833366845",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": null,
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": null,
+        "fetchedAt": "2026-09-25T10:11:45.769Z"
+      }
+    ],
+    "venue": {
+      "marketStatus": "premarket",
+      "openState": true
+    },
+    "intent": "Buy $20 of MSFTon",
+    "policy": {
+      "version": 1,
+      "issuer": "ondo",
+      "neverSwitchIssuer": true,
+      "noiseBandBps": 10,
+      "maxRegularPremiumBps": 30,
+      "maxClosedPremiumBps": 80,
+      "implausibleAbsBps": 500,
+      "maxSlippageBps": 50,
+      "quoteTtlSec": 25,
+      "maxOrderUsd": "20",
+      "maxDayUsd": "50",
+      "blockCorporateActions": true
+    },
+    "lastOfficialClose": null,
+    "filledTodayUsd": "0"
+  },
+  "ticket": {
+    "kind": "decision",
+    "engineVersion": "0.1.0",
+    "asOf": "2026-09-25T10:11:45.769Z",
+    "intentId": "91a1b3482b731b47",
+    "intent": {
+      "raw": "Buy $20 of MSFTon",
+      "side": "buy",
+      "unit": "usd",
+      "amount": "20",
+      "query": "MSFTon"
+    },
+    "chosen": {
+      "chainId": "56",
+      "contractAddress": "0x6bfe75d1ad432050ea973c3a3dcd88f02e2444c3",
+      "symbol": "MSFTon",
+      "ticker": "MSFT",
+      "issuer": "ondo"
+    },
+    "rejected": [
+      {
+        "symbol": "MSFTx",
+        "issuer": "xstock",
+        "contractAddress": "0x5621737f42dae558b81269fcb9e9e70c19aa6b35",
+        "reason": "NEVER_SWITCH"
+      },
+      {
+        "symbol": "MSFTB",
+        "issuer": "bstock",
+        "contractAddress": "0x80106cb3ead06659a5ad19df39d9b4733863b9b0",
+        "reason": "NEVER_SWITCH"
+      }
+    ],
+    "session": "extended",
+    "sessionSource": "asset",
+    "marketStatus": "premarket",
+    "reasonCode": "TRADING",
+    "reasonMsg": null,
+    "multiplier": "1.005730856892783903",
+    "listMultiplier": "1.005730856892783903",
+    "tokenPriceUsd": "499.914614112268523529",
+    "economicPriceUsd": "497.066000",
+    "referenceUsd": "497.085455",
+    "referenceSource": "stockInfo",
+    "referenceAsOf": "2026-09-25T10:11:45.769Z",
+    "referenceSibling": null,
+    "premiumBps": 0,
+    "overpayUsd": null,
+    "notionalUsd": "20.00",
+    "tokenUnits": "0.04000683",
+    "economicShares": "0.04023611",
+    "unitReadings": null,
+    "formula": "economicPrice = tokenInfo.price / sharesMultiplier",
+    "inputsHash": "87fbbbda05cfe9c7dee46854cf13c1ce5d79ede811d51a362b9fd8624fbfa6cb",
+    "policyHash": "819a2bcaeeec65005a0d17f38a68e8fa26b165047ffec295b6f9d460a4a36043",
+    "verdict": "ALLOW",
+    "reasons": [
+      "OK"
+    ],
+    "notes": [],
+    "hash": "c4979fbeb223d7cd2e96909e1a995fd111ff0fe1cf5b39c81239b2a3be3295ec",
+    "narration": "ALLOW. MSFTon (Ondo) passes every check. $20.00 buys 0.04000683 MSFTon tokens = 0.04023611 shares (multiplier 1.005730856892783903). Not the same instrument: MSFTx (xStock), MSFTB (bStock). Hash c4979fbeb223…"
+  }
+}

@@ -1,0 +1,164 @@
+{
+  "name": "crwdx-usd20",
+  "capture": "fixtures/probe-2026-09-25/capture-101145.json",
+  "input": {
+    "asOf": "2026-09-25T10:11:45.769Z",
+    "universe": [
+      {
+        "chainId": "56",
+        "contractAddress": "0xe6837794fbc6dd024733a1a31f86061296fa2752",
+        "symbol": "CRWDon",
+        "ticker": "CRWD",
+        "type": 1,
+        "multiplier": "4"
+      },
+      {
+        "chainId": "56",
+        "contractAddress": "0x214151022c2a5e380ab80cdac31f23ae554a7345",
+        "symbol": "CRWDx",
+        "ticker": "CRWD",
+        "type": 2,
+        "multiplier": "1"
+      },
+      {
+        "chainId": "56",
+        "contractAddress": "0x814981cf5df4a14d4d7328f9abf0d02e9ed54cd1",
+        "symbol": "CRWDB",
+        "ticker": "CRWD",
+        "type": 3,
+        "multiplier": "1"
+      }
+    ],
+    "views": [
+      {
+        "contractAddress": "0x214151022c2a5e380ab80cdac31f23ae554a7345",
+        "complete": true,
+        "tokenPriceUsd": "225.9370602046390890006432",
+        "multiplier": "4",
+        "listMultiplier": "1",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": null,
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": "260.524444",
+        "fetchedAt": "2026-09-25T10:11:45.769Z"
+      },
+      {
+        "contractAddress": "0x814981cf5df4a14d4d7328f9abf0d02e9ed54cd1",
+        "complete": true,
+        "tokenPriceUsd": "260.53",
+        "multiplier": "1",
+        "listMultiplier": "1",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": null,
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": null,
+        "fetchedAt": "2026-09-25T10:11:45.769Z"
+      },
+      {
+        "contractAddress": "0xe6837794fbc6dd024733a1a31f86061296fa2752",
+        "complete": true,
+        "tokenPriceUsd": "1042.76",
+        "multiplier": "4",
+        "listMultiplier": "4",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": "premarket",
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": "260.524444",
+        "fetchedAt": "2026-09-25T10:11:45.769Z"
+      }
+    ],
+    "venue": {
+      "marketStatus": "premarket",
+      "openState": true
+    },
+    "intent": "Buy $20 of CRWDx",
+    "policy": {
+      "version": 1,
+      "issuer": "xstock",
+      "neverSwitchIssuer": true,
+      "noiseBandBps": 10,
+      "maxRegularPremiumBps": 30,
+      "maxClosedPremiumBps": 80,
+      "implausibleAbsBps": 500,
+      "maxSlippageBps": 50,
+      "quoteTtlSec": 25,
+      "maxOrderUsd": "20",
+      "maxDayUsd": "50",
+      "blockCorporateActions": true
+    },
+    "lastOfficialClose": null,
+    "filledTodayUsd": "0"
+  },
+  "ticket": {
+    "kind": "decision",
+    "engineVersion": "0.1.0",
+    "asOf": "2026-09-25T10:11:45.769Z",
+    "intentId": "58850dd2208b7e64",
+    "intent": {
+      "raw": "Buy $20 of CRWDx",
+      "side": "buy",
+      "unit": "usd",
+      "amount": "20",
+      "query": "CRWDx"
+    },
+    "chosen": {
+      "chainId": "56",
+      "contractAddress": "0x214151022c2a5e380ab80cdac31f23ae554a7345",
+      "symbol": "CRWDx",
+      "ticker": "CRWD",
+      "issuer": "xstock"
+    },
+    "rejected": [
+      {
+        "symbol": "CRWDon",
+        "issuer": "ondo",
+        "contractAddress": "0xe6837794fbc6dd024733a1a31f86061296fa2752",
+        "reason": "NEVER_SWITCH"
+      },
+      {
+        "symbol": "CRWDB",
+        "issuer": "bstock",
+        "contractAddress": "0x814981cf5df4a14d4d7328f9abf0d02e9ed54cd1",
+        "reason": "NEVER_SWITCH"
+      }
+    ],
+    "session": null,
+    "sessionSource": null,
+    "marketStatus": null,
+    "reasonCode": "TRADING",
+    "reasonMsg": null,
+    "multiplier": "4",
+    "listMultiplier": "1",
+    "tokenPriceUsd": "225.9370602046390890006432",
+    "economicPriceUsd": null,
+    "referenceUsd": null,
+    "referenceSource": null,
+    "referenceAsOf": null,
+    "referenceSibling": null,
+    "premiumBps": null,
+    "overpayUsd": null,
+    "notionalUsd": null,
+    "tokenUnits": null,
+    "economicShares": null,
+    "unitReadings": null,
+    "formula": "economicPrice = tokenInfo.price / sharesMultiplier",
+    "inputsHash": "a4eb94483b211a07b0cc4e096beb95dc293b1ca82723863c0e3e18e38708e7b9",
+    "policyHash": "7d1fd3d2f6911dfdf727820b46d574cd56f459d266e7faddcedd73843f05898a",
+    "verdict": "BLOCK",
+    "reasons": [
+      "MULTIPLIER_CONFLICT"
+    ],
+    "notes": [],
+    "hash": "71175c7ace333cdc771cd14f09ac572f138dfb9d46f08426f8fc949a2e7a2a4b",
+    "narration": "BLOCK. Binance's two sources disagree on how many shares one CRWDx token holds (1 vs 4). That is a split-sized difference. Not the same instrument: CRWDon (Ondo), CRWDB (bStock). Hash 71175c7ace33…"
+  }
+}

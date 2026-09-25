@@ -126,6 +126,8 @@ export async function tick(outDir: string, rawMode: string, now = new Date(), cl
         capturedAt,
         venue: venue.body,
         venueLatencyMs: venue.latencyMs,
+        // The list rows these instruments were classified from, so a capture replays on its own.
+        universe: instruments,
         dynamic: Object.fromEntries(
           dynamics.map(({ row, res }) => [row.contractAddress, { symbol: row.symbol, latencyMs: res.latencyMs, attempts: res.attempts, error: res.error, body: res.body }]),
         ),

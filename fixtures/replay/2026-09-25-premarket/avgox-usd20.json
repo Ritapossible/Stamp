@@ -1,0 +1,166 @@
+{
+  "name": "avgox-usd20",
+  "capture": "fixtures/probe-2026-09-25/capture-101145.json",
+  "input": {
+    "asOf": "2026-09-25T10:11:45.769Z",
+    "universe": [
+      {
+        "chainId": "56",
+        "contractAddress": "0x0ed2e3180edf393e6bf8db124bd15ddd54de150a",
+        "symbol": "AVGOon",
+        "ticker": "AVGO",
+        "type": 1,
+        "multiplier": "1.006414494428012574"
+      },
+      {
+        "chainId": "56",
+        "contractAddress": "0x38bac69cbbd28156796e4163b2b6dcb81e336565",
+        "symbol": "AVGOx",
+        "ticker": "AVGO",
+        "type": 2,
+        "multiplier": "1"
+      },
+      {
+        "chainId": "56",
+        "contractAddress": "0x76682c454467b3a1150ad8b6a92fc5ee2c21d7ed",
+        "symbol": "AVGOB",
+        "ticker": "AVGO",
+        "type": 3,
+        "multiplier": "1.001269208611258122"
+      }
+    ],
+    "views": [
+      {
+        "contractAddress": "0x0ed2e3180edf393e6bf8db124bd15ddd54de150a",
+        "complete": true,
+        "tokenPriceUsd": "357.485138186264417845",
+        "multiplier": "1.006414494428012574",
+        "listMultiplier": "1.006414494428012574",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": "premarket",
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": "355.042",
+        "fetchedAt": "2026-09-25T10:11:45.769Z"
+      },
+      {
+        "contractAddress": "0x38bac69cbbd28156796e4163b2b6dcb81e336565",
+        "complete": true,
+        "tokenPriceUsd": "361.497429975227093756436781778507689",
+        "multiplier": "1.0048837684862768",
+        "listMultiplier": "1",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": null,
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": "355.042",
+        "fetchedAt": "2026-09-25T10:11:45.769Z"
+      },
+      {
+        "contractAddress": "0x76682c454467b3a1150ad8b6a92fc5ee2c21d7ed",
+        "complete": true,
+        "tokenPriceUsd": "355.61077213037443460952",
+        "multiplier": "1.001269208611258122",
+        "listMultiplier": "1.001269208611258122",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": null,
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": null,
+        "fetchedAt": "2026-09-25T10:11:45.769Z"
+      }
+    ],
+    "venue": {
+      "marketStatus": "premarket",
+      "openState": true
+    },
+    "intent": "Buy $20 of AVGOx",
+    "policy": {
+      "version": 1,
+      "issuer": "xstock",
+      "neverSwitchIssuer": true,
+      "noiseBandBps": 10,
+      "maxRegularPremiumBps": 30,
+      "maxClosedPremiumBps": 80,
+      "implausibleAbsBps": 500,
+      "maxSlippageBps": 50,
+      "quoteTtlSec": 25,
+      "maxOrderUsd": "20",
+      "maxDayUsd": "50",
+      "blockCorporateActions": true
+    },
+    "lastOfficialClose": null,
+    "filledTodayUsd": "0"
+  },
+  "ticket": {
+    "kind": "decision",
+    "engineVersion": "0.1.0",
+    "asOf": "2026-09-25T10:11:45.769Z",
+    "intentId": "da2c5d50e7452357",
+    "intent": {
+      "raw": "Buy $20 of AVGOx",
+      "side": "buy",
+      "unit": "usd",
+      "amount": "20",
+      "query": "AVGOx"
+    },
+    "chosen": {
+      "chainId": "56",
+      "contractAddress": "0x38bac69cbbd28156796e4163b2b6dcb81e336565",
+      "symbol": "AVGOx",
+      "ticker": "AVGO",
+      "issuer": "xstock"
+    },
+    "rejected": [
+      {
+        "symbol": "AVGOon",
+        "issuer": "ondo",
+        "contractAddress": "0x0ed2e3180edf393e6bf8db124bd15ddd54de150a",
+        "reason": "NEVER_SWITCH"
+      },
+      {
+        "symbol": "AVGOB",
+        "issuer": "bstock",
+        "contractAddress": "0x76682c454467b3a1150ad8b6a92fc5ee2c21d7ed",
+        "reason": "NEVER_SWITCH"
+      }
+    ],
+    "session": "extended",
+    "sessionSource": "venue",
+    "marketStatus": "premarket",
+    "reasonCode": "TRADING",
+    "reasonMsg": null,
+    "multiplier": "1.0048837684862768",
+    "listMultiplier": "1",
+    "tokenPriceUsd": "361.497429975227093756436781778507689",
+    "economicPriceUsd": "359.740540",
+    "referenceUsd": "355.042",
+    "referenceSource": "stockInfo",
+    "referenceAsOf": "2026-09-25T10:11:45.769Z",
+    "referenceSibling": null,
+    "premiumBps": 132,
+    "overpayUsd": "0.26",
+    "notionalUsd": "20.00",
+    "tokenUnits": "0.05532543",
+    "economicShares": "0.05559562",
+    "unitReadings": null,
+    "formula": "economicPrice = tokenInfo.price / sharesMultiplier",
+    "inputsHash": "56b3591c3708ef92972dcae308584e04a5e6d611fa50607807d31ca3b7918e05",
+    "policyHash": "7d1fd3d2f6911dfdf727820b46d574cd56f459d266e7faddcedd73843f05898a",
+    "verdict": "WARN",
+    "reasons": [
+      "SESSION_RICH"
+    ],
+    "notes": [
+      "MULTIPLIER_DRIFT"
+    ],
+    "hash": "641be92c574dca8a4c430adea4566ccce6b0be19f4c9f7ca0a22f91d0ae35dec",
+    "narration": "WARN. Outside regular hours, AVGOx is 132 bps above the stock price ($355.042) — about $0.26 of overpay on this order. Parked. $20.00 buys 0.05532543 AVGOx tokens = 0.05559562 shares (multiplier 1.0048837684862768). Not the same instrument: AVGOon (Ondo), AVGOB (bStock). Hash 641be92c574d…"
+  }
+}

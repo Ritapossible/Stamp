@@ -48,7 +48,22 @@ npm test          # golden verdict tests, offline
 npm run replay    # re-derives last weekend's tickets and checks every hash
 ```
 
-_(Available from Day 4 of the plan. The expected output will be pasted here.)_
+Expected: one line per ticket, then `103 tickets recomputed · all hashes match`, for example:
+
+```
+ok     golden                  Buy 1 NFLX                  NFLXon    BLOCK  UNIT_AMBIGUOUS    476b8e4ef3e9
+ok     2026-09-25-premarket    Buy $20 of NFLXx            NFLXx     BLOCK  MULTIPLIER_CONFLICT  bafe687f7356
+ok     2026-09-25-premarket    Buy $20 of MUx              MUx       BLOCK  PRICE_IMPLAUSIBLE  -1025 bps  1bc98d447859
+```
+
+Run the free API locally with `npm run serve`, then:
+
+```bash
+curl -s -X POST localhost:8787/v1/tickets -H 'content-type: application/json' \
+  -d '{"intent":"Buy 1 share of Netflix"}'
+curl -s localhost:8787/v1/tickets/<hash>          # the ticket plus the inputs it was decided from
+curl -s -X POST localhost:8787/v1/verify -H 'content-type: application/json' --data @stored.json
+```
 
 ## What Stamp is honest about
 

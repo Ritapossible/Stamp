@@ -77,8 +77,20 @@ npm run golden:update                      after an intentional engine change; r
 npm run stamp -- "Buy 1 NFLX"              live decision (public endpoints, no key)
 npm run stamp -- "Buy $20 of NVIDIA" --issuer bstock --calls
 npm run probe -- NVDAB NFLXx               record raw payloads into fixtures/probe-<date>/
-npx tsx scripts/snapshot.ts --out data     one snapshot tick (the workflow runs this every 10 min)
+npx tsx scripts/snapshot.ts --out data     one snapshot tick (the workflow loops this every 10 min)
+npm run replay                             judge command: recompute every recorded ticket, exit 1 on drift
+npx tsx scripts/build-replay.ts --capture <file> --set <name> [--snapshots <dir>]
+npm run serve                              free HTTP API on :8787 (packages/api)
 ```
+
+`packages/api` is built: `createApp` (Hono), the `TicketStore` (JSONL, re-hash on read) and
+`replayAll`. Stored tickets keep trimmed inputs, but only after checking that the trimmed
+input reproduces the same hash.
+
+**Snapshotter:** GitHub cron never fired on this repo. `.github/workflows/snapshot.yml` is a
+~5.5 h loop that dispatches its own successor, with the hourly cron as a watchdog. To stop
+it, disable the workflow in the Actions tab, because cancelling a run also dispatches the
+next one.
 
 `packages/sources` is built: `RwaClient` (fetch is injectable; tests never hit the network),
 `buildUniverse`, `toMarketView`, `fromCapture`, `LiveMarket`, `SnapshotStore`. The capture

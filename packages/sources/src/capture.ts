@@ -5,6 +5,8 @@ import type { Envelope, RawDynamic, RawVenueStatus } from "./rwa.js";
 /** A raw capture file, as written to data/captures/ by scripts/snapshot.ts. */
 export interface CaptureFile {
   capturedAt: string;
+  /** list rows at capture time (captures written after 2026-09-25 12:30Z carry them) */
+  universe?: UniverseRow[];
   venue: Envelope<RawVenueStatus> | null;
   dynamic: Record<string, { symbol: string; body: Envelope<RawDynamic> | null; latencyMs?: number; attempts?: number; error?: string | null }>;
 }
@@ -20,7 +22,8 @@ export interface MarketInputs {
  * Rebuilds exactly what the engine saw at capture time. Replay uses this, so a ticket
  * recomputed on a Wednesday from Saturday's capture hashes identically to Saturday's.
  */
-export function fromCapture(capture: CaptureFile, universe: UniverseRow[]): MarketInputs {
+export function fromCapture(capture: CaptureFile, fallbackUniverse: UniverseRow[] = []): MarketInputs {
+  const universe = capture.universe ?? fallbackUniverse;
   const bsc = new Map(universe.filter((r) => r.chainId === "56").map((r) => [r.contractAddress.toLowerCase(), r]));
   const views: MarketView[] = [];
   for (const [address, entry] of Object.entries(capture.dynamic)) {

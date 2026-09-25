@@ -344,10 +344,11 @@ Free (judges and web):
 
 | Method | Path | Behavior |
 |---|---|---|
-| POST | `/v1/tickets` | `{ intent, policy, asOf? }` → decision ticket. `asOf` works only with the fixture clock. |
-| GET | `/v1/tickets/:hash` | Stored ticket, re-hashed on read. |
-| POST | `/v1/verify` | `{ ticket }` → recomputes the hash and, from recorded inputs, the verdict. |
-| GET | `/v1/replay/last-weekend` | Recomputes from `fixtures/last-weekend/`. |
+| GET | `/health` | `{ ok, tickets }` |
+| POST | `/v1/tickets` | `{ intent, policy? }` (policy is a partial override of the default, re-validated; unknown keys rejected) → `{ ticket, verify }`. Live data; 503 if Binance is unavailable. |
+| GET | `/v1/tickets/:hash` | `{ ticket, input }`: the stored ticket plus the exact (trimmed) inputs it was decided from. Re-hashed on read; 500 if it no longer matches. |
+| POST | `/v1/verify` | `{ input, ticket? }` → recomputes the ticket from `input`; `matches` says whether `ticket` is genuine and unchanged. |
+| GET | `/v1/replay` | Recomputes every ticket in `fixtures/golden` and `fixtures/replay/*`. |
 | POST | `/v1/execution` | `{ decisionHash, user }` → execution ticket plus typed data (live path, key on server). |
 | POST | `/v1/execution/:hash/submit` | `{ signature }` → submits the RFQ order. |
 | GET/POST | `/v1/standing` | Read or create the single standing order. |

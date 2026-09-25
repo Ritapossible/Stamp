@@ -1,0 +1,116 @@
+{
+  "name": "klac-bare1",
+  "capture": "fixtures/probe-2026-09-25/capture-101145.json",
+  "input": {
+    "asOf": "2026-09-25T10:11:45.769Z",
+    "universe": [
+      {
+        "chainId": "56",
+        "contractAddress": "0xfc263946439b0d802bf4c5a6fcd34e2885259f91",
+        "symbol": "KLACon",
+        "ticker": "KLAC",
+        "type": 1,
+        "multiplier": "10.026064925604903975"
+      }
+    ],
+    "views": [
+      {
+        "contractAddress": "0xfc263946439b0d802bf4c5a6fcd34e2885259f91",
+        "complete": true,
+        "tokenPriceUsd": "1904.150250670883362932",
+        "multiplier": "10.026064925604903975",
+        "listMultiplier": "10.026064925604903975",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": "premarket",
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": "190.18",
+        "fetchedAt": "2026-09-25T10:11:45.769Z"
+      }
+    ],
+    "venue": {
+      "marketStatus": "premarket",
+      "openState": true
+    },
+    "intent": "Buy 1 KLAC",
+    "policy": {
+      "version": 1,
+      "issuer": "ondo",
+      "neverSwitchIssuer": true,
+      "noiseBandBps": 10,
+      "maxRegularPremiumBps": 30,
+      "maxClosedPremiumBps": 80,
+      "implausibleAbsBps": 500,
+      "maxSlippageBps": 50,
+      "quoteTtlSec": 25,
+      "maxOrderUsd": "20",
+      "maxDayUsd": "50",
+      "blockCorporateActions": true
+    },
+    "lastOfficialClose": null,
+    "filledTodayUsd": "0"
+  },
+  "ticket": {
+    "kind": "decision",
+    "engineVersion": "0.1.0",
+    "asOf": "2026-09-25T10:11:45.769Z",
+    "intentId": "48d38608adf96eb3",
+    "intent": {
+      "raw": "Buy 1 KLAC",
+      "side": "buy",
+      "unit": "ambiguous",
+      "amount": "1",
+      "query": "KLAC"
+    },
+    "chosen": {
+      "chainId": "56",
+      "contractAddress": "0xfc263946439b0d802bf4c5a6fcd34e2885259f91",
+      "symbol": "KLACon",
+      "ticker": "KLAC",
+      "issuer": "ondo"
+    },
+    "rejected": [],
+    "session": null,
+    "sessionSource": null,
+    "marketStatus": "premarket",
+    "reasonCode": "TRADING",
+    "reasonMsg": null,
+    "multiplier": "10.026064925604903975",
+    "listMultiplier": "10.026064925604903975",
+    "tokenPriceUsd": "1904.150250670883362932",
+    "economicPriceUsd": null,
+    "referenceUsd": null,
+    "referenceSource": null,
+    "referenceAsOf": null,
+    "referenceSibling": null,
+    "premiumBps": null,
+    "overpayUsd": null,
+    "notionalUsd": null,
+    "tokenUnits": null,
+    "economicShares": null,
+    "unitReadings": {
+      "asTokens": {
+        "tokens": "1.00000000",
+        "shares": "10.02606493",
+        "usd": "1904.15"
+      },
+      "asShares": {
+        "tokens": "0.09974003",
+        "shares": "1.00000000",
+        "usd": "189.92"
+      }
+    },
+    "formula": "economicPrice = tokenInfo.price / sharesMultiplier",
+    "inputsHash": "7b6a440174a0f1d7034e2889bd1a02602bd71ffee34e0351f02831efb238549c",
+    "policyHash": "819a2bcaeeec65005a0d17f38a68e8fa26b165047ffec295b6f9d460a4a36043",
+    "verdict": "BLOCK",
+    "reasons": [
+      "UNIT_AMBIGUOUS"
+    ],
+    "notes": [],
+    "hash": "7f8510d08aefd6d9cb1d0d5b817f4a834a9443e25675997dd42c243b9e22edf3",
+    "narration": "BLOCK. \"1 KLAC\" could mean 1 token = 10.02606493 shares ≈ $1904.15, or 1 share = 0.09974003 token ≈ $189.92. One KLACon token holds 10.026064925604903975 shares. Say \"$… of\" or \"… shares of\". Hash 7f8510d08aef…"
+  }
+}

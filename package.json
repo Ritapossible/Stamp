@@ -15,7 +15,9 @@
     "snapshot": "tsx scripts/snapshot.ts",
     "golden:update": "UPDATE_GOLDEN=1 vitest run packages/engine/test/golden.test.ts",
     "stamp": "tsx scripts/stamp.ts",
-    "probe": "tsx scripts/probe.ts"
+    "probe": "tsx scripts/probe.ts",
+    "replay": "tsx scripts/replay.ts",
+    "serve": "tsx packages/api/src/server.ts"
   },
   "devDependencies": {
     "@types/node": "^26.6.2",

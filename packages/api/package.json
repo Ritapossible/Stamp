@@ -1,0 +1,16 @@
+{
+  "name": "@stamp/api",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@hono/node-server": "^2.1.1",
+    "@stamp/engine": "0.0.0",
+    "@stamp/sources": "0.0.0",
+    "hono": "^4.13.9",
+    "zod": "^4.6.5"
+  }
+}

@@ -70,9 +70,11 @@ else got built.
 - **Done when:** adapters produce `MarketView`s from every captured payload, with tests.
 
 ### Tue 29 Sep — Day 4: API and replay
-- [ ] Hono server with `POST /v1/tickets`, `GET /v1/tickets/:hash`, `POST /v1/verify`
-- [ ] `tickets.ts` JSONL store with re-hash on read
-- [ ] `scripts/replay.ts` and `GET /v1/replay/last-weekend`
+- [x] Hono server with `POST /v1/tickets`, `GET /v1/tickets/:hash`, `POST /v1/verify` — done Fri 25 Sep
+- [x] `tickets.ts` JSONL store with re-hash on read
+- [x] `scripts/replay.ts` and `GET /v1/replay` (golden + every `fixtures/replay/<set>`);
+      `scripts/build-replay.ts` turns a capture into a set (first set: `2026-09-25-premarket`, 74 tickets)
+- [ ] Build `fixtures/replay/2026-09-26-weekend` from Saturday's captures on the `snapshots` branch
 - **Done when:** `git clone && npm ci && npm run replay` prints a table and exits 0 on a
   clean machine with no key.
 

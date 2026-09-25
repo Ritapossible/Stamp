@@ -101,3 +101,15 @@ order. Keeping them out of `reasons` means a verdict can be read from `reasons` 
 **Why:** The list endpoint has no company names. `aliases.ts` maps 20 names to tickers, and
 anything else must be typed as a ticker or symbol. No fuzzy matching of stock names: a wrong
 guess is exactly the bug Stamp exists to stop.
+
+### D17 — The snapshotter loops instead of relying on cron (2026-09-25)
+**Why:** Two hours after the workflow landed, GitHub had not fired a single scheduled run.
+Missing Friday's close would cost the first weekend's replay. Each run now loops for about
+5.5 h, commits every tick, and dispatches its successor (the workflow token may trigger
+`workflow_dispatch`). The cron stays as an hourly watchdog. Captures now carry the universe
+rows they were classified from, so a capture replays without a separate list file.
+
+### D18 — Stored tickets keep their inputs (2026-09-25)
+**Why:** A hash alone proves nothing to a judge. `GET /v1/tickets/:hash` returns the inputs,
+and `POST /v1/verify` recomputes from them. Inputs are trimmed to the chosen instrument's
+family (~4 KB), and the trim is only kept if it reproduces the same hash.

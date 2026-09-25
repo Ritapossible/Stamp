@@ -50,3 +50,5 @@ Evidence: `fixtures/` and `docs/API-NOTES.md`.
 - 2026-09-25 10:12 · snapshot workflow from GitHub Actions runners · Binance may refuse US cloud IPs · 200s on all 56 calls · list ~450 ms, dynamic ~150–200 ms · no workaround needed
 - 2026-09-25 10:40 · `v2 …/dynamic/ai` MUx, NFLXx · token prices moving with the stock · identical to 10:11 to the last digit (980.4846…, 77.1898…) while MU moved 1092.01 → 1093.25 · 250–450 ms · no price timestamp in the payload, so staleness can't be detected; the premium check catches the result
 - 2026-09-25 10:40 · 5 calls for one decision (list + venue + 3 dynamic), in parallel · — · list 160–200 ms, dynamic 250–455 ms, venue 36–398 ms · list cached 5 min
+- 2026-09-25 10:11 · `v2 …/dynamic/ai` all 20 watched xStocks · token near the stock · ORCLx +1625 bps, METAx −2646, PLTRx −1067, MUx −1025, QQQx −288, MSFTx −150; Ondo and bStock versions of the same names within ±15 bps · — · PRICE_IMPLAUSIBLE blocks the >5% ones
+- 2026-09-25 10:12→12:22 · GitHub Actions `schedule: */10` on a new repo · a run every ~10 min · zero scheduled runs in 2 h (only the manual dispatch ran) · — · replaced with a self-dispatching loop workflow
