@@ -20,6 +20,7 @@
 import { appendFile, mkdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { parseArgs } from "node:util";
+import { buildUniverse, RwaClient } from "@stamp/sources";
 
 export const WATCHLIST = [
   "NVDA", "NFLX", "AAPL", "TSLA", "MSFT", "GOOGL", "AMZN", "META", "MU", "AVGO",
@@ -28,50 +29,7 @@ export const WATCHLIST = [
 
 const BSC = "56";
 const ISSUER_BY_TYPE: Record<number, "ondo" | "xstock" | "bstock"> = { 1: "ondo", 2: "xstock", 3: "bstock" };
-const BASE_V1 = "https://www.binance.com/bapi/defi/v1/public/wallet-direct/buw/wallet/market/token/rwa";
-const BASE_V2 = "https://www.binance.com/bapi/defi/v2/public/wallet-direct/buw/wallet/market/token/rwa";
-const HEADERS = { "User-Agent": "binance-web3/1.1 (Skill)", "Accept-Encoding": "identity" };
-const TIMEOUT_MS = 8000;
 const CONCURRENCY = 6;
-
-interface Envelope<T> { code: string; success: boolean; data: T | null; message: string | null }
-interface ListRow { chainId: string; contractAddress: string; symbol: string; ticker: string; type: number; multiplier?: string }
-interface StatusInfo {
-  openState: boolean | null; marketStatus: string | null; reasonCode: string | null;
-  reasonMsg: string | null; nextOpenTime: number | null; nextCloseTime: number | null;
-}
-interface Dynamic {
-  symbol: string; ticker: string; type: number;
-  tokenInfo?: { price?: string | null; sharesMultiplier?: string | null };
-  stockInfo?: { price?: string | null } | null;
-  statusInfo?: StatusInfo | null;
-}
-interface VenueStatus { marketStatus: string | null; openState: boolean | null; nextOpen: string | null; nextClose: string | null }
-
-interface Fetched<T> { ok: boolean; status: number | null; latencyMs: number; attempts: number; body: Envelope<T> | null; error: string | null }
-
-async function getJson<T>(url: string): Promise<Fetched<T>> {
-  const started = performance.now();
-  let attempts = 0;
-  let last: Fetched<T> = { ok: false, status: null, latencyMs: 0, attempts: 0, body: null, error: "not attempted" };
-  // One retry, on transport failure or on `data: null` (seen live for xStocks on 2026-09-25).
-  while (attempts < 2) {
-    attempts++;
-    try {
-      const res = await fetch(url, { headers: HEADERS, signal: AbortSignal.timeout(TIMEOUT_MS) });
-      const body = (await res.json()) as Envelope<T>;
-      last = { ok: res.ok && body.success === true && body.data !== null, status: res.status, latencyMs: 0, attempts, body, error: null };
-      if (!res.ok) last.error = `HTTP ${res.status}`;
-      else if (body.data === null) last.error = "data: null";
-    } catch (err) {
-      last = { ok: false, status: null, latencyMs: 0, attempts, body: null, error: String(err) };
-    }
-    if (last.ok) break;
-    if (attempts < 2) await new Promise((r) => setTimeout(r, 1000));
-  }
-  last.latencyMs = Math.round(performance.now() - started);
-  return last;
-}
 
 async function mapLimit<T, R>(items: readonly T[], limit: number, fn: (t: T) => Promise<R>): Promise<R[]> {
   const out = new Array<R>(items.length);
@@ -97,27 +55,21 @@ export function shouldCaptureRaw(mode: string, venueMarketStatus: string | null,
   return nearClose || (venueMarketStatus !== "regular" && halfHourSlot);
 }
 
-export async function tick(outDir: string, rawMode: string, now = new Date()): Promise<{ failures: number; lines: number }> {
+export async function tick(outDir: string, rawMode: string, now = new Date(), client = new RwaClient()): Promise<{ failures: number; lines: number }> {
   const capturedAt = now.toISOString();
   const day = capturedAt.slice(0, 10);
 
-  const [list, venue] = await Promise.all([
-    getJson<ListRow[]>(`${BASE_V1}/stock/detail/list/ai`),
-    getJson<VenueStatus>(`${BASE_V1}/market/status/ai`),
-  ]);
-  if (!list.ok || !list.body?.data) throw new Error(`list failed: ${list.error} (status ${list.status})`);
+  const [list, venue] = await Promise.all([client.list(), client.venueStatus()]);
+  if (!list.ok || !list.data) throw new Error(`list failed: ${list.error} (status ${list.httpStatus})`);
 
   const watch = new Set<string>(WATCHLIST);
-  const instruments = list.body.data.filter(
+  const instruments = buildUniverse(list.data).rows.filter(
     (r) => r.chainId === BSC && watch.has(r.ticker) && ISSUER_BY_TYPE[r.type] !== undefined,
   );
 
-  const dynamics = await mapLimit(instruments, CONCURRENCY, async (row) => ({
-    row,
-    res: await getJson<Dynamic>(`${BASE_V2}/dynamic/ai?chainId=${BSC}&contractAddress=${row.contractAddress}`),
-  }));
+  const dynamics = await mapLimit(instruments, CONCURRENCY, async (row) => ({ row, res: await client.dynamic(row.contractAddress) }));
 
-  const venueData = venue.body?.data ?? null;
+  const venueData = venue.data;
   const lines: string[] = [];
   let failures = venue.ok ? 0 : 1;
 
@@ -197,7 +149,7 @@ async function main(): Promise<void> {
   });
   const out = values.out!;
   const raw = values.raw!;
-  if (!["auto", "always", "never"].includes(raw)) throw new Error(`--raw must be auto|always|never`);
+  if (!["auto", "always", "never"].includes(raw)) throw new Error("--raw must be auto|always|never");
 
   if (values.loop === undefined) {
     await tick(out, raw);

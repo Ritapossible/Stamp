@@ -88,8 +88,10 @@ The engine is pure: data in, ticket out. Everything that does I/O lives in `sour
 |---|---|
 | `rwa.ts` | Typed client for the five public RWA GETs (§5). Timeouts at 5 s, one retry on `data: null`, raw payload kept for fixtures. Records latency per call for `DEVEX.md`. |
 | `classify.ts` | Builds the `Instrument` universe from the list dump. The key is `(chainId, contractAddress)`. Issuer comes from `type` (1→ondo, 2→xstock, 3→bstock, else unsupported), **never parsed from the symbol**. The suffix is a display hint only (`MUB` is Micron, not a bond ETF). |
-| `adapters/ondo.ts`, `adapters/bstock.ts`, `adapters/xstock.ts` | Per-issuer normalizers into one `MarketView` (§5.2). Each one states which fields it trusts. |
-| `snapshots.ts` | Append-only JSONL of `{ticker, price, capturedAt, marketStatus}`. It records only when the source is live and the session is `regular`. It exposes `lastOfficialClose(ticker, asOf)`. |
+| `adapters.ts` | Raw dynamic → `MarketView` (§5.2). One adapter for all three issuers, because Binance returns one shape and only which fields are filled differs. It copies values through and never fills a gap. Non-string prices are rejected (JSON numbers have lost precision). |
+| `capture.ts` | Raw capture file → the exact `MarketInputs` the engine saw (used by replay). |
+| `market.ts` | `LiveMarket.forIntent`: cached universe (5 min), venue status, and the dynamic payload of every same-ticker instrument, all fetched in parallel. |
+| `snapshots.ts` | Reads the snapshot JSONL written by `scripts/snapshot.ts`. `lastOfficialClose(ticker, asOf)` is the last stock price recorded while the venue said `regular` — the final ~10 minutes of the session, not the closing auction, and labelled as such. |
 | `wallet.ts` | The `StockWallet` interface (§7) plus `FakeWallet` for tests. |
 | `wallet-trading-api.ts` | Live RFQ path via the Binance Trading API (HMAC auth). |
 | `wallet-baw.ts` | Optional adapter over the Agentic Wallet `baw` CLI, used if Day-9 testing shows it can quote tokenized stocks (see PLAN). |

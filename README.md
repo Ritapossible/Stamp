@@ -23,11 +23,21 @@ Signing is only prepared from an `ALLOW` execution ticket tied to a fresh quote,
 exact typed data you sign checked against the ticket. Other agents can buy the same ticket
 over x402, settled through Binance b402.
 
-> Status: **pre-build**. The design is in [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md), the
+> Status: **in progress** — the verdict engine and the Binance data client are built and tested
+> (`npm test`); the API, replay, web screen and execution come next. The design is in [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md), the
 > schedule in [`docs/PLAN.md`](docs/PLAN.md), and the reasoning in
 > [`docs/DECISIONS.md`](docs/DECISIONS.md). Live API findings are in
 > [`docs/API-NOTES.md`](docs/API-NOTES.md). Built for the
 > [BNB Hack: Tokenized Stocks Edition](https://www.bnbchain.org/en/hackathons/tokenized-stocks).
+
+## Try it live — no key needed
+
+```bash
+npm ci
+npm run stamp -- "Buy 1 NFLX"                 # BLOCK: 1 token = 10 shares
+npm run stamp -- "Buy \$20 of NVIDIA"         # ALLOW NVDAon; NVDAx and NVDAB are not the same instrument
+npm run stamp -- "Buy \$20 of Micron" --issuer xstock   # BLOCK when MUx is far from the stock
+```
 
 ## Run it (judges) — no key needed
 

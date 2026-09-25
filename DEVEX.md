@@ -48,3 +48,5 @@ Evidence: `fixtures/` and `docs/API-NOTES.md`.
 - 2026-09-25 10:11 · `v2 …/dynamic/ai` MUx · price near MU · 980.48 vs stock 1092.01 (−10.25%) · — · PRICE_IMPLAUSIBLE, never read as a bargain
 - 2026-09-25 10:11 · `v2 …/dynamic/ai` NFLX family · one share count · Ondo 10, bStock 1, xStock 10-or-1 · — · shown on every ticket
 - 2026-09-25 10:12 · snapshot workflow from GitHub Actions runners · Binance may refuse US cloud IPs · 200s on all 56 calls · list ~450 ms, dynamic ~150–200 ms · no workaround needed
+- 2026-09-25 10:40 · `v2 …/dynamic/ai` MUx, NFLXx · token prices moving with the stock · identical to 10:11 to the last digit (980.4846…, 77.1898…) while MU moved 1092.01 → 1093.25 · 250–450 ms · no price timestamp in the payload, so staleness can't be detected; the premium check catches the result
+- 2026-09-25 10:40 · 5 calls for one decision (list + venue + 3 dynamic), in parallel · — · list 160–200 ms, dynamic 250–455 ms, venue 36–398 ms · list cached 5 min

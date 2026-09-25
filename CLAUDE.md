@@ -68,6 +68,22 @@ docs/              ARCHITECTURE, PLAN, DECISIONS, API-NOTES, HACKATHON
 review the diff. **Never update goldens to make a failing test pass without understanding
 why it changed.** Execution tickets (§7) are not built yet.
 
+## Commands
+
+```
+npm test                                   all tests, offline
+npm run typecheck
+npm run golden:update                      after an intentional engine change; review the diff
+npm run stamp -- "Buy 1 NFLX"              live decision (public endpoints, no key)
+npm run stamp -- "Buy $20 of NVIDIA" --issuer bstock --calls
+npm run probe -- NVDAB NFLXx               record raw payloads into fixtures/probe-<date>/
+npx tsx scripts/snapshot.ts --out data     one snapshot tick (the workflow runs this every 10 min)
+```
+
+`packages/sources` is built: `RwaClient` (fetch is injectable; tests never hit the network),
+`buildUniverse`, `toMarketView`, `fromCapture`, `LiveMarket`, `SnapshotStore`. The capture
+test proves that raw capture → adapters → engine reproduces the golden hashes.
+
 ## Build order (do not skip ahead)
 
 The build order is: engine and fixtures → API and replay → web → wallet (fake, then live

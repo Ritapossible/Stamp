@@ -195,7 +195,7 @@ function inputsHash(input: DecideInput, family: string[], views: Map<string, Mar
       asOf: input.asOf,
       intent: input.intent,
       universe: input.universe
-        .filter((r) => fam.has(r.contractAddress.toLowerCase()))
+        .filter((r) => r.chainId === "56" && fam.has(r.contractAddress.toLowerCase()))
         .map((r) => ({ ...r, contractAddress: r.contractAddress.toLowerCase(), multiplier: r.multiplier ?? null })),
       views: family.map((a) => views.get(a) ?? null),
       venue: input.venue,

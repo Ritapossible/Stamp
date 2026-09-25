@@ -62,9 +62,10 @@ else got built.
   there's no network in tests.
 
 ### Mon 28 Sep — Day 3: sources
-- [ ] `packages/sources/rwa.ts` with typed responses, retry-once on `data:null`, and latency logging
-- [ ] `classify.ts` (keyed by `(chainId, address)`), and the ondo/bstock/xstock adapters → `MarketView`
-- [ ] `snapshots.ts`, with the snapshot script moved onto it
+- [x] `packages/sources/rwa.ts` with typed responses, retry-once on `data:null`, and latency logging — done Fri 25 Sep
+- [x] `classify.ts` (keyed by `(chainId, address)`), and `adapters.ts` → `MarketView`
+- [x] `snapshots.ts`, `capture.ts`, `market.ts`; the snapshot script now uses the shared client
+- [x] `npm run stamp -- "Buy 1 NFLX"` — a live decision from the command line, no key
 - [ ] Turn the weekend captures into `fixtures/last-weekend/` MarketView sets
 - **Done when:** adapters produce `MarketView`s from every captured payload, with tests.
 
