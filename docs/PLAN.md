@@ -34,17 +34,21 @@ else got built.
 ### Fri 25 Sep — Day 0: docs, skeleton, **snapshotter live by 20:00 UTC**
 - [x] Probe the live endpoints and record `fixtures/probe-2026-09-25/`
 - [x] Write CLAUDE.md, ARCHITECTURE, PLAN, DECISIONS, API-NOTES and HACKATHON
-- [ ] npm workspaces skeleton, tsconfig, vitest, and CI (GitHub Actions: `npm ci && npm test`)
-- [ ] `scripts/snapshot.ts`, a minimal standalone script (it gets refactored onto
-      `packages/sources` later). Every 10 min, it
-      1. appends `stockInfo.price` for ~20 tickers to `data/snapshots.jsonl` when the session
-         is `regular` (NVDA, NFLX, AAPL, TSLA, MSFT, GOOGL, AMZN, META, MU, AVGO, KLAC, CRWD,
-         NOW, CVNA, SPY, QQQ, ORCL, AMD, COIN, PLTR)
-      2. writes the raw list/dynamic/status payloads for the Ondo, bStock and xStock versions
-         of those tickers to `fixtures/last-weekend/<ts>/` from Fri 20:00 to Mon 13:30 UTC
-- [ ] Run it on a host that stays up (a small VPS, Fly machine or Railway cron), not a laptop
-- **Done when:** the snapshot JSONL has rows from today's regular session, and the job is
-  still running with your laptop closed.
+- [x] npm workspaces skeleton, tsconfig, vitest, and CI (`.github/workflows/ci.yml`)
+- [x] `scripts/snapshot.ts`, a standalone script (moves onto `packages/sources` on Day 3). Each tick:
+      1. appends one line per ticker to `data/snapshots/YYYY-MM-DD.jsonl` for 20 tickers (NVDA,
+         NFLX, AAPL, TSLA, MSFT, GOOGL, AMZN, META, MU, AVGO, KLAC, CRWD, NOW, CVNA, SPY, QQQ,
+         ORCL, AMD, COIN, PLTR), with every BSC issuer's token price, multiplier, status and
+         the ticker's `stockInfo.price`
+      2. writes raw payloads to `data/captures/YYYY-MM-DD/HHMMSS.json` off-hours (half-hourly)
+         and on every tick from 19:50 to 20:20 UTC around the close
+- [x] `.github/workflows/snapshot.yml` runs it every 10 min and commits to the **`snapshots`
+      branch**. The schedule only runs from the default branch.
+- [ ] Confirm the first scheduled runs landed on `snapshots`. GitHub cron is best-effort, so
+      if runs are skipped or Binance refuses GitHub's US runners, start the backup on any
+      always-on machine outside the US: `npm ci && npx tsx scripts/snapshot.ts --loop 600`
+- **Done when:** `snapshots` has rows from today's regular session and keeps growing with
+  your laptop closed.
 
 ### Sat 26 – Sun 27 Sep — Days 1–2: the engine
 - [ ] `decimal.ts`, `types.ts`, `policy.ts`, `hash.ts` (with tests first)

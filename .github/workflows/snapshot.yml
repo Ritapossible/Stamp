@@ -1,0 +1,58 @@
+name: snapshot
+# Records reference prices every 10 min and raw off-hours payloads.
+# Data goes to the `snapshots` branch, never to the code branch.
+# GitHub runs scheduled workflows only from the default branch, and best-effort
+# (runs can be late or skipped). docs/PLAN.md explains the backup loop.
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+concurrency:
+  group: snapshot
+  cancel-in-progress: false
+permissions:
+  contents: write
+jobs:
+  tick:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: code
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: code/.nvmrc
+          cache: npm
+          cache-dependency-path: code/package-lock.json
+      - run: npm ci
+        working-directory: code
+      - name: Check out the snapshots branch (create it on first run)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          url="https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          if git ls-remote --exit-code --heads "$url" snapshots >/dev/null; then
+            git clone --depth 1 --branch snapshots "$url" store
+          else
+            git init -b snapshots store
+            git -C store remote add origin "$url"
+            printf '# snapshots\n\nWritten by .github/workflows/snapshot.yml. Do not edit by hand.\n' > store/README.md
+          fi
+      - name: Tick
+        run: npx tsx scripts/snapshot.ts --out ../store/data
+        working-directory: code
+      - name: Commit and push
+        working-directory: store
+        run: |
+          git config user.name "stamp-snapshot"
+          git config user.email "stamp-snapshot@users.noreply.github.com"
+          git add -A
+          git diff --cached --quiet && exit 0
+          git commit -q -m "snapshot $(date -u +%FT%TZ)"
+          for i in 1 2 3 4; do
+            git push origin snapshots && exit 0
+            sleep $((2**i))
+            git pull --rebase --depth 1 origin snapshots || true
+          done
+          exit 1
