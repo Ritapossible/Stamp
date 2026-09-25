@@ -28,8 +28,10 @@ This is for the BNB Hack: Tokenized Stocks Edition. Submissions are due
 2. **Never switch issuer.** `NVDAB`, `NVDAon` and `NVDAx` are different legal products. A
    cheaper sibling is information, never a route.
 3. **The multiplier is never hardcoded and never defaults to `1`.** If it is missing or
-   `<= 0`, the verdict is `BLOCK`. The dynamic endpoint's `tokenInfo.sharesMultiplier` is the
-   source of truth. The list endpoint's `multiplier` is only a cross-check.
+   `<= 0`, the verdict is `BLOCK`. **Neither source is trusted alone.** The engine uses the
+   dynamic `tokenInfo.sharesMultiplier` and cross-checks the list `multiplier`. A 2× or
+   larger disagreement is `BLOCK MULTIPLIER_CONFLICT` (live example: `NFLXx` list `1` vs
+   dynamic `10`).
 4. **The engine never uses JavaScript `number` for money, prices or multipliers.** They are
    strings in and out, and `decimal.js` does the math inside. The only integers are basis
    points (`premiumBps`) and seconds.
@@ -57,6 +59,14 @@ fixtures/          recorded payloads, never edited by hand; golden/ has expected
 scripts/           probe.ts (record payloads), replay.ts (judge command), snapshot.ts (cron)
 docs/              ARCHITECTURE, PLAN, DECISIONS, API-NOTES, HACKATHON
 ```
+
+## Engine status
+
+`packages/engine` implements the §6 decision table in `docs/ARCHITECTURE.md` (`decide()` in
+`verdict.ts`). Golden cases live in `packages/engine/test/cases.ts`, with their files in
+`fixtures/golden/`. After an intentional engine change, run `npm run golden:update` and
+review the diff. **Never update goldens to make a failing test pass without understanding
+why it changed.** Execution tickets (§7) are not built yet.
 
 ## Build order (do not skip ahead)
 
@@ -100,8 +110,10 @@ and orders above the policy cap.
   with a live `stockInfo.price` or from the snapshot store.
 - xStock responses have been seen as `data: null` and then populated minutes later. Retry
   once, then `INCOMPLETE_STATUS`.
-- For xStocks, the list `multiplier` is `"1"` while the dynamic `sharesMultiplier` is `1.0009…`.
-  The list value is unreliable for type 2.
+- xStock multipliers are unreliable in **both** sources. The list usually says `"1"` (stale by
+  about 0.1%), and the dynamic value for `NFLXx` says `10` while the token is priced as 1 share
+  (~$77 vs NFLX $71.60). A small drift is a note; 2× or more is a BLOCK.
+- xStock prices can sit far from the stock: `MUx` was −10% (−1025 bps) → `PRICE_IMPLAUSIBLE`.
 - Tokenized-stock swaps run in **RFQ mode** in the Trading API: you sign EIP-712 typed data
   and submit an order. There is no transaction to simulate, so the check is "typed data
   matches the ticket".

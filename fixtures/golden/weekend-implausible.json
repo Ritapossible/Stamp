@@ -1,0 +1,338 @@
+{
+  "name": "weekend-implausible",
+  "kind": "synthetic",
+  "change": "Saturday, NVDAon −800 bps",
+  "input": {
+    "intent": "Buy $20 of NVIDIA",
+    "policy": {
+      "version": 1,
+      "issuer": "ondo",
+      "neverSwitchIssuer": true,
+      "noiseBandBps": 10,
+      "maxRegularPremiumBps": 30,
+      "maxClosedPremiumBps": 80,
+      "implausibleAbsBps": 500,
+      "maxSlippageBps": 50,
+      "quoteTtlSec": 25,
+      "maxOrderUsd": "20",
+      "maxDayUsd": "50",
+      "blockCorporateActions": true
+    },
+    "asOf": "2026-09-26T15:00:00.000Z",
+    "universe": [
+      {
+        "chainId": "56",
+        "contractAddress": "0x7048f5227b032326cc8dbc53cf3fddd947a2c757",
+        "symbol": "NFLXon",
+        "ticker": "NFLX",
+        "type": 1,
+        "multiplier": "10"
+      },
+      {
+        "chainId": "56",
+        "contractAddress": "0x8b6acf6041a81567f012ff6a4c6d96d5818d74bf",
+        "symbol": "MUon",
+        "ticker": "MU",
+        "type": 1,
+        "multiplier": "1.001121237525844732"
+      },
+      {
+        "chainId": "56",
+        "contractAddress": "0xa9ee28c80f960b889dfbd1902055218cba016f75",
+        "symbol": "NVDAon",
+        "ticker": "NVDA",
+        "type": 1,
+        "multiplier": "1.0017152487959898"
+      },
+      {
+        "chainId": "56",
+        "contractAddress": "0xfc263946439b0d802bf4c5a6fcd34e2885259f91",
+        "symbol": "KLACon",
+        "ticker": "KLAC",
+        "type": 1,
+        "multiplier": "10.026064925604903975"
+      },
+      {
+        "chainId": "56",
+        "contractAddress": "0xf6a873bae4ba1b304e45df52a4b7d176e1c6a8c4",
+        "symbol": "MUx",
+        "ticker": "MU",
+        "type": 2,
+        "multiplier": "1"
+      },
+      {
+        "chainId": "56",
+        "contractAddress": "0xa6a65ac27e76cd53cb790473e4345c46e5ebf961",
+        "symbol": "NFLXx",
+        "ticker": "NFLX",
+        "type": 2,
+        "multiplier": "1"
+      },
+      {
+        "chainId": "56",
+        "contractAddress": "0xc845b2894dbddd03858fd2d643b4ef725fe0849d",
+        "symbol": "NVDAx",
+        "ticker": "NVDA",
+        "type": 2,
+        "multiplier": "1"
+      },
+      {
+        "chainId": "56",
+        "contractAddress": "0xcdf2f3e0fa43c47a6662a91c9e4a7c5f69762699",
+        "symbol": "MUB",
+        "ticker": "MU",
+        "type": 3,
+        "multiplier": "1.000107512568805603"
+      },
+      {
+        "chainId": "56",
+        "contractAddress": "0x02fca66c1d1afb4e2a7884261eb00f63598a7436",
+        "symbol": "NVDAB",
+        "ticker": "NVDA",
+        "type": 3,
+        "multiplier": "1.000778223752807865"
+      },
+      {
+        "chainId": "56",
+        "contractAddress": "0xd6829ea836b6fa224d099d40e54b31262f874631",
+        "symbol": "NFLXB",
+        "ticker": "NFLX",
+        "type": 3,
+        "multiplier": "1"
+      },
+      {
+        "chainId": "56",
+        "contractAddress": "0x7ddef360f3c2db4cc41c3967984fefa2598cc9a6",
+        "symbol": "xOPAI",
+        "ticker": "OPENAI",
+        "type": 4,
+        "multiplier": "1"
+      }
+    ],
+    "views": [
+      {
+        "contractAddress": "0x02fca66c1d1afb4e2a7884261eb00f63598a7436",
+        "complete": true,
+        "tokenPriceUsd": "226.28596417274738635515",
+        "multiplier": "1.000778223752807865",
+        "listMultiplier": "1.000778223752807865",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": null,
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": null,
+        "fetchedAt": "2026-09-26T15:00:00.000Z"
+      },
+      {
+        "contractAddress": "0x7048f5227b032326cc8dbc53cf3fddd947a2c757",
+        "complete": true,
+        "tokenPriceUsd": "716.15",
+        "multiplier": "10",
+        "listMultiplier": "10",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": "premarket",
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": null,
+        "fetchedAt": "2026-09-26T15:00:00.000Z"
+      },
+      {
+        "contractAddress": "0x8b6acf6041a81567f012ff6a4c6d96d5818d74bf",
+        "complete": true,
+        "tokenPriceUsd": "1093.520436943856164993",
+        "multiplier": "1.001121237525844732",
+        "listMultiplier": "1.001121237525844732",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": "premarket",
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": null,
+        "fetchedAt": "2026-09-26T15:00:00.000Z"
+      },
+      {
+        "contractAddress": "0xa6a65ac27e76cd53cb790473e4345c46e5ebf961",
+        "complete": true,
+        "tokenPriceUsd": "77.189826648928371027658010605297330854",
+        "multiplier": "10",
+        "listMultiplier": "1",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": null,
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": null,
+        "fetchedAt": "2026-09-26T15:00:00.000Z"
+      },
+      {
+        "contractAddress": "0xa9ee28c80f960b889dfbd1902055218cba016f75",
+        "complete": true,
+        "tokenPriceUsd": "208.276634529662199216",
+        "multiplier": "1.0017152487959898",
+        "listMultiplier": "1.0017152487959898",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": "closed",
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": null,
+        "fetchedAt": "2026-09-26T15:00:00.000Z"
+      },
+      {
+        "contractAddress": "0xc845b2894dbddd03858fd2d643b4ef725fe0849d",
+        "complete": true,
+        "tokenPriceUsd": "224.269085228744065903122755434969591456",
+        "multiplier": "1.0009180758490996",
+        "listMultiplier": "1",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": null,
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": null,
+        "fetchedAt": "2026-09-26T15:00:00.000Z"
+      },
+      {
+        "contractAddress": "0xcdf2f3e0fa43c47a6662a91c9e4a7c5f69762699",
+        "complete": true,
+        "tokenPriceUsd": "1092.72746930780268989383",
+        "multiplier": "1.000107512568805603",
+        "listMultiplier": "1.000107512568805603",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": null,
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": null,
+        "fetchedAt": "2026-09-26T15:00:00.000Z"
+      },
+      {
+        "contractAddress": "0xd6829ea836b6fa224d099d40e54b31262f874631",
+        "complete": true,
+        "tokenPriceUsd": "71.71",
+        "multiplier": "1",
+        "listMultiplier": "1",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": null,
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": null,
+        "fetchedAt": "2026-09-26T15:00:00.000Z"
+      },
+      {
+        "contractAddress": "0xf6a873bae4ba1b304e45df52a4b7d176e1c6a8c4",
+        "complete": true,
+        "tokenPriceUsd": "980.484662106214390727899725746808101494",
+        "multiplier": "1.0004015986353854",
+        "listMultiplier": "1",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": null,
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": null,
+        "fetchedAt": "2026-09-26T15:00:00.000Z"
+      },
+      {
+        "contractAddress": "0xfc263946439b0d802bf4c5a6fcd34e2885259f91",
+        "complete": true,
+        "tokenPriceUsd": "1904.150250670883362932",
+        "multiplier": "10.026064925604903975",
+        "listMultiplier": "10.026064925604903975",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": "premarket",
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": null,
+        "fetchedAt": "2026-09-26T15:00:00.000Z"
+      }
+    ],
+    "venue": {
+      "marketStatus": "closed",
+      "openState": true
+    },
+    "lastOfficialClose": {
+      "ticker": "NVDA",
+      "priceUsd": "226.00",
+      "asOf": "2026-09-25T19:59:00.000Z"
+    },
+    "filledTodayUsd": "0"
+  },
+  "ticket": {
+    "kind": "decision",
+    "engineVersion": "0.1.0",
+    "asOf": "2026-09-26T15:00:00.000Z",
+    "intentId": "808c5e5458a24513",
+    "intent": {
+      "raw": "Buy $20 of NVIDIA",
+      "side": "buy",
+      "unit": "usd",
+      "amount": "20",
+      "query": "NVIDIA"
+    },
+    "chosen": {
+      "chainId": "56",
+      "contractAddress": "0xa9ee28c80f960b889dfbd1902055218cba016f75",
+      "symbol": "NVDAon",
+      "ticker": "NVDA",
+      "issuer": "ondo"
+    },
+    "rejected": [
+      {
+        "symbol": "NVDAx",
+        "issuer": "xstock",
+        "contractAddress": "0xc845b2894dbddd03858fd2d643b4ef725fe0849d",
+        "reason": "NEVER_SWITCH"
+      },
+      {
+        "symbol": "NVDAB",
+        "issuer": "bstock",
+        "contractAddress": "0x02fca66c1d1afb4e2a7884261eb00f63598a7436",
+        "reason": "NEVER_SWITCH"
+      }
+    ],
+    "session": "closed",
+    "sessionSource": "asset",
+    "marketStatus": "closed",
+    "reasonCode": "TRADING",
+    "reasonMsg": null,
+    "multiplier": "1.0017152487959898",
+    "listMultiplier": "1.0017152487959898",
+    "tokenPriceUsd": "208.276634529662199216",
+    "economicPriceUsd": "207.920000",
+    "referenceUsd": "226.00",
+    "referenceSource": "lastOfficialClose",
+    "referenceAsOf": "2026-09-25T19:59:00.000Z",
+    "referenceSibling": null,
+    "premiumBps": -800,
+    "overpayUsd": null,
+    "notionalUsd": "20.00",
+    "tokenUnits": "0.09602613",
+    "economicShares": "0.09619084",
+    "unitReadings": null,
+    "formula": "economicPrice = tokenInfo.price / sharesMultiplier",
+    "inputsHash": "5e76f66edb5433a2db573c0aca762ed17546ad3f34b289526b17b2258fe5d62c",
+    "policyHash": "819a2bcaeeec65005a0d17f38a68e8fa26b165047ffec295b6f9d460a4a36043",
+    "verdict": "BLOCK",
+    "reasons": [
+      "PRICE_IMPLAUSIBLE"
+    ],
+    "notes": [],
+    "hash": "13f34140a12df4d29f919eb1d1a4cbf59e555921fb16dbb583bee00c12f5bd6e",
+    "narration": "BLOCK. NVDAon (Ondo) is -800 bps from the stock's price ($207.920000 vs $226.00). More than 5% apart is treated as bad data, not a bargain. $20.00 buys 0.09602613 NVDAon tokens = 0.09619084 shares (multiplier 1.0017152487959898). Not the same instrument: NVDAx (xStock), NVDAB (bStock). Hash 13f34140a12d…"
+  }
+}

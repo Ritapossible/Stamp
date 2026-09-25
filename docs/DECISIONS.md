@@ -36,7 +36,7 @@ names "Netflix (Ondo)", "NVIDIA xStock" and "NVIDIA (bStocks)"). The same symbol
 several chains (`NFLXon` is on 56, 1 and Solana), and the probe script itself hit that
 collision when it built a dict keyed by symbol. Symbol parsing is only a display hint.
 
-### D5 — Dynamic `sharesMultiplier` is the source of truth (2026-09-25)
+### D5 — Dynamic `sharesMultiplier` is the source of truth (2026-09-25) — *amended by D13*
 **Why:** For xStocks, the list endpoint says `multiplier: "1"` while the dynamic endpoint says
 `1.0009…`. For Ondo and bStock they agree. A 2× or larger disagreement blocks
 (`MULTIPLIER_CONFLICT`, which is the split case). A small drift warns, except for xStock,
@@ -79,3 +79,25 @@ Numbers stay strings at every boundary, and the only integers are bps and second
 ### D12 — Verdict combination: first BLOCK stops, WARNs pile up (2026-09-25)
 **Why:** A ticket showing every warning is more useful than one showing only the first. A
 block ends evaluation because later checks may read fields that are now meaningless.
+
+### D13 — Neither multiplier source is trusted alone (2026-09-25, amends D5)
+**Why:** At 10:11Z, the dynamic endpoint reported `NFLXx` `sharesMultiplier: "10"` while the
+list said `"1"`. The token trades at ~$77.19 against NFLX's $71.60, so it is priced as ~1
+share. The dynamic value is the wrong one here, which is the opposite of the xStock lag seen in
+D5. The engine still reads the dynamic value, but a ≥2× disagreement is
+`BLOCK MULTIPLIER_CONFLICT` before any price is computed.
+**Evidence:** `fixtures/probe-2026-09-25/capture-101145.json`, golden case `nflxx-multiplier-conflict`.
+
+### D14 — `VENUE_CLOSED` is separate from `MARKET_HALTED` (2026-09-25)
+**Why:** An instrument whose own `openState` is false may just be closed (possibly Ondo on
+weekends; this weekend's captures will show it), not halted. Both BLOCK, but the ticket should
+say which one is true. Unknown or null `reasonCode` → `INCOMPLETE_STATUS`, per invariant 9.
+
+### D15 — `reasons` and `notes` are separate (2026-09-25)
+**Why:** `THIN_BOOK` and xStock `MULTIPLIER_DRIFT` are worth showing but must not stop an
+order. Keeping them out of `reasons` means a verdict can be read from `reasons` alone.
+
+### D16 — Company names come from a fixed alias table (2026-09-25)
+**Why:** The list endpoint has no company names. `aliases.ts` maps 20 names to tickers, and
+anything else must be typed as a ticker or symbol. No fuzzy matching of stock names: a wrong
+guess is exactly the bug Stamp exists to stop.

@@ -51,10 +51,12 @@ else got built.
   your laptop closed.
 
 ### Sat 26 – Sun 27 Sep — Days 1–2: the engine
-- [ ] `decimal.ts`, `types.ts`, `policy.ts`, `hash.ts` (with tests first)
-- [ ] `intent.ts` grammar: `$N of X`, `N shares of X`, `N X tokens`, bare `N X` → ambiguous
-- [ ] `unit.ts`, `issuer.ts`, `session.ts` (DST tests), `reference.ts`, `premium.ts`
-- [ ] `verdict.ts` covering the whole §6 table, with a golden fixture per row
+- [x] `decimal.ts`, `types.ts`, `policy.ts`, `hash.ts` (with tests first) — done Fri 25 Sep
+- [x] `intent.ts` grammar: `$N of X`, `N shares of X`, `N X tokens`, bare `N X` → ambiguous
+- [x] `unit.ts`, `issuer.ts`, `session.ts` (DST tests), `reference.ts`, `premium.ts`
+- [x] `verdict.ts` covering the whole §6 table: 29 golden cases (15 unmodified live data,
+      14 labelled synthetic changes of it), 83 tests in total
+- [ ] Replace the synthetic weekend cases with real ones from the 26–27 Sep captures
 - [ ] Look at the live weekend captures on Saturday. Record anything odd in the DEVEX raw log.
 - **Done when:** every §6 row has a passing golden test, same inputs give the same hash, and
   there's no network in tests.

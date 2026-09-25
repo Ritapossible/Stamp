@@ -166,10 +166,10 @@ interface MarketView {
 
 The reference is for the **underlying ticker**, not the token. For each call, in order:
 
-1. If this instrument's `stockInfo.price` is non-null → `live`.
+1. If this instrument's `stockInfo.price` is non-null → `stockInfo`.
 2. Otherwise, if any same-ticker sibling on chain 56 has a non-null `stockInfo.price` fetched
-   within 60 s → `live-sibling` (the ticket records which sibling). This is how bStocks get a
-   reference.
+   within 60 s → `stockInfo-sibling` (the ticket records which sibling; order Ondo, xStock,
+   bStock). This is how bStocks get a reference.
 3. Otherwise, the snapshot store's last `regular`-session print for the ticker →
    `lastOfficialClose` (with its timestamp).
 4. Otherwise → `missing` → `WARN NO_REFERENCE`.
@@ -206,18 +206,22 @@ is `BLOCK` if any check blocked, otherwise `WARN` if any warned, otherwise `ALLO
 | # | Check | Result |
 |---|---|---|
 | 1 | Parse intent. Unparseable → `UNPARSEABLE_INTENT`. | BLOCK |
-| 2 | Resolve on chain 56. Zero candidates → `UNKNOWN_TOKEN`. Unsupported `type` (4, 9, …) → `UNKNOWN_TOKEN`. Several issuers and the policy has none → `AMBIGUOUS_ISSUER`. The query names an issuer (`NVDAB`) that is not `policy.issuer` → `NEVER_SWITCH`. Every non-chosen sibling goes into `rejected[]` with `NEVER_SWITCH`. | BLOCK |
-| 3 | `data: null` after one retry, or the price is missing → `INCOMPLETE_STATUS`. | BLOCK |
+| 2 | Resolve on chain 56: exact symbol, else company name → ticker (`aliases.ts`, no fuzzy matching), else ticker. Zero candidates or an unsupported `type` (4, 9, …) → `UNKNOWN_TOKEN`. The query is one instrument's symbol **and** another stock's ticker → `AMBIGUOUS_QUERY`. Several issuers and `policy.issuer = null` → `AMBIGUOUS_ISSUER` (options listed). The query names an issuer (`NVDAB`) that isn't `policy.issuer`, or the ticker has no version from `policy.issuer` → `ISSUER_NOT_ALLOWED`. Every non-chosen sibling goes into `rejected[]` with `NEVER_SWITCH`. | BLOCK |
+| 3 | `data: null` after one retry, no asset status, the price is missing, or `reasonCode` is null or not a documented value → `INCOMPLETE_STATUS`. | BLOCK |
 | 4 | Dynamic multiplier missing, unparseable or `<= 0` → `NO_MULTIPLIER`. | BLOCK |
-| 5 | List and dynamic multipliers differ by ≥ 2× in either direction → `MULTIPLIER_CONFLICT` (a split-scale disagreement). A smaller difference → `MULTIPLIER_DRIFT`. It warns except for xStock, where the list is known stale; there it is informational. | BLOCK / WARN |
+| 5 | List and dynamic multipliers differ by ≥ 2× in either direction → `MULTIPLIER_CONFLICT` (a split-scale disagreement; live: `NFLXx` 1 vs 10). A smaller difference (relative > 1e-9) → `MULTIPLIER_DRIFT`: a WARN for Ondo/bStock, a note for xStock, whose list is known stale. | BLOCK / WARN / note |
 | 6 | Unit: `unit = ambiguous` (e.g. "buy 1 NFLX") and multiplier ≠ 1 → `UNIT_AMBIGUOUS`. The ticket shows both readings: "1 token = 10 shares ≈ $716" and "1 share = 0.1 token ≈ $72". | BLOCK |
-| 7 | Halt: `reasonCode ∈ {ASSET_PAUSED, ASSET_LIMITED}` with a corporate-action `reasonMsg` (`cash_dividend, stock_dividend, stock_split, merger, acquisition, spinoff, corporate action, earnings, maintenance`) → `HALTED_CORPORATE_ACTION`. `reasonCode ∈ {MARKET_PAUSED, MARKET_MAINTENANCE, UNSUPPORTED}` or `marketStatus = pause` → `MARKET_HALTED`. `openState = false` → `MARKET_HALTED`. | BLOCK |
+| 7 | Halt: `reasonCode ∈ {ASSET_PAUSED, ASSET_LIMITED}` with a corporate-action `reasonMsg` (`cash_dividend, stock_dividend, stock_split, merger, acquisition, spinoff, corporate action, earnings, maintenance`) → `HALTED_CORPORATE_ACTION`. `ASSET_PAUSED`/`ASSET_LIMITED` with any other message → `MARKET_HALTED`. `reasonCode ∈ {MARKET_PAUSED, MARKET_MAINTENANCE, UNSUPPORTED}` or `marketStatus = pause` (asset or venue) → `MARKET_HALTED`. Asset `openState = false` → `VENUE_CLOSED`. | BLOCK |
 | 8 | Session. Take it from asset status (Ondo) or venue status (bStock/xStock). Map `regular→regular`, `premarket|postmarket→extended`, `overnight|closed→closed`, anything else `unknown`. If the NY clock and the API disagree about cash-open → `SESSION_DISAGREEMENT`. For `unknown` → `SESSION_UNKNOWN`. | WARN |
 | 9 | Reference missing (§5.3) → `NO_REFERENCE`. Premium checks are skipped. | WARN |
 | 10 | `|premiumBps| > policy.implausibleAbsBps` (500) → `PRICE_IMPLAUSIBLE`. | BLOCK |
 | 11 | Session is `closed`/`extended` and `premiumBps > policy.maxClosedPremiumBps` (80) → `SESSION_RICH`, and fill in `overpayUsd`. | WARN |
 | 12 | Session is `regular` and `premiumBps > policy.maxRegularPremiumBps` (30) → `SESSION_RICH`. | WARN |
 | 13 | Discount beyond the noise band (`premiumBps < −noiseBandBps`) → note `THIN_BOOK`. Size is **never** increased. | note |
+
+Tickets carry `reasons` (the WARN codes, then the BLOCK code if any, or `["OK"]`) and
+`notes` (informational: `THIN_BOOK`, xStock `MULTIPLIER_DRIFT`). `overpayUsd` is filled
+whenever the premium is positive: `notional × (economic − reference) / economic`.
 | 14 | Notional over `maxOrderUsd`, or today's `FILLED` sum plus notional over `maxDayUsd` → `OVER_CAP`. | BLOCK |
 | 15 | Otherwise → `OK`. | ALLOW |
 
@@ -260,7 +264,7 @@ interface StockWallet {
 }
 ```
 
-## 8. Types (abridged; the source of truth is `types.ts`)
+## 8. Types (abridged; the source of truth is `packages/engine/src/types.ts`)
 
 ```ts
 type Issuer = "ondo" | "bstock" | "xstock";
@@ -268,9 +272,10 @@ type Verdict = "ALLOW" | "WARN" | "BLOCK";
 type Session = "regular" | "extended" | "closed" | "unknown";
 
 type ReasonCode =
-  | "UNPARSEABLE_INTENT" | "UNKNOWN_TOKEN" | "AMBIGUOUS_ISSUER" | "NEVER_SWITCH"
+  | "UNPARSEABLE_INTENT" | "UNKNOWN_TOKEN" | "AMBIGUOUS_QUERY" | "AMBIGUOUS_ISSUER"
+  | "ISSUER_NOT_ALLOWED" | "NEVER_SWITCH"
   | "INCOMPLETE_STATUS" | "NO_MULTIPLIER" | "MULTIPLIER_CONFLICT" | "MULTIPLIER_DRIFT"
-  | "UNIT_AMBIGUOUS" | "HALTED_CORPORATE_ACTION" | "MARKET_HALTED"
+  | "UNIT_AMBIGUOUS" | "HALTED_CORPORATE_ACTION" | "MARKET_HALTED" | "VENUE_CLOSED"
   | "SESSION_DISAGREEMENT" | "SESSION_UNKNOWN" | "NO_REFERENCE" | "PRICE_IMPLAUSIBLE"
   | "SESSION_RICH" | "THIN_BOOK" | "OVER_CAP" | "OK"
   // execution
@@ -279,7 +284,7 @@ type ReasonCode =
 
 interface Policy {
   version: 1;
-  issuer: Issuer;                   // required; demo default "ondo"
+  issuer: Issuer | null;            // demo default "ondo"; null = the order must name one
   neverSwitchIssuer: true;          // literal type
   noiseBandBps: 10;
   maxRegularPremiumBps: 30;
@@ -302,7 +307,7 @@ interface DecisionTicket {
   multiplier: string | null; listMultiplier: string | null;
   tokenPriceUsd: string | null; economicPriceUsd: string | null;
   referenceUsd: string | null;
-  referenceSource: "live" | "live-sibling" | "lastOfficialClose" | "missing";
+  referenceSource: "stockInfo" | "stockInfo-sibling" | "lastOfficialClose" | "missing";
   referenceAsOf: string | null; referenceSibling: string | null;
   premiumBps: number | null; overpayUsd: string | null;
   notionalUsd: string | null; tokenUnits: string | null; economicShares: string | null;

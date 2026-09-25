@@ -56,6 +56,20 @@ Economic price (`tokenPrice / sharesMultiplier`) against the NVDA reference of 2
 
 $20 buys: NVDAon 0.088306 tokens = 0.088458 shares; NFLXon **0.027923 tokens = 0.279226 shares**.
 
+### Full capture 10:11Z (`capture-101145.json`, all 54 BSC instruments for 20 tickers)
+| Symbol | tokenInfo.price | dynamic multiplier | list multiplier | stockInfo.price | Reading |
+|---|---|---|---|---|---|
+| NFLXon | 716.15 | 10 | 10 | 71.603333 | +2 bps, consistent |
+| NFLXx | 77.1898… | **10** | **1** | 71.603333 | sources disagree 10×; the price says ~1 share → `MULTIPLIER_CONFLICT` |
+| NFLXB | 71.71 | 1 | 1 | null | +15 bps via sibling |
+| MUon | 1093.52 | 1.00112… | same | 1092.0125 | +2.6 bps |
+| MUx | 980.4846… | 1.00040… | 1 | 1092.0125 | **−1025 bps** → `PRICE_IMPLAUSIBLE` |
+| MUB | 1092.7274… | 1.000107… | same | null | +5.5 bps via sibling |
+| KLACon | 1904.15 | 10.026064925604903975 | same | 190.18 | `buy 1 KLAC` → `UNIT_AMBIGUOUS` |
+
+Netflix exists on BSC as three products with three different share counts per token:
+Ondo 10, bStock 1, and xStock "10" or "1" depending on which endpoint you ask.
+
 ### Status
 - The venue `market/status` returned `marketStatus: "premarket"`, `nextOpen` 13:31Z, `nextClose`
   13:29Z (next close *before* next open — that's the premarket segment end), plus an

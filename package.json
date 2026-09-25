@@ -12,7 +12,8 @@
   "scripts": {
     "test": "vitest run",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "snapshot": "tsx scripts/snapshot.ts"
+    "snapshot": "tsx scripts/snapshot.ts",
+    "golden:update": "UPDATE_GOLDEN=1 vitest run packages/engine/test/golden.test.ts"
   },
   "devDependencies": {
     "@types/node": "^26.6.2",

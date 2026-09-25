@@ -44,3 +44,7 @@ Evidence: `fixtures/` and `docs/API-NOTES.md`.
 - 2026-09-25 10:03 · `dynamic` NFLXon · token ≈ share price · token 716.27, stock 71.60, multiplier 10 · — · this is the demo
 - 2026-09-25 · docs · Agentic Wallet swap supports tokenized stocks? · skills reference doesn't mention them · — · test on Day 8–9
 - 2026-09-25 · docs · simulate the stock swap · stock swaps are RFQ (EIP-712 typed data), nothing to simulate · — · check typed data against ticket instead
+- 2026-09-25 10:11 · `v2 …/dynamic/ai` NFLXx · sharesMultiplier matching list · dynamic `"10"`, list `"1"`, token $77.19 vs NFLX $71.60 · ~150 ms · engine blocks ≥2× disagreement (MULTIPLIER_CONFLICT)
+- 2026-09-25 10:11 · `v2 …/dynamic/ai` MUx · price near MU · 980.48 vs stock 1092.01 (−10.25%) · — · PRICE_IMPLAUSIBLE, never read as a bargain
+- 2026-09-25 10:11 · `v2 …/dynamic/ai` NFLX family · one share count · Ondo 10, bStock 1, xStock 10-or-1 · — · shown on every ticket
+- 2026-09-25 10:12 · snapshot workflow from GitHub Actions runners · Binance may refuse US cloud IPs · 200s on all 56 calls · list ~450 ms, dynamic ~150–200 ms · no workaround needed
