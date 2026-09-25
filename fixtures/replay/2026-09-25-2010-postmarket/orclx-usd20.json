@@ -1,0 +1,170 @@
+{
+  "name": "orclx-usd20",
+  "capture": "fixtures/captures/2026-09-25/201005.json",
+  "input": {
+    "asOf": "2026-09-25T20:10:05.514Z",
+    "universe": [
+      {
+        "chainId": "56",
+        "contractAddress": "0x03e4bd1ea53f1da84513da0319d1f03dd1bbcf93",
+        "symbol": "ORCLon",
+        "ticker": "ORCL",
+        "type": 1,
+        "multiplier": "1.0079328914586566"
+      },
+      {
+        "chainId": "56",
+        "contractAddress": "0x548308e91ec9f285c7bff05295badbd56a6e4971",
+        "symbol": "ORCLx",
+        "ticker": "ORCL",
+        "type": 2,
+        "multiplier": "1"
+      },
+      {
+        "chainId": "56",
+        "contractAddress": "0x4684d9887fc1c71cba7bab8e88835cec217eb598",
+        "symbol": "ORCLB",
+        "ticker": "ORCL",
+        "type": 3,
+        "multiplier": "1"
+      }
+    ],
+    "views": [
+      {
+        "contractAddress": "0x03e4bd1ea53f1da84513da0319d1f03dd1bbcf93",
+        "complete": true,
+        "tokenPriceUsd": "138.033050044935789668",
+        "multiplier": "1.0079328914586566",
+        "listMultiplier": "1.0079328914586566",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": "postmarket",
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": "136.928889",
+        "fetchedAt": "2026-09-25T20:10:05.514Z"
+      },
+      {
+        "contractAddress": "0x4684d9887fc1c71cba7bab8e88835cec217eb598",
+        "complete": true,
+        "tokenPriceUsd": "137.1",
+        "multiplier": "1",
+        "listMultiplier": "1",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": null,
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": null,
+        "fetchedAt": "2026-09-25T20:10:05.514Z"
+      },
+      {
+        "contractAddress": "0x548308e91ec9f285c7bff05295badbd56a6e4971",
+        "complete": true,
+        "tokenPriceUsd": "164.081527379622704245926877011378587",
+        "multiplier": "1.009318667481834",
+        "listMultiplier": "1",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": null,
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": "137.11",
+        "fetchedAt": "2026-09-25T20:10:05.514Z"
+      }
+    ],
+    "venue": {
+      "marketStatus": "postmarket",
+      "openState": true
+    },
+    "intent": "Buy $20 of ORCLx",
+    "policy": {
+      "version": 1,
+      "issuer": "xstock",
+      "neverSwitchIssuer": true,
+      "noiseBandBps": 10,
+      "maxRegularPremiumBps": 30,
+      "maxClosedPremiumBps": 80,
+      "implausibleAbsBps": 500,
+      "maxSlippageBps": 50,
+      "quoteTtlSec": 25,
+      "maxOrderUsd": "20",
+      "maxDayUsd": "50",
+      "blockCorporateActions": true
+    },
+    "lastOfficialClose": {
+      "ticker": "ORCL",
+      "priceUsd": "137.158889",
+      "asOf": "2026-09-25T20:00:06.276Z"
+    },
+    "filledTodayUsd": "0"
+  },
+  "ticket": {
+    "kind": "decision",
+    "engineVersion": "0.1.0",
+    "asOf": "2026-09-25T20:10:05.514Z",
+    "intentId": "2dbf914d58327d37",
+    "intent": {
+      "raw": "Buy $20 of ORCLx",
+      "side": "buy",
+      "unit": "usd",
+      "amount": "20",
+      "query": "ORCLx"
+    },
+    "chosen": {
+      "chainId": "56",
+      "contractAddress": "0x548308e91ec9f285c7bff05295badbd56a6e4971",
+      "symbol": "ORCLx",
+      "ticker": "ORCL",
+      "issuer": "xstock"
+    },
+    "rejected": [
+      {
+        "symbol": "ORCLon",
+        "issuer": "ondo",
+        "contractAddress": "0x03e4bd1ea53f1da84513da0319d1f03dd1bbcf93",
+        "reason": "NEVER_SWITCH"
+      },
+      {
+        "symbol": "ORCLB",
+        "issuer": "bstock",
+        "contractAddress": "0x4684d9887fc1c71cba7bab8e88835cec217eb598",
+        "reason": "NEVER_SWITCH"
+      }
+    ],
+    "session": "extended",
+    "sessionSource": "venue",
+    "marketStatus": "postmarket",
+    "reasonCode": "TRADING",
+    "reasonMsg": null,
+    "multiplier": "1.009318667481834",
+    "listMultiplier": "1",
+    "tokenPriceUsd": "164.081527379622704245926877011378587",
+    "economicPriceUsd": "162.566623",
+    "referenceUsd": "137.11",
+    "referenceSource": "stockInfo",
+    "referenceAsOf": "2026-09-25T20:10:05.514Z",
+    "referenceSibling": null,
+    "premiumBps": 1857,
+    "overpayUsd": "3.13",
+    "notionalUsd": "20.00",
+    "tokenUnits": "0.12189063",
+    "economicShares": "0.12302648",
+    "unitReadings": null,
+    "formula": "economicPrice = tokenInfo.price / sharesMultiplier",
+    "inputsHash": "0ca18dde36995cf02041a41561c649353bc7f80d5fae2b7585c9c748dbd75c6f",
+    "policyHash": "7d1fd3d2f6911dfdf727820b46d574cd56f459d266e7faddcedd73843f05898a",
+    "verdict": "BLOCK",
+    "reasons": [
+      "PRICE_IMPLAUSIBLE"
+    ],
+    "notes": [
+      "MULTIPLIER_DRIFT"
+    ],
+    "hash": "2c80460395fa0365e59924eaf804850cf5cf4eda4f7144bdd1b39af6c2a1c3a4",
+    "narration": "BLOCK. ORCLx (xStock) is 1857 bps from the stock's price ($162.566623 vs $137.11). More than 5% apart is treated as bad data, not a bargain. $20.00 buys 0.12189063 ORCLx tokens = 0.12302648 shares (multiplier 1.009318667481834). Not the same instrument: ORCLon (Ondo), ORCLB (bStock). Hash 2c80460395fa…"
+  }
+}

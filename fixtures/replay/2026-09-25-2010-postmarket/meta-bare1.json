@@ -1,0 +1,179 @@
+{
+  "name": "meta-bare1",
+  "capture": "fixtures/captures/2026-09-25/201005.json",
+  "input": {
+    "asOf": "2026-09-25T20:10:05.514Z",
+    "universe": [
+      {
+        "chainId": "56",
+        "contractAddress": "0xd7df5863a3e742f0c767768cdfcb63f09e0422f6",
+        "symbol": "METAon",
+        "ticker": "META",
+        "type": 1,
+        "multiplier": "1.002826918305349555"
+      },
+      {
+        "chainId": "56",
+        "contractAddress": "0x96702be57cd9777f835117a809c7124fe4ec989a",
+        "symbol": "METAx",
+        "ticker": "META",
+        "type": 2,
+        "multiplier": "1"
+      },
+      {
+        "chainId": "56",
+        "contractAddress": "0x7425889fe94f9d693e8daefe88bcced6acfef4c0",
+        "symbol": "METAB",
+        "ticker": "META",
+        "type": 3,
+        "multiplier": "1.00054829041074495"
+      }
+    ],
+    "views": [
+      {
+        "contractAddress": "0x7425889fe94f9d693e8daefe88bcced6acfef4c0",
+        "complete": true,
+        "tokenPriceUsd": "751.051568713921589268",
+        "multiplier": "1.00054829041074495",
+        "listMultiplier": "1.00054829041074495",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": null,
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": null,
+        "fetchedAt": "2026-09-25T20:10:05.514Z"
+      },
+      {
+        "contractAddress": "0x96702be57cd9777f835117a809c7124fe4ec989a",
+        "complete": true,
+        "tokenPriceUsd": "573.753797102305679962107408139948762449",
+        "multiplier": "1.002298265651938",
+        "listMultiplier": "1",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": null,
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": "750.657143",
+        "fetchedAt": "2026-09-25T20:10:05.514Z"
+      },
+      {
+        "contractAddress": "0xd7df5863a3e742f0c767768cdfcb63f09e0422f6",
+        "complete": true,
+        "tokenPriceUsd": "752.634972879466606253",
+        "multiplier": "1.002826918305349555",
+        "listMultiplier": "1.002826918305349555",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": "postmarket",
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": "750.513333",
+        "fetchedAt": "2026-09-25T20:10:05.514Z"
+      }
+    ],
+    "venue": {
+      "marketStatus": "postmarket",
+      "openState": true
+    },
+    "intent": "Buy 1 META",
+    "policy": {
+      "version": 1,
+      "issuer": "ondo",
+      "neverSwitchIssuer": true,
+      "noiseBandBps": 10,
+      "maxRegularPremiumBps": 30,
+      "maxClosedPremiumBps": 80,
+      "implausibleAbsBps": 500,
+      "maxSlippageBps": 50,
+      "quoteTtlSec": 25,
+      "maxOrderUsd": "20",
+      "maxDayUsd": "50",
+      "blockCorporateActions": true
+    },
+    "lastOfficialClose": {
+      "ticker": "META",
+      "priceUsd": "751.95",
+      "asOf": "2026-09-25T20:00:06.276Z"
+    },
+    "filledTodayUsd": "0"
+  },
+  "ticket": {
+    "kind": "decision",
+    "engineVersion": "0.1.0",
+    "asOf": "2026-09-25T20:10:05.514Z",
+    "intentId": "c84f71f20cda7305",
+    "intent": {
+      "raw": "Buy 1 META",
+      "side": "buy",
+      "unit": "ambiguous",
+      "amount": "1",
+      "query": "META"
+    },
+    "chosen": {
+      "chainId": "56",
+      "contractAddress": "0xd7df5863a3e742f0c767768cdfcb63f09e0422f6",
+      "symbol": "METAon",
+      "ticker": "META",
+      "issuer": "ondo"
+    },
+    "rejected": [
+      {
+        "symbol": "METAx",
+        "issuer": "xstock",
+        "contractAddress": "0x96702be57cd9777f835117a809c7124fe4ec989a",
+        "reason": "NEVER_SWITCH"
+      },
+      {
+        "symbol": "METAB",
+        "issuer": "bstock",
+        "contractAddress": "0x7425889fe94f9d693e8daefe88bcced6acfef4c0",
+        "reason": "NEVER_SWITCH"
+      }
+    ],
+    "session": null,
+    "sessionSource": null,
+    "marketStatus": "postmarket",
+    "reasonCode": "TRADING",
+    "reasonMsg": null,
+    "multiplier": "1.002826918305349555",
+    "listMultiplier": "1.002826918305349555",
+    "tokenPriceUsd": "752.634972879466606253",
+    "economicPriceUsd": null,
+    "referenceUsd": null,
+    "referenceSource": null,
+    "referenceAsOf": null,
+    "referenceSibling": null,
+    "premiumBps": null,
+    "overpayUsd": null,
+    "notionalUsd": null,
+    "tokenUnits": null,
+    "economicShares": null,
+    "unitReadings": {
+      "asTokens": {
+        "tokens": "1.00000000",
+        "shares": "1.00282692",
+        "usd": "752.63"
+      },
+      "asShares": {
+        "tokens": "0.99718105",
+        "shares": "1.00000000",
+        "usd": "750.51"
+      }
+    },
+    "formula": "economicPrice = tokenInfo.price / sharesMultiplier",
+    "inputsHash": "23ccf0c28e73437b5528269255400f18ae56ae16f7095c1385969ee6fbfab5d5",
+    "policyHash": "819a2bcaeeec65005a0d17f38a68e8fa26b165047ffec295b6f9d460a4a36043",
+    "verdict": "BLOCK",
+    "reasons": [
+      "UNIT_AMBIGUOUS"
+    ],
+    "notes": [],
+    "hash": "15dcdb5036867b8c7fbc0b2e81eac38609b769aedab951b9be12ad06233a7302",
+    "narration": "BLOCK. \"1 META\" could mean 1 token = 1.00282692 shares ≈ $752.63, or 1 share = 0.99718105 token ≈ $750.51. One METAon token holds 1.002826918305349555 shares. Say \"$… of\" or \"… shares of\". Not the same instrument: METAx (xStock), METAB (bStock). Hash 15dcdb503686…"
+  }
+}

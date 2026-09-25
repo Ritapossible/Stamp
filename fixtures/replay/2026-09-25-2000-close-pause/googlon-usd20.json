@@ -1,0 +1,168 @@
+{
+  "name": "googlon-usd20",
+  "capture": "fixtures/captures/2026-09-25/200006.json",
+  "input": {
+    "asOf": "2026-09-25T20:00:06.276Z",
+    "universe": [
+      {
+        "chainId": "56",
+        "contractAddress": "0x091fc7778e6932d4009b087b191d1ee3bac5729a",
+        "symbol": "GOOGLon",
+        "ticker": "GOOGL",
+        "type": 1,
+        "multiplier": "1.002460326637435211"
+      },
+      {
+        "chainId": "56",
+        "contractAddress": "0xe92f673ca36c5e2efd2de7628f815f84807e803f",
+        "symbol": "GOOGLx",
+        "ticker": "GOOGL",
+        "type": 2,
+        "multiplier": "1"
+      },
+      {
+        "chainId": "56",
+        "contractAddress": "0x3f53de71c126bdabae20f9cd64848d317f6c3238",
+        "symbol": "GOOGLB",
+        "ticker": "GOOGL",
+        "type": 3,
+        "multiplier": "1.000478058978107511"
+      }
+    ],
+    "views": [
+      {
+        "contractAddress": "0x091fc7778e6932d4009b087b191d1ee3bac5729a",
+        "complete": true,
+        "tokenPriceUsd": "344.677525012287722208",
+        "multiplier": "1.002460326637435211",
+        "listMultiplier": "1.002460326637435211",
+        "assetStatus": {
+          "openState": false,
+          "marketStatus": "paused",
+          "reasonCode": "MARKET_PAUSED",
+          "reasonMsg": "Paused for session transition"
+        },
+        "stockPriceUsd": "343.943333",
+        "fetchedAt": "2026-09-25T20:00:06.276Z"
+      },
+      {
+        "contractAddress": "0x3f53de71c126bdabae20f9cd64848d317f6c3238",
+        "complete": true,
+        "tokenPriceUsd": "344.13443794669964055867",
+        "multiplier": "1.000478058978107511",
+        "listMultiplier": "1.000478058978107511",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": null,
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": null,
+        "fetchedAt": "2026-09-25T20:00:06.276Z"
+      },
+      {
+        "contractAddress": "0xe92f673ca36c5e2efd2de7628f815f84807e803f",
+        "complete": true,
+        "tokenPriceUsd": "339.016674120845457854582165810368658577",
+        "multiplier": "1.001926722393864",
+        "listMultiplier": "1",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": null,
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": "343.943333",
+        "fetchedAt": "2026-09-25T20:00:06.276Z"
+      }
+    ],
+    "venue": {
+      "marketStatus": "paused",
+      "openState": false
+    },
+    "intent": "Buy $20 of GOOGLon",
+    "policy": {
+      "version": 1,
+      "issuer": "ondo",
+      "neverSwitchIssuer": true,
+      "noiseBandBps": 10,
+      "maxRegularPremiumBps": 30,
+      "maxClosedPremiumBps": 80,
+      "implausibleAbsBps": 500,
+      "maxSlippageBps": 50,
+      "quoteTtlSec": 25,
+      "maxOrderUsd": "20",
+      "maxDayUsd": "50",
+      "blockCorporateActions": true
+    },
+    "lastOfficialClose": {
+      "ticker": "GOOGL",
+      "priceUsd": "343.943333",
+      "asOf": "2026-09-25T20:00:06.276Z"
+    },
+    "filledTodayUsd": "0"
+  },
+  "ticket": {
+    "kind": "decision",
+    "engineVersion": "0.1.0",
+    "asOf": "2026-09-25T20:00:06.276Z",
+    "intentId": "0b0b22e5a773f3ef",
+    "intent": {
+      "raw": "Buy $20 of GOOGLon",
+      "side": "buy",
+      "unit": "usd",
+      "amount": "20",
+      "query": "GOOGLon"
+    },
+    "chosen": {
+      "chainId": "56",
+      "contractAddress": "0x091fc7778e6932d4009b087b191d1ee3bac5729a",
+      "symbol": "GOOGLon",
+      "ticker": "GOOGL",
+      "issuer": "ondo"
+    },
+    "rejected": [
+      {
+        "symbol": "GOOGLx",
+        "issuer": "xstock",
+        "contractAddress": "0xe92f673ca36c5e2efd2de7628f815f84807e803f",
+        "reason": "NEVER_SWITCH"
+      },
+      {
+        "symbol": "GOOGLB",
+        "issuer": "bstock",
+        "contractAddress": "0x3f53de71c126bdabae20f9cd64848d317f6c3238",
+        "reason": "NEVER_SWITCH"
+      }
+    ],
+    "session": null,
+    "sessionSource": null,
+    "marketStatus": "paused",
+    "reasonCode": "MARKET_PAUSED",
+    "reasonMsg": "Paused for session transition",
+    "multiplier": "1.002460326637435211",
+    "listMultiplier": "1.002460326637435211",
+    "tokenPriceUsd": "344.677525012287722208",
+    "economicPriceUsd": null,
+    "referenceUsd": null,
+    "referenceSource": null,
+    "referenceAsOf": null,
+    "referenceSibling": null,
+    "premiumBps": null,
+    "overpayUsd": null,
+    "notionalUsd": "20.00",
+    "tokenUnits": "0.05802525",
+    "economicShares": "0.05816801",
+    "unitReadings": null,
+    "formula": "economicPrice = tokenInfo.price / sharesMultiplier",
+    "inputsHash": "4759c79ae9f52907760737b7aa2aa9bdfe7d2dd8d4c78ee421719a0c8aac97ca",
+    "policyHash": "819a2bcaeeec65005a0d17f38a68e8fa26b165047ffec295b6f9d460a4a36043",
+    "verdict": "BLOCK",
+    "reasons": [
+      "MARKET_HALTED"
+    ],
+    "notes": [],
+    "hash": "9a5aa49ad4383efe12559a754cdbef41f9e3352b7e702a4e7ae8778aedad226f",
+    "narration": "BLOCK. Trading in GOOGLon (Ondo) is paused (MARKET_PAUSED: Paused for session transition). $20.00 buys 0.05802525 GOOGLon tokens = 0.05816801 shares (multiplier 1.002460326637435211). Not the same instrument: GOOGLx (xStock), GOOGLB (bStock). Hash 9a5aa49ad438…"
+  }
+}

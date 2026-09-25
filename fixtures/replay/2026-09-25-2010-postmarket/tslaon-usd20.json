@@ -1,0 +1,168 @@
+{
+  "name": "tslaon-usd20",
+  "capture": "fixtures/captures/2026-09-25/201005.json",
+  "input": {
+    "asOf": "2026-09-25T20:10:05.514Z",
+    "universe": [
+      {
+        "chainId": "56",
+        "contractAddress": "0x2494b603319d4d9f9715c9f4496d9e0364b59d93",
+        "symbol": "TSLAon",
+        "ticker": "TSLA",
+        "type": 1,
+        "multiplier": "1"
+      },
+      {
+        "chainId": "56",
+        "contractAddress": "0x8ad3c73f833d3f9a523ab01476625f269aeb7cf0",
+        "symbol": "TSLAx",
+        "ticker": "TSLA",
+        "type": 2,
+        "multiplier": "1"
+      },
+      {
+        "chainId": "56",
+        "contractAddress": "0x5b1910eaad6450e50f816082aa078c41f10c292f",
+        "symbol": "TSLAB",
+        "ticker": "TSLA",
+        "type": 3,
+        "multiplier": "1.000000000000000000"
+      }
+    ],
+    "views": [
+      {
+        "contractAddress": "0x2494b603319d4d9f9715c9f4496d9e0364b59d93",
+        "complete": true,
+        "tokenPriceUsd": "372.241429",
+        "multiplier": "1",
+        "listMultiplier": "1",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": "postmarket",
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": "372.140909",
+        "fetchedAt": "2026-09-25T20:10:05.514Z"
+      },
+      {
+        "contractAddress": "0x5b1910eaad6450e50f816082aa078c41f10c292f",
+        "complete": true,
+        "tokenPriceUsd": "372.31",
+        "multiplier": "1",
+        "listMultiplier": "1.000000000000000000",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": null,
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": null,
+        "fetchedAt": "2026-09-25T20:10:05.514Z"
+      },
+      {
+        "contractAddress": "0x8ad3c73f833d3f9a523ab01476625f269aeb7cf0",
+        "complete": true,
+        "tokenPriceUsd": "379.869480673363345050944063999827460251",
+        "multiplier": "1",
+        "listMultiplier": "1",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": null,
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": "372.140909",
+        "fetchedAt": "2026-09-25T20:10:05.514Z"
+      }
+    ],
+    "venue": {
+      "marketStatus": "postmarket",
+      "openState": true
+    },
+    "intent": "Buy $20 of TSLAon",
+    "policy": {
+      "version": 1,
+      "issuer": "ondo",
+      "neverSwitchIssuer": true,
+      "noiseBandBps": 10,
+      "maxRegularPremiumBps": 30,
+      "maxClosedPremiumBps": 80,
+      "implausibleAbsBps": 500,
+      "maxSlippageBps": 50,
+      "quoteTtlSec": 25,
+      "maxOrderUsd": "20",
+      "maxDayUsd": "50",
+      "blockCorporateActions": true
+    },
+    "lastOfficialClose": {
+      "ticker": "TSLA",
+      "priceUsd": "372.624286",
+      "asOf": "2026-09-25T20:00:06.276Z"
+    },
+    "filledTodayUsd": "0"
+  },
+  "ticket": {
+    "kind": "decision",
+    "engineVersion": "0.1.0",
+    "asOf": "2026-09-25T20:10:05.514Z",
+    "intentId": "31fab9574a2864c5",
+    "intent": {
+      "raw": "Buy $20 of TSLAon",
+      "side": "buy",
+      "unit": "usd",
+      "amount": "20",
+      "query": "TSLAon"
+    },
+    "chosen": {
+      "chainId": "56",
+      "contractAddress": "0x2494b603319d4d9f9715c9f4496d9e0364b59d93",
+      "symbol": "TSLAon",
+      "ticker": "TSLA",
+      "issuer": "ondo"
+    },
+    "rejected": [
+      {
+        "symbol": "TSLAx",
+        "issuer": "xstock",
+        "contractAddress": "0x8ad3c73f833d3f9a523ab01476625f269aeb7cf0",
+        "reason": "NEVER_SWITCH"
+      },
+      {
+        "symbol": "TSLAB",
+        "issuer": "bstock",
+        "contractAddress": "0x5b1910eaad6450e50f816082aa078c41f10c292f",
+        "reason": "NEVER_SWITCH"
+      }
+    ],
+    "session": "extended",
+    "sessionSource": "asset",
+    "marketStatus": "postmarket",
+    "reasonCode": "TRADING",
+    "reasonMsg": null,
+    "multiplier": "1",
+    "listMultiplier": "1",
+    "tokenPriceUsd": "372.241429",
+    "economicPriceUsd": "372.241429",
+    "referenceUsd": "372.140909",
+    "referenceSource": "stockInfo",
+    "referenceAsOf": "2026-09-25T20:10:05.514Z",
+    "referenceSibling": null,
+    "premiumBps": 3,
+    "overpayUsd": "0.01",
+    "notionalUsd": "20.00",
+    "tokenUnits": "0.05372857",
+    "economicShares": "0.05372857",
+    "unitReadings": null,
+    "formula": "economicPrice = tokenInfo.price / sharesMultiplier",
+    "inputsHash": "f271b017051925a810627391a7b1c20a946e38d8d8feaa75352eb5653b8f734e",
+    "policyHash": "819a2bcaeeec65005a0d17f38a68e8fa26b165047ffec295b6f9d460a4a36043",
+    "verdict": "ALLOW",
+    "reasons": [
+      "OK"
+    ],
+    "notes": [],
+    "hash": "18e28724feb76dd80c45d447f9c9367ddbdb306a841e77e2b6374430b29890a8",
+    "narration": "ALLOW. TSLAon (Ondo) passes every check. $20.00 buys 0.05372857 TSLAon tokens = 0.05372857 shares (multiplier 1). Not the same instrument: TSLAx (xStock), TSLAB (bStock). Hash 18e28724feb7…"
+  }
+}

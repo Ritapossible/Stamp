@@ -1,0 +1,168 @@
+{
+  "name": "metab-usd20",
+  "capture": "fixtures/captures/2026-09-25/201005.json",
+  "input": {
+    "asOf": "2026-09-25T20:10:05.514Z",
+    "universe": [
+      {
+        "chainId": "56",
+        "contractAddress": "0xd7df5863a3e742f0c767768cdfcb63f09e0422f6",
+        "symbol": "METAon",
+        "ticker": "META",
+        "type": 1,
+        "multiplier": "1.002826918305349555"
+      },
+      {
+        "chainId": "56",
+        "contractAddress": "0x96702be57cd9777f835117a809c7124fe4ec989a",
+        "symbol": "METAx",
+        "ticker": "META",
+        "type": 2,
+        "multiplier": "1"
+      },
+      {
+        "chainId": "56",
+        "contractAddress": "0x7425889fe94f9d693e8daefe88bcced6acfef4c0",
+        "symbol": "METAB",
+        "ticker": "META",
+        "type": 3,
+        "multiplier": "1.00054829041074495"
+      }
+    ],
+    "views": [
+      {
+        "contractAddress": "0x7425889fe94f9d693e8daefe88bcced6acfef4c0",
+        "complete": true,
+        "tokenPriceUsd": "751.051568713921589268",
+        "multiplier": "1.00054829041074495",
+        "listMultiplier": "1.00054829041074495",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": null,
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": null,
+        "fetchedAt": "2026-09-25T20:10:05.514Z"
+      },
+      {
+        "contractAddress": "0x96702be57cd9777f835117a809c7124fe4ec989a",
+        "complete": true,
+        "tokenPriceUsd": "573.753797102305679962107408139948762449",
+        "multiplier": "1.002298265651938",
+        "listMultiplier": "1",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": null,
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": "750.657143",
+        "fetchedAt": "2026-09-25T20:10:05.514Z"
+      },
+      {
+        "contractAddress": "0xd7df5863a3e742f0c767768cdfcb63f09e0422f6",
+        "complete": true,
+        "tokenPriceUsd": "752.634972879466606253",
+        "multiplier": "1.002826918305349555",
+        "listMultiplier": "1.002826918305349555",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": "postmarket",
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": "750.513333",
+        "fetchedAt": "2026-09-25T20:10:05.514Z"
+      }
+    ],
+    "venue": {
+      "marketStatus": "postmarket",
+      "openState": true
+    },
+    "intent": "Buy $20 of METAB",
+    "policy": {
+      "version": 1,
+      "issuer": "bstock",
+      "neverSwitchIssuer": true,
+      "noiseBandBps": 10,
+      "maxRegularPremiumBps": 30,
+      "maxClosedPremiumBps": 80,
+      "implausibleAbsBps": 500,
+      "maxSlippageBps": 50,
+      "quoteTtlSec": 25,
+      "maxOrderUsd": "20",
+      "maxDayUsd": "50",
+      "blockCorporateActions": true
+    },
+    "lastOfficialClose": {
+      "ticker": "META",
+      "priceUsd": "751.95",
+      "asOf": "2026-09-25T20:00:06.276Z"
+    },
+    "filledTodayUsd": "0"
+  },
+  "ticket": {
+    "kind": "decision",
+    "engineVersion": "0.1.0",
+    "asOf": "2026-09-25T20:10:05.514Z",
+    "intentId": "77bda5ceac95a71c",
+    "intent": {
+      "raw": "Buy $20 of METAB",
+      "side": "buy",
+      "unit": "usd",
+      "amount": "20",
+      "query": "METAB"
+    },
+    "chosen": {
+      "chainId": "56",
+      "contractAddress": "0x7425889fe94f9d693e8daefe88bcced6acfef4c0",
+      "symbol": "METAB",
+      "ticker": "META",
+      "issuer": "bstock"
+    },
+    "rejected": [
+      {
+        "symbol": "METAon",
+        "issuer": "ondo",
+        "contractAddress": "0xd7df5863a3e742f0c767768cdfcb63f09e0422f6",
+        "reason": "NEVER_SWITCH"
+      },
+      {
+        "symbol": "METAx",
+        "issuer": "xstock",
+        "contractAddress": "0x96702be57cd9777f835117a809c7124fe4ec989a",
+        "reason": "NEVER_SWITCH"
+      }
+    ],
+    "session": "extended",
+    "sessionSource": "venue",
+    "marketStatus": "postmarket",
+    "reasonCode": "TRADING",
+    "reasonMsg": null,
+    "multiplier": "1.00054829041074495",
+    "listMultiplier": "1.00054829041074495",
+    "tokenPriceUsd": "751.051568713921589268",
+    "economicPriceUsd": "750.640000",
+    "referenceUsd": "750.513333",
+    "referenceSource": "stockInfo-sibling",
+    "referenceAsOf": "2026-09-25T20:10:05.514Z",
+    "referenceSibling": "METAon",
+    "premiumBps": 2,
+    "overpayUsd": "0.00",
+    "notionalUsd": "20.00",
+    "tokenUnits": "0.02662933",
+    "economicShares": "0.02664393",
+    "unitReadings": null,
+    "formula": "economicPrice = tokenInfo.price / sharesMultiplier",
+    "inputsHash": "9a4b3c34b8a28e30cc2a13f701099a232f352d444b4c97d85515d543c19bcd52",
+    "policyHash": "9e8674455dead36b87beb162c96bd029487a38b531400b99e764e2df6662c0a3",
+    "verdict": "ALLOW",
+    "reasons": [
+      "OK"
+    ],
+    "notes": [],
+    "hash": "486bd43dd6cd8b0b844a9d7c24a7b5f569cc7dac2b76ba7071f68a546b0f08ec",
+    "narration": "ALLOW. METAB (bStock) passes every check. $20.00 buys 0.02662933 METAB tokens = 0.02664393 shares (multiplier 1.00054829041074495). Not the same instrument: METAon (Ondo), METAx (xStock). Hash 486bd43dd6cd…"
+  }
+}

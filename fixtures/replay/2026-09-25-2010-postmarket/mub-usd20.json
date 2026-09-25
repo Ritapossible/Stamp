@@ -1,0 +1,168 @@
+{
+  "name": "mub-usd20",
+  "capture": "fixtures/captures/2026-09-25/201005.json",
+  "input": {
+    "asOf": "2026-09-25T20:10:05.514Z",
+    "universe": [
+      {
+        "chainId": "56",
+        "contractAddress": "0x8b6acf6041a81567f012ff6a4c6d96d5818d74bf",
+        "symbol": "MUon",
+        "ticker": "MU",
+        "type": 1,
+        "multiplier": "1.001121237525844732"
+      },
+      {
+        "chainId": "56",
+        "contractAddress": "0xf6a873bae4ba1b304e45df52a4b7d176e1c6a8c4",
+        "symbol": "MUx",
+        "ticker": "MU",
+        "type": 2,
+        "multiplier": "1"
+      },
+      {
+        "chainId": "56",
+        "contractAddress": "0xcdf2f3e0fa43c47a6662a91c9e4a7c5f69762699",
+        "symbol": "MUB",
+        "ticker": "MU",
+        "type": 3,
+        "multiplier": "1.000107512568805603"
+      }
+    ],
+    "views": [
+      {
+        "contractAddress": "0x8b6acf6041a81567f012ff6a4c6d96d5818d74bf",
+        "complete": true,
+        "tokenPriceUsd": "1082.922853844081505052",
+        "multiplier": "1.001121237525844732",
+        "listMultiplier": "1.001121237525844732",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": "postmarket",
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": "1081.834444",
+        "fetchedAt": "2026-09-25T20:10:05.514Z"
+      },
+      {
+        "contractAddress": "0xcdf2f3e0fa43c47a6662a91c9e4a7c5f69762699",
+        "complete": true,
+        "tokenPriceUsd": "1082.12632967457335050203",
+        "multiplier": "1.000107512568805603",
+        "listMultiplier": "1.000107512568805603",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": null,
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": null,
+        "fetchedAt": "2026-09-25T20:10:05.514Z"
+      },
+      {
+        "contractAddress": "0xf6a873bae4ba1b304e45df52a4b7d176e1c6a8c4",
+        "complete": true,
+        "tokenPriceUsd": "980.484662106214390727899725746808101494",
+        "multiplier": "1.0004015986353854",
+        "listMultiplier": "1",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": null,
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": "1081.834444",
+        "fetchedAt": "2026-09-25T20:10:05.514Z"
+      }
+    ],
+    "venue": {
+      "marketStatus": "postmarket",
+      "openState": true
+    },
+    "intent": "Buy $20 of MUB",
+    "policy": {
+      "version": 1,
+      "issuer": "bstock",
+      "neverSwitchIssuer": true,
+      "noiseBandBps": 10,
+      "maxRegularPremiumBps": 30,
+      "maxClosedPremiumBps": 80,
+      "implausibleAbsBps": 500,
+      "maxSlippageBps": 50,
+      "quoteTtlSec": 25,
+      "maxOrderUsd": "20",
+      "maxDayUsd": "50",
+      "blockCorporateActions": true
+    },
+    "lastOfficialClose": {
+      "ticker": "MU",
+      "priceUsd": "1083.1",
+      "asOf": "2026-09-25T20:00:06.276Z"
+    },
+    "filledTodayUsd": "0"
+  },
+  "ticket": {
+    "kind": "decision",
+    "engineVersion": "0.1.0",
+    "asOf": "2026-09-25T20:10:05.514Z",
+    "intentId": "d9680e0d8e0a9e33",
+    "intent": {
+      "raw": "Buy $20 of MUB",
+      "side": "buy",
+      "unit": "usd",
+      "amount": "20",
+      "query": "MUB"
+    },
+    "chosen": {
+      "chainId": "56",
+      "contractAddress": "0xcdf2f3e0fa43c47a6662a91c9e4a7c5f69762699",
+      "symbol": "MUB",
+      "ticker": "MU",
+      "issuer": "bstock"
+    },
+    "rejected": [
+      {
+        "symbol": "MUon",
+        "issuer": "ondo",
+        "contractAddress": "0x8b6acf6041a81567f012ff6a4c6d96d5818d74bf",
+        "reason": "NEVER_SWITCH"
+      },
+      {
+        "symbol": "MUx",
+        "issuer": "xstock",
+        "contractAddress": "0xf6a873bae4ba1b304e45df52a4b7d176e1c6a8c4",
+        "reason": "NEVER_SWITCH"
+      }
+    ],
+    "session": "extended",
+    "sessionSource": "venue",
+    "marketStatus": "postmarket",
+    "reasonCode": "TRADING",
+    "reasonMsg": null,
+    "multiplier": "1.000107512568805603",
+    "listMultiplier": "1.000107512568805603",
+    "tokenPriceUsd": "1082.12632967457335050203",
+    "economicPriceUsd": "1082.010000",
+    "referenceUsd": "1081.834444",
+    "referenceSource": "stockInfo-sibling",
+    "referenceAsOf": "2026-09-25T20:10:05.514Z",
+    "referenceSibling": "MUon",
+    "premiumBps": 2,
+    "overpayUsd": "0.00",
+    "notionalUsd": "20.00",
+    "tokenUnits": "0.01848213",
+    "economicShares": "0.01848412",
+    "unitReadings": null,
+    "formula": "economicPrice = tokenInfo.price / sharesMultiplier",
+    "inputsHash": "39eaf2dd82919a13ca2bfb452c320d0b3b1d99a14ece5ba7b18a90f0920d93ae",
+    "policyHash": "9e8674455dead36b87beb162c96bd029487a38b531400b99e764e2df6662c0a3",
+    "verdict": "ALLOW",
+    "reasons": [
+      "OK"
+    ],
+    "notes": [],
+    "hash": "1f89d3da8433659f5ee8d08d539262b297dfef0b17333aa577e5fb2097d59f66",
+    "narration": "ALLOW. MUB (bStock) passes every check. $20.00 buys 0.01848213 MUB tokens = 0.01848412 shares (multiplier 1.000107512568805603). Not the same instrument: MUon (Ondo), MUx (xStock). Hash 1f89d3da8433…"
+  }
+}

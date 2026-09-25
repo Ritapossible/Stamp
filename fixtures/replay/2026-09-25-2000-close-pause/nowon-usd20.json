@@ -1,0 +1,109 @@
+{
+  "name": "nowon-usd20",
+  "capture": "fixtures/captures/2026-09-25/200006.json",
+  "input": {
+    "asOf": "2026-09-25T20:00:06.276Z",
+    "universe": [
+      {
+        "chainId": "56",
+        "contractAddress": "0xeb19c13c54b1cd48afc62f6503375e92d5f1e856",
+        "symbol": "NOWon",
+        "ticker": "NOW",
+        "type": 1,
+        "multiplier": "5"
+      }
+    ],
+    "views": [
+      {
+        "contractAddress": "0xeb19c13c54b1cd48afc62f6503375e92d5f1e856",
+        "complete": true,
+        "tokenPriceUsd": "678.12143",
+        "multiplier": "5",
+        "listMultiplier": "5",
+        "assetStatus": {
+          "openState": false,
+          "marketStatus": "paused",
+          "reasonCode": "MARKET_PAUSED",
+          "reasonMsg": "Paused for session transition"
+        },
+        "stockPriceUsd": "135.8875",
+        "fetchedAt": "2026-09-25T20:00:06.276Z"
+      }
+    ],
+    "venue": {
+      "marketStatus": "paused",
+      "openState": false
+    },
+    "intent": "Buy $20 of NOWon",
+    "policy": {
+      "version": 1,
+      "issuer": "ondo",
+      "neverSwitchIssuer": true,
+      "noiseBandBps": 10,
+      "maxRegularPremiumBps": 30,
+      "maxClosedPremiumBps": 80,
+      "implausibleAbsBps": 500,
+      "maxSlippageBps": 50,
+      "quoteTtlSec": 25,
+      "maxOrderUsd": "20",
+      "maxDayUsd": "50",
+      "blockCorporateActions": true
+    },
+    "lastOfficialClose": {
+      "ticker": "NOW",
+      "priceUsd": "135.8875",
+      "asOf": "2026-09-25T20:00:06.276Z"
+    },
+    "filledTodayUsd": "0"
+  },
+  "ticket": {
+    "kind": "decision",
+    "engineVersion": "0.1.0",
+    "asOf": "2026-09-25T20:00:06.276Z",
+    "intentId": "55f1630894333e39",
+    "intent": {
+      "raw": "Buy $20 of NOWon",
+      "side": "buy",
+      "unit": "usd",
+      "amount": "20",
+      "query": "NOWon"
+    },
+    "chosen": {
+      "chainId": "56",
+      "contractAddress": "0xeb19c13c54b1cd48afc62f6503375e92d5f1e856",
+      "symbol": "NOWon",
+      "ticker": "NOW",
+      "issuer": "ondo"
+    },
+    "rejected": [],
+    "session": null,
+    "sessionSource": null,
+    "marketStatus": "paused",
+    "reasonCode": "MARKET_PAUSED",
+    "reasonMsg": "Paused for session transition",
+    "multiplier": "5",
+    "listMultiplier": "5",
+    "tokenPriceUsd": "678.12143",
+    "economicPriceUsd": null,
+    "referenceUsd": null,
+    "referenceSource": null,
+    "referenceAsOf": null,
+    "referenceSibling": null,
+    "premiumBps": null,
+    "overpayUsd": null,
+    "notionalUsd": "20.00",
+    "tokenUnits": "0.02949324",
+    "economicShares": "0.14746621",
+    "unitReadings": null,
+    "formula": "economicPrice = tokenInfo.price / sharesMultiplier",
+    "inputsHash": "b4deb9c042955cd2ea49db098cd30cf07f5baf747ef9f86e34e3c1cf65699714",
+    "policyHash": "819a2bcaeeec65005a0d17f38a68e8fa26b165047ffec295b6f9d460a4a36043",
+    "verdict": "BLOCK",
+    "reasons": [
+      "MARKET_HALTED"
+    ],
+    "notes": [],
+    "hash": "c83a4860d20b771876b6edfcffa834d11c3012447d76a528a38e3c0b30cb508a",
+    "narration": "BLOCK. Trading in NOWon (Ondo) is paused (MARKET_PAUSED: Paused for session transition). $20.00 buys 0.02949324 NOWon tokens = 0.14746621 shares (multiplier 5). Hash c83a4860d20b…"
+  }
+}

@@ -1,0 +1,168 @@
+{
+  "name": "coinon-usd20",
+  "capture": "fixtures/captures/2026-09-25/200006.json",
+  "input": {
+    "asOf": "2026-09-25T20:00:06.276Z",
+    "universe": [
+      {
+        "chainId": "56",
+        "contractAddress": "0xf8589b526fdd65f7f301c605a6e04f0f1b4b3620",
+        "symbol": "COINon",
+        "ticker": "COIN",
+        "type": 1,
+        "multiplier": "1"
+      },
+      {
+        "chainId": "56",
+        "contractAddress": "0x364f210f430ec2448fc68a49203040f6124096f0",
+        "symbol": "COINx",
+        "ticker": "COIN",
+        "type": 2,
+        "multiplier": "1"
+      },
+      {
+        "chainId": "56",
+        "contractAddress": "0x585bde7c54abb5ccd7791f923d6c2187635f3952",
+        "symbol": "COINB",
+        "ticker": "COIN",
+        "type": 3,
+        "multiplier": "1.000000000000000000"
+      }
+    ],
+    "views": [
+      {
+        "contractAddress": "0x364f210f430ec2448fc68a49203040f6124096f0",
+        "complete": true,
+        "tokenPriceUsd": "198.887312835602622935487",
+        "multiplier": "1",
+        "listMultiplier": "1",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": null,
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": "195.2875",
+        "fetchedAt": "2026-09-25T20:00:06.276Z"
+      },
+      {
+        "contractAddress": "0x585bde7c54abb5ccd7791f923d6c2187635f3952",
+        "complete": true,
+        "tokenPriceUsd": "195.18",
+        "multiplier": "1",
+        "listMultiplier": "1.000000000000000000",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": null,
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": null,
+        "fetchedAt": "2026-09-25T20:00:06.276Z"
+      },
+      {
+        "contractAddress": "0xf8589b526fdd65f7f301c605a6e04f0f1b4b3620",
+        "complete": true,
+        "tokenPriceUsd": "195.103333",
+        "multiplier": "1",
+        "listMultiplier": "1",
+        "assetStatus": {
+          "openState": false,
+          "marketStatus": "paused",
+          "reasonCode": "MARKET_PAUSED",
+          "reasonMsg": "Paused for session transition"
+        },
+        "stockPriceUsd": "195.2875",
+        "fetchedAt": "2026-09-25T20:00:06.276Z"
+      }
+    ],
+    "venue": {
+      "marketStatus": "paused",
+      "openState": false
+    },
+    "intent": "Buy $20 of COINon",
+    "policy": {
+      "version": 1,
+      "issuer": "ondo",
+      "neverSwitchIssuer": true,
+      "noiseBandBps": 10,
+      "maxRegularPremiumBps": 30,
+      "maxClosedPremiumBps": 80,
+      "implausibleAbsBps": 500,
+      "maxSlippageBps": 50,
+      "quoteTtlSec": 25,
+      "maxOrderUsd": "20",
+      "maxDayUsd": "50",
+      "blockCorporateActions": true
+    },
+    "lastOfficialClose": {
+      "ticker": "COIN",
+      "priceUsd": "195.2875",
+      "asOf": "2026-09-25T20:00:06.276Z"
+    },
+    "filledTodayUsd": "0"
+  },
+  "ticket": {
+    "kind": "decision",
+    "engineVersion": "0.1.0",
+    "asOf": "2026-09-25T20:00:06.276Z",
+    "intentId": "6266e9ddf8db5d51",
+    "intent": {
+      "raw": "Buy $20 of COINon",
+      "side": "buy",
+      "unit": "usd",
+      "amount": "20",
+      "query": "COINon"
+    },
+    "chosen": {
+      "chainId": "56",
+      "contractAddress": "0xf8589b526fdd65f7f301c605a6e04f0f1b4b3620",
+      "symbol": "COINon",
+      "ticker": "COIN",
+      "issuer": "ondo"
+    },
+    "rejected": [
+      {
+        "symbol": "COINx",
+        "issuer": "xstock",
+        "contractAddress": "0x364f210f430ec2448fc68a49203040f6124096f0",
+        "reason": "NEVER_SWITCH"
+      },
+      {
+        "symbol": "COINB",
+        "issuer": "bstock",
+        "contractAddress": "0x585bde7c54abb5ccd7791f923d6c2187635f3952",
+        "reason": "NEVER_SWITCH"
+      }
+    ],
+    "session": null,
+    "sessionSource": null,
+    "marketStatus": "paused",
+    "reasonCode": "MARKET_PAUSED",
+    "reasonMsg": "Paused for session transition",
+    "multiplier": "1",
+    "listMultiplier": "1",
+    "tokenPriceUsd": "195.103333",
+    "economicPriceUsd": null,
+    "referenceUsd": null,
+    "referenceSource": null,
+    "referenceAsOf": null,
+    "referenceSibling": null,
+    "premiumBps": null,
+    "overpayUsd": null,
+    "notionalUsd": "20.00",
+    "tokenUnits": "0.10250978",
+    "economicShares": "0.10250978",
+    "unitReadings": null,
+    "formula": "economicPrice = tokenInfo.price / sharesMultiplier",
+    "inputsHash": "4cc1b9c10b999c3b9ecbe022d826b675821d6709d9c9e5d311ea8b18dd7fa648",
+    "policyHash": "819a2bcaeeec65005a0d17f38a68e8fa26b165047ffec295b6f9d460a4a36043",
+    "verdict": "BLOCK",
+    "reasons": [
+      "MARKET_HALTED"
+    ],
+    "notes": [],
+    "hash": "9232a1b514e48de4c5b7d0382955567f8d3d5a0833ace0da5a5c2df183b3e9c5",
+    "narration": "BLOCK. Trading in COINon (Ondo) is paused (MARKET_PAUSED: Paused for session transition). $20.00 buys 0.10250978 COINon tokens = 0.10250978 shares (multiplier 1). Not the same instrument: COINx (xStock), COINB (bStock). Hash 9232a1b514e4…"
+  }
+}

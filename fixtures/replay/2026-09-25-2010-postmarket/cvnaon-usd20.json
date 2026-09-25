@@ -1,0 +1,109 @@
+{
+  "name": "cvnaon-usd20",
+  "capture": "fixtures/captures/2026-09-25/201005.json",
+  "input": {
+    "asOf": "2026-09-25T20:10:05.514Z",
+    "universe": [
+      {
+        "chainId": "56",
+        "contractAddress": "0xc145dc2ebdbe8ead1fecdebf46c76eb1fdd0104d",
+        "symbol": "CVNAon",
+        "ticker": "CVNA",
+        "type": 1,
+        "multiplier": "5"
+      }
+    ],
+    "views": [
+      {
+        "contractAddress": "0xc145dc2ebdbe8ead1fecdebf46c76eb1fdd0104d",
+        "complete": true,
+        "tokenPriceUsd": "325.0004",
+        "multiplier": "5",
+        "listMultiplier": "5",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": "postmarket",
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": "65.00008",
+        "fetchedAt": "2026-09-25T20:10:05.514Z"
+      }
+    ],
+    "venue": {
+      "marketStatus": "postmarket",
+      "openState": true
+    },
+    "intent": "Buy $20 of CVNAon",
+    "policy": {
+      "version": 1,
+      "issuer": "ondo",
+      "neverSwitchIssuer": true,
+      "noiseBandBps": 10,
+      "maxRegularPremiumBps": 30,
+      "maxClosedPremiumBps": 80,
+      "implausibleAbsBps": 500,
+      "maxSlippageBps": 50,
+      "quoteTtlSec": 25,
+      "maxOrderUsd": "20",
+      "maxDayUsd": "50",
+      "blockCorporateActions": true
+    },
+    "lastOfficialClose": {
+      "ticker": "CVNA",
+      "priceUsd": "65.006667",
+      "asOf": "2026-09-25T20:00:06.276Z"
+    },
+    "filledTodayUsd": "0"
+  },
+  "ticket": {
+    "kind": "decision",
+    "engineVersion": "0.1.0",
+    "asOf": "2026-09-25T20:10:05.514Z",
+    "intentId": "28f355aa133f08e4",
+    "intent": {
+      "raw": "Buy $20 of CVNAon",
+      "side": "buy",
+      "unit": "usd",
+      "amount": "20",
+      "query": "CVNAon"
+    },
+    "chosen": {
+      "chainId": "56",
+      "contractAddress": "0xc145dc2ebdbe8ead1fecdebf46c76eb1fdd0104d",
+      "symbol": "CVNAon",
+      "ticker": "CVNA",
+      "issuer": "ondo"
+    },
+    "rejected": [],
+    "session": "extended",
+    "sessionSource": "asset",
+    "marketStatus": "postmarket",
+    "reasonCode": "TRADING",
+    "reasonMsg": null,
+    "multiplier": "5",
+    "listMultiplier": "5",
+    "tokenPriceUsd": "325.0004",
+    "economicPriceUsd": "65.000080",
+    "referenceUsd": "65.00008",
+    "referenceSource": "stockInfo",
+    "referenceAsOf": "2026-09-25T20:10:05.514Z",
+    "referenceSibling": null,
+    "premiumBps": 0,
+    "overpayUsd": null,
+    "notionalUsd": "20.00",
+    "tokenUnits": "0.06153839",
+    "economicShares": "0.30769193",
+    "unitReadings": null,
+    "formula": "economicPrice = tokenInfo.price / sharesMultiplier",
+    "inputsHash": "94dfdb9c39bdd06b2667ceaadb5190694ad36da78a3af5f3e15424a99cc7e333",
+    "policyHash": "819a2bcaeeec65005a0d17f38a68e8fa26b165047ffec295b6f9d460a4a36043",
+    "verdict": "ALLOW",
+    "reasons": [
+      "OK"
+    ],
+    "notes": [],
+    "hash": "2d574f40606a7787c16be32e6e6d0d4df35a4034c173e241842dc74c3e44102a",
+    "narration": "ALLOW. CVNAon (Ondo) passes every check. $20.00 buys 0.06153839 CVNAon tokens = 0.30769193 shares (multiplier 5). Hash 2d574f40606a…"
+  }
+}

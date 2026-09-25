@@ -113,3 +113,12 @@ rows they were classified from, so a capture replays without a separate list fil
 **Why:** A hash alone proves nothing to a judge. `GET /v1/tickets/:hash` returns the inputs,
 and `POST /v1/verify` recomputes from them. Inputs are trimmed to the chosen instrument's
 family (~4 KB), and the trim is only kept if it reproduces the same hash.
+
+### D19 — `paused` is a halt, and the paused print is the close (2026-09-25)
+**Why:** At the 20:00Z close, the live API returned `marketStatus: "paused"` ("Paused for
+session transition"), while the docs list `pause`. For bStocks and xStocks, whose own status
+stays TRADING with a null marketStatus, only the venue said paused, and the old check missed
+it. Both spellings now block. The stock print taken during that pause was 41 bps from the
+19:50 regular print, so `lastOfficialClose` accepts a `paused` row that directly follows a
+`regular` one. Evidence: `fixtures/captures/2026-09-25/{195006,200006,201005}.json` and the
+replay sets built from them.

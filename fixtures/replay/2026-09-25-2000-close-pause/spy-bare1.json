@@ -1,0 +1,179 @@
+{
+  "name": "spy-bare1",
+  "capture": "fixtures/captures/2026-09-25/200006.json",
+  "input": {
+    "asOf": "2026-09-25T20:00:06.276Z",
+    "universe": [
+      {
+        "chainId": "56",
+        "contractAddress": "0x6a708ead771238919d85930b5a0f10454e1c331a",
+        "symbol": "SPYon",
+        "ticker": "SPY",
+        "type": 1,
+        "multiplier": "1.009473072784042724"
+      },
+      {
+        "chainId": "56",
+        "contractAddress": "0x90a2a4c76b5d8c0bc892a69ea28aa775a8f2dd48",
+        "symbol": "SPYx",
+        "ticker": "SPY",
+        "type": 2,
+        "multiplier": "1"
+      },
+      {
+        "chainId": "56",
+        "contractAddress": "0x7138b48df7d98d7e3cc221bfe7192d0a178182d8",
+        "symbol": "SPYB",
+        "ticker": "SPY",
+        "type": 3,
+        "multiplier": "1.001729792036835231"
+      }
+    ],
+    "views": [
+      {
+        "contractAddress": "0x6a708ead771238919d85930b5a0f10454e1c331a",
+        "complete": true,
+        "tokenPriceUsd": "778.64586872085183518",
+        "multiplier": "1.009473072784042724",
+        "listMultiplier": "1.009473072784042724",
+        "assetStatus": {
+          "openState": false,
+          "marketStatus": "paused",
+          "reasonCode": "MARKET_PAUSED",
+          "reasonMsg": "Paused for session transition"
+        },
+        "stockPriceUsd": "771.487143",
+        "fetchedAt": "2026-09-25T20:00:06.276Z"
+      },
+      {
+        "contractAddress": "0x7138b48df7d98d7e3cc221bfe7192d0a178182d8",
+        "complete": true,
+        "tokenPriceUsd": "772.46389453336475168103",
+        "multiplier": "1.001729792036835231",
+        "listMultiplier": "1.001729792036835231",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": null,
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": null,
+        "fetchedAt": "2026-09-25T20:00:06.276Z"
+      },
+      {
+        "contractAddress": "0x90a2a4c76b5d8c0bc892a69ea28aa775a8f2dd48",
+        "complete": true,
+        "tokenPriceUsd": "768.997507326827997104349119974361448609",
+        "multiplier": "1.005714560286254",
+        "listMultiplier": "1",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": null,
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": "771.487143",
+        "fetchedAt": "2026-09-25T20:00:06.276Z"
+      }
+    ],
+    "venue": {
+      "marketStatus": "paused",
+      "openState": false
+    },
+    "intent": "Buy 1 SPY",
+    "policy": {
+      "version": 1,
+      "issuer": "ondo",
+      "neverSwitchIssuer": true,
+      "noiseBandBps": 10,
+      "maxRegularPremiumBps": 30,
+      "maxClosedPremiumBps": 80,
+      "implausibleAbsBps": 500,
+      "maxSlippageBps": 50,
+      "quoteTtlSec": 25,
+      "maxOrderUsd": "20",
+      "maxDayUsd": "50",
+      "blockCorporateActions": true
+    },
+    "lastOfficialClose": {
+      "ticker": "SPY",
+      "priceUsd": "771.487143",
+      "asOf": "2026-09-25T20:00:06.276Z"
+    },
+    "filledTodayUsd": "0"
+  },
+  "ticket": {
+    "kind": "decision",
+    "engineVersion": "0.1.0",
+    "asOf": "2026-09-25T20:00:06.276Z",
+    "intentId": "deb7ca23021563e6",
+    "intent": {
+      "raw": "Buy 1 SPY",
+      "side": "buy",
+      "unit": "ambiguous",
+      "amount": "1",
+      "query": "SPY"
+    },
+    "chosen": {
+      "chainId": "56",
+      "contractAddress": "0x6a708ead771238919d85930b5a0f10454e1c331a",
+      "symbol": "SPYon",
+      "ticker": "SPY",
+      "issuer": "ondo"
+    },
+    "rejected": [
+      {
+        "symbol": "SPYx",
+        "issuer": "xstock",
+        "contractAddress": "0x90a2a4c76b5d8c0bc892a69ea28aa775a8f2dd48",
+        "reason": "NEVER_SWITCH"
+      },
+      {
+        "symbol": "SPYB",
+        "issuer": "bstock",
+        "contractAddress": "0x7138b48df7d98d7e3cc221bfe7192d0a178182d8",
+        "reason": "NEVER_SWITCH"
+      }
+    ],
+    "session": null,
+    "sessionSource": null,
+    "marketStatus": "paused",
+    "reasonCode": "MARKET_PAUSED",
+    "reasonMsg": "Paused for session transition",
+    "multiplier": "1.009473072784042724",
+    "listMultiplier": "1.009473072784042724",
+    "tokenPriceUsd": "778.64586872085183518",
+    "economicPriceUsd": null,
+    "referenceUsd": null,
+    "referenceSource": null,
+    "referenceAsOf": null,
+    "referenceSibling": null,
+    "premiumBps": null,
+    "overpayUsd": null,
+    "notionalUsd": null,
+    "tokenUnits": null,
+    "economicShares": null,
+    "unitReadings": {
+      "asTokens": {
+        "tokens": "1.00000000",
+        "shares": "1.00947307",
+        "usd": "778.65"
+      },
+      "asShares": {
+        "tokens": "0.99061582",
+        "shares": "1.00000000",
+        "usd": "771.34"
+      }
+    },
+    "formula": "economicPrice = tokenInfo.price / sharesMultiplier",
+    "inputsHash": "6f4b7b3e1b9c6182953bfdeb2e82dd6542ed06d120ad4769e7bfc32e9a47577e",
+    "policyHash": "819a2bcaeeec65005a0d17f38a68e8fa26b165047ffec295b6f9d460a4a36043",
+    "verdict": "BLOCK",
+    "reasons": [
+      "UNIT_AMBIGUOUS"
+    ],
+    "notes": [],
+    "hash": "7e164d37ec86647638447264bda61b1249c7d02f7dedc037e79c30e94f7bee4b",
+    "narration": "BLOCK. \"1 SPY\" could mean 1 token = 1.00947307 shares ≈ $778.65, or 1 share = 0.99061582 token ≈ $771.34. One SPYon token holds 1.009473072784042724 shares. Say \"$… of\" or \"… shares of\". Not the same instrument: SPYx (xStock), SPYB (bStock). Hash 7e164d37ec86…"
+  }
+}

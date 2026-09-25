@@ -1,0 +1,168 @@
+{
+  "name": "nvdab-usd20",
+  "capture": "fixtures/captures/2026-09-25/201005.json",
+  "input": {
+    "asOf": "2026-09-25T20:10:05.514Z",
+    "universe": [
+      {
+        "chainId": "56",
+        "contractAddress": "0xa9ee28c80f960b889dfbd1902055218cba016f75",
+        "symbol": "NVDAon",
+        "ticker": "NVDA",
+        "type": 1,
+        "multiplier": "1.0017152487959898"
+      },
+      {
+        "chainId": "56",
+        "contractAddress": "0xc845b2894dbddd03858fd2d643b4ef725fe0849d",
+        "symbol": "NVDAx",
+        "ticker": "NVDA",
+        "type": 2,
+        "multiplier": "1"
+      },
+      {
+        "chainId": "56",
+        "contractAddress": "0x02fca66c1d1afb4e2a7884261eb00f63598a7436",
+        "symbol": "NVDAB",
+        "ticker": "NVDA",
+        "type": 3,
+        "multiplier": "1.000778223752807865"
+      }
+    ],
+    "views": [
+      {
+        "contractAddress": "0x02fca66c1d1afb4e2a7884261eb00f63598a7436",
+        "complete": true,
+        "tokenPriceUsd": "225.18510812661929770365",
+        "multiplier": "1.000778223752807865",
+        "listMultiplier": "1.000778223752807865",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": null,
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": null,
+        "fetchedAt": "2026-09-25T20:10:05.514Z"
+      },
+      {
+        "contractAddress": "0xa9ee28c80f960b889dfbd1902055218cba016f75",
+        "complete": true,
+        "tokenPriceUsd": "225.348366657267855383",
+        "multiplier": "1.0017152487959898",
+        "listMultiplier": "1.0017152487959898",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": "postmarket",
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": "224.993333",
+        "fetchedAt": "2026-09-25T20:10:05.514Z"
+      },
+      {
+        "contractAddress": "0xc845b2894dbddd03858fd2d643b4ef725fe0849d",
+        "complete": true,
+        "tokenPriceUsd": "224.269085228744065903122755434969591456",
+        "multiplier": "1.0009180758490996",
+        "listMultiplier": "1",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": null,
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": "224.993333",
+        "fetchedAt": "2026-09-25T20:10:05.514Z"
+      }
+    ],
+    "venue": {
+      "marketStatus": "postmarket",
+      "openState": true
+    },
+    "intent": "Buy $20 of NVDAB",
+    "policy": {
+      "version": 1,
+      "issuer": "bstock",
+      "neverSwitchIssuer": true,
+      "noiseBandBps": 10,
+      "maxRegularPremiumBps": 30,
+      "maxClosedPremiumBps": 80,
+      "implausibleAbsBps": 500,
+      "maxSlippageBps": 50,
+      "quoteTtlSec": 25,
+      "maxOrderUsd": "20",
+      "maxDayUsd": "50",
+      "blockCorporateActions": true
+    },
+    "lastOfficialClose": {
+      "ticker": "NVDA",
+      "priceUsd": "225.373571",
+      "asOf": "2026-09-25T20:00:06.276Z"
+    },
+    "filledTodayUsd": "0"
+  },
+  "ticket": {
+    "kind": "decision",
+    "engineVersion": "0.1.0",
+    "asOf": "2026-09-25T20:10:05.514Z",
+    "intentId": "f652893770e36ce1",
+    "intent": {
+      "raw": "Buy $20 of NVDAB",
+      "side": "buy",
+      "unit": "usd",
+      "amount": "20",
+      "query": "NVDAB"
+    },
+    "chosen": {
+      "chainId": "56",
+      "contractAddress": "0x02fca66c1d1afb4e2a7884261eb00f63598a7436",
+      "symbol": "NVDAB",
+      "ticker": "NVDA",
+      "issuer": "bstock"
+    },
+    "rejected": [
+      {
+        "symbol": "NVDAon",
+        "issuer": "ondo",
+        "contractAddress": "0xa9ee28c80f960b889dfbd1902055218cba016f75",
+        "reason": "NEVER_SWITCH"
+      },
+      {
+        "symbol": "NVDAx",
+        "issuer": "xstock",
+        "contractAddress": "0xc845b2894dbddd03858fd2d643b4ef725fe0849d",
+        "reason": "NEVER_SWITCH"
+      }
+    ],
+    "session": "extended",
+    "sessionSource": "venue",
+    "marketStatus": "postmarket",
+    "reasonCode": "TRADING",
+    "reasonMsg": null,
+    "multiplier": "1.000778223752807865",
+    "listMultiplier": "1.000778223752807865",
+    "tokenPriceUsd": "225.18510812661929770365",
+    "economicPriceUsd": "225.010000",
+    "referenceUsd": "224.993333",
+    "referenceSource": "stockInfo-sibling",
+    "referenceAsOf": "2026-09-25T20:10:05.514Z",
+    "referenceSibling": "NVDAon",
+    "premiumBps": 1,
+    "overpayUsd": "0.00",
+    "notionalUsd": "20.00",
+    "tokenUnits": "0.08881582",
+    "economicShares": "0.08888494",
+    "unitReadings": null,
+    "formula": "economicPrice = tokenInfo.price / sharesMultiplier",
+    "inputsHash": "4d80b271b8bd182383fe92390b5fb4848e07431915ca05d83d748b9946083825",
+    "policyHash": "9e8674455dead36b87beb162c96bd029487a38b531400b99e764e2df6662c0a3",
+    "verdict": "ALLOW",
+    "reasons": [
+      "OK"
+    ],
+    "notes": [],
+    "hash": "cecf13c4a85866e5be461f4348ebf24dffdc16fc5b5bc076657d25de0808738f",
+    "narration": "ALLOW. NVDAB (bStock) passes every check. $20.00 buys 0.08881582 NVDAB tokens = 0.08888494 shares (multiplier 1.000778223752807865). Not the same instrument: NVDAon (Ondo), NVDAx (xStock). Hash cecf13c4a858…"
+  }
+}

@@ -1,0 +1,168 @@
+{
+  "name": "amdx-usd20",
+  "capture": "fixtures/captures/2026-09-25/200006.json",
+  "input": {
+    "asOf": "2026-09-25T20:00:06.276Z",
+    "universe": [
+      {
+        "chainId": "56",
+        "contractAddress": "0x9f16e46c73b43bdb70861247d537bee4ea18f639",
+        "symbol": "AMDon",
+        "ticker": "AMD",
+        "type": 1,
+        "multiplier": "1"
+      },
+      {
+        "chainId": "56",
+        "contractAddress": "0x3522513e5f146a2006e2901b05f16b2821485e19",
+        "symbol": "AMDx",
+        "ticker": "AMD",
+        "type": 2,
+        "multiplier": "1"
+      },
+      {
+        "chainId": "56",
+        "contractAddress": "0x75fd4cf6f8392e41e70391d60c90c0d5211603a1",
+        "symbol": "AMDB",
+        "ticker": "AMD",
+        "type": 3,
+        "multiplier": "1.000000000000000000"
+      }
+    ],
+    "views": [
+      {
+        "contractAddress": "0x3522513e5f146a2006e2901b05f16b2821485e19",
+        "complete": true,
+        "tokenPriceUsd": "643.47702128685631583051090245897593",
+        "multiplier": "1",
+        "listMultiplier": "1",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": null,
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": "631.325",
+        "fetchedAt": "2026-09-25T20:00:06.276Z"
+      },
+      {
+        "contractAddress": "0x75fd4cf6f8392e41e70391d60c90c0d5211603a1",
+        "complete": true,
+        "tokenPriceUsd": "630.53",
+        "multiplier": "1",
+        "listMultiplier": "1.000000000000000000",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": null,
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": null,
+        "fetchedAt": "2026-09-25T20:00:06.276Z"
+      },
+      {
+        "contractAddress": "0x9f16e46c73b43bdb70861247d537bee4ea18f639",
+        "complete": true,
+        "tokenPriceUsd": "630.231667",
+        "multiplier": "1",
+        "listMultiplier": "1",
+        "assetStatus": {
+          "openState": false,
+          "marketStatus": "paused",
+          "reasonCode": "MARKET_PAUSED",
+          "reasonMsg": "Paused for session transition"
+        },
+        "stockPriceUsd": "631.325",
+        "fetchedAt": "2026-09-25T20:00:06.276Z"
+      }
+    ],
+    "venue": {
+      "marketStatus": "paused",
+      "openState": false
+    },
+    "intent": "Buy $20 of AMDx",
+    "policy": {
+      "version": 1,
+      "issuer": "xstock",
+      "neverSwitchIssuer": true,
+      "noiseBandBps": 10,
+      "maxRegularPremiumBps": 30,
+      "maxClosedPremiumBps": 80,
+      "implausibleAbsBps": 500,
+      "maxSlippageBps": 50,
+      "quoteTtlSec": 25,
+      "maxOrderUsd": "20",
+      "maxDayUsd": "50",
+      "blockCorporateActions": true
+    },
+    "lastOfficialClose": {
+      "ticker": "AMD",
+      "priceUsd": "631.325",
+      "asOf": "2026-09-25T20:00:06.276Z"
+    },
+    "filledTodayUsd": "0"
+  },
+  "ticket": {
+    "kind": "decision",
+    "engineVersion": "0.1.0",
+    "asOf": "2026-09-25T20:00:06.276Z",
+    "intentId": "b5c58be3cc6d364c",
+    "intent": {
+      "raw": "Buy $20 of AMDx",
+      "side": "buy",
+      "unit": "usd",
+      "amount": "20",
+      "query": "AMDx"
+    },
+    "chosen": {
+      "chainId": "56",
+      "contractAddress": "0x3522513e5f146a2006e2901b05f16b2821485e19",
+      "symbol": "AMDx",
+      "ticker": "AMD",
+      "issuer": "xstock"
+    },
+    "rejected": [
+      {
+        "symbol": "AMDon",
+        "issuer": "ondo",
+        "contractAddress": "0x9f16e46c73b43bdb70861247d537bee4ea18f639",
+        "reason": "NEVER_SWITCH"
+      },
+      {
+        "symbol": "AMDB",
+        "issuer": "bstock",
+        "contractAddress": "0x75fd4cf6f8392e41e70391d60c90c0d5211603a1",
+        "reason": "NEVER_SWITCH"
+      }
+    ],
+    "session": null,
+    "sessionSource": null,
+    "marketStatus": null,
+    "reasonCode": "TRADING",
+    "reasonMsg": null,
+    "multiplier": "1",
+    "listMultiplier": "1",
+    "tokenPriceUsd": "643.47702128685631583051090245897593",
+    "economicPriceUsd": null,
+    "referenceUsd": null,
+    "referenceSource": null,
+    "referenceAsOf": null,
+    "referenceSibling": null,
+    "premiumBps": null,
+    "overpayUsd": null,
+    "notionalUsd": "20.00",
+    "tokenUnits": "0.03108114",
+    "economicShares": "0.03108114",
+    "unitReadings": null,
+    "formula": "economicPrice = tokenInfo.price / sharesMultiplier",
+    "inputsHash": "fd2ece74d85893b2b2464ba3ec8a646a175191865364efd14940ccbfbe9b5ab4",
+    "policyHash": "7d1fd3d2f6911dfdf727820b46d574cd56f459d266e7faddcedd73843f05898a",
+    "verdict": "BLOCK",
+    "reasons": [
+      "MARKET_HALTED"
+    ],
+    "notes": [],
+    "hash": "8c2de6b4493be3cd5c79e1428af5ad328f68fd1b1fd619986993311daccb9514",
+    "narration": "BLOCK. Trading in AMDx (xStock) is paused (TRADING). $20.00 buys 0.03108114 AMDx tokens = 0.03108114 shares (multiplier 1). Not the same instrument: AMDon (Ondo), AMDB (bStock). Hash 8c2de6b4493b…"
+  }
+}

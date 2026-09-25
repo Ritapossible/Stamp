@@ -1,0 +1,170 @@
+{
+  "name": "metax-usd20",
+  "capture": "fixtures/captures/2026-09-25/200006.json",
+  "input": {
+    "asOf": "2026-09-25T20:00:06.276Z",
+    "universe": [
+      {
+        "chainId": "56",
+        "contractAddress": "0xd7df5863a3e742f0c767768cdfcb63f09e0422f6",
+        "symbol": "METAon",
+        "ticker": "META",
+        "type": 1,
+        "multiplier": "1.002826918305349555"
+      },
+      {
+        "chainId": "56",
+        "contractAddress": "0x96702be57cd9777f835117a809c7124fe4ec989a",
+        "symbol": "METAx",
+        "ticker": "META",
+        "type": 2,
+        "multiplier": "1"
+      },
+      {
+        "chainId": "56",
+        "contractAddress": "0x7425889fe94f9d693e8daefe88bcced6acfef4c0",
+        "symbol": "METAB",
+        "ticker": "META",
+        "type": 3,
+        "multiplier": "1.00054829041074495"
+      }
+    ],
+    "views": [
+      {
+        "contractAddress": "0x7425889fe94f9d693e8daefe88bcced6acfef4c0",
+        "complete": true,
+        "tokenPriceUsd": "751.551842859126961743",
+        "multiplier": "1.00054829041074495",
+        "listMultiplier": "1.00054829041074495",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": null,
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": null,
+        "fetchedAt": "2026-09-25T20:00:06.276Z"
+      },
+      {
+        "contractAddress": "0x96702be57cd9777f835117a809c7124fe4ec989a",
+        "complete": true,
+        "tokenPriceUsd": "573.753797102305679962107408139948762449",
+        "multiplier": "1.002298265651938",
+        "listMultiplier": "1",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": null,
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": "751.95",
+        "fetchedAt": "2026-09-25T20:00:06.276Z"
+      },
+      {
+        "contractAddress": "0xd7df5863a3e742f0c767768cdfcb63f09e0422f6",
+        "complete": true,
+        "tokenPriceUsd": "753.183185262415836778",
+        "multiplier": "1.002826918305349555",
+        "listMultiplier": "1.002826918305349555",
+        "assetStatus": {
+          "openState": false,
+          "marketStatus": "paused",
+          "reasonCode": "MARKET_PAUSED",
+          "reasonMsg": "Paused for session transition"
+        },
+        "stockPriceUsd": "751.95",
+        "fetchedAt": "2026-09-25T20:00:06.276Z"
+      }
+    ],
+    "venue": {
+      "marketStatus": "paused",
+      "openState": false
+    },
+    "intent": "Buy $20 of METAx",
+    "policy": {
+      "version": 1,
+      "issuer": "xstock",
+      "neverSwitchIssuer": true,
+      "noiseBandBps": 10,
+      "maxRegularPremiumBps": 30,
+      "maxClosedPremiumBps": 80,
+      "implausibleAbsBps": 500,
+      "maxSlippageBps": 50,
+      "quoteTtlSec": 25,
+      "maxOrderUsd": "20",
+      "maxDayUsd": "50",
+      "blockCorporateActions": true
+    },
+    "lastOfficialClose": {
+      "ticker": "META",
+      "priceUsd": "751.95",
+      "asOf": "2026-09-25T20:00:06.276Z"
+    },
+    "filledTodayUsd": "0"
+  },
+  "ticket": {
+    "kind": "decision",
+    "engineVersion": "0.1.0",
+    "asOf": "2026-09-25T20:00:06.276Z",
+    "intentId": "898cf54d018c5dab",
+    "intent": {
+      "raw": "Buy $20 of METAx",
+      "side": "buy",
+      "unit": "usd",
+      "amount": "20",
+      "query": "METAx"
+    },
+    "chosen": {
+      "chainId": "56",
+      "contractAddress": "0x96702be57cd9777f835117a809c7124fe4ec989a",
+      "symbol": "METAx",
+      "ticker": "META",
+      "issuer": "xstock"
+    },
+    "rejected": [
+      {
+        "symbol": "METAon",
+        "issuer": "ondo",
+        "contractAddress": "0xd7df5863a3e742f0c767768cdfcb63f09e0422f6",
+        "reason": "NEVER_SWITCH"
+      },
+      {
+        "symbol": "METAB",
+        "issuer": "bstock",
+        "contractAddress": "0x7425889fe94f9d693e8daefe88bcced6acfef4c0",
+        "reason": "NEVER_SWITCH"
+      }
+    ],
+    "session": null,
+    "sessionSource": null,
+    "marketStatus": null,
+    "reasonCode": "TRADING",
+    "reasonMsg": null,
+    "multiplier": "1.002298265651938",
+    "listMultiplier": "1",
+    "tokenPriceUsd": "573.753797102305679962107408139948762449",
+    "economicPriceUsd": null,
+    "referenceUsd": null,
+    "referenceSource": null,
+    "referenceAsOf": null,
+    "referenceSibling": null,
+    "premiumBps": null,
+    "overpayUsd": null,
+    "notionalUsd": "20.00",
+    "tokenUnits": "0.03485816",
+    "economicShares": "0.03493827",
+    "unitReadings": null,
+    "formula": "economicPrice = tokenInfo.price / sharesMultiplier",
+    "inputsHash": "69bd2d4b4ca104e782d7d00027edd1355f81542ec088057e22c8d0c91a21c8ba",
+    "policyHash": "7d1fd3d2f6911dfdf727820b46d574cd56f459d266e7faddcedd73843f05898a",
+    "verdict": "BLOCK",
+    "reasons": [
+      "MARKET_HALTED"
+    ],
+    "notes": [
+      "MULTIPLIER_DRIFT"
+    ],
+    "hash": "ddd62a0473f4a6a42ff89acdc4ce289c6d25e8885148503409c2d83b176f1b11",
+    "narration": "BLOCK. Trading in METAx (xStock) is paused (TRADING). $20.00 buys 0.03485816 METAx tokens = 0.03493827 shares (multiplier 1.002298265651938). Not the same instrument: METAon (Ondo), METAB (bStock). Hash ddd62a0473f4…"
+  }
+}

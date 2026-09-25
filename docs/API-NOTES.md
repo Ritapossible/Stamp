@@ -88,6 +88,15 @@ Ondo 10, bStock 1, and xStock "10" or "1" depending on which endpoint you ask.
   on-chain volume. It is not a liquidity signal.
 - Prices carry up to 39 decimal places.
 
+## 2026-09-25 close (Fri) — `fixtures/captures/2026-09-25/`
+- 19:50Z: venue `regular`. 20:00Z: venue `paused`, openState false, reasonCode `MARKET_PAUSED`,
+  reasonMsg "Paused for session transition". 20:10Z onwards: `postmarket`.
+- Ondo statusInfo mirrors the venue (`paused` / `MARKET_PAUSED`). bStock and xStock statusInfo
+  stay `TRADING` with `marketStatus: null` throughout.
+- `stockInfo.price` keeps updating in postmarket (extended-hours prints), so after 20:00 it
+  is no longer the close.
+- NVDA: 224.4475 (19:50, regular) → 225.3736 (20:00, paused) → 224.9933 (20:10, postmarket).
+
 ## Official docs read 2026-09-25 (not yet exercised)
 
 - Trading API: base `https://web3.binance.com/build`, HMAC-SHA256. The pre-hash is

@@ -95,9 +95,15 @@ describe("SnapshotStore", () => {
     line("2026-09-25T19:40:00Z", "regular", "226.10"),
     line("2026-09-25T19:50:00Z", "regular", "226.30"),
     line("2026-09-25T20:10:00Z", "postmarket", "226.90"),
+    line("2026-09-25T13:25:00Z", "paused", "225.00"),
     line("2026-09-25T19:55:00Z", "regular", null),
     "{not json",
   ].join("\n");
+
+  it("counts the paused print right after the regular session as the close", () => {
+    const rows = parseSnapshotLines([line("2026-09-25T19:50:00Z", "regular", "224.45"), line("2026-09-25T20:00:00Z", "paused", "225.37"), line("2026-09-25T20:10:00Z", "postmarket", "225.00")].join("\n")).rows;
+    expect(new SnapshotStore(rows).lastOfficialClose("NVDA", "2026-09-26T15:00:00Z")).toEqual({ ticker: "NVDA", priceUsd: "225.37", asOf: "2026-09-25T20:00:00Z" });
+  });
 
   it("returns the last regular-session print at or before asOf", () => {
     const { rows, bad } = parseSnapshotLines(text);

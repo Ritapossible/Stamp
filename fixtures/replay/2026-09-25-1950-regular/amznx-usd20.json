@@ -1,0 +1,168 @@
+{
+  "name": "amznx-usd20",
+  "capture": "fixtures/captures/2026-09-25/195006.json",
+  "input": {
+    "asOf": "2026-09-25T19:50:06.084Z",
+    "universe": [
+      {
+        "chainId": "56",
+        "contractAddress": "0x4553cfe1c09f37f38b12dc509f676964e392f8fc",
+        "symbol": "AMZNon",
+        "ticker": "AMZN",
+        "type": 1,
+        "multiplier": "1"
+      },
+      {
+        "chainId": "56",
+        "contractAddress": "0x3557ba345b01efa20a1bddc61f573bfd87195081",
+        "symbol": "AMZNx",
+        "ticker": "AMZN",
+        "type": 2,
+        "multiplier": "1"
+      },
+      {
+        "chainId": "56",
+        "contractAddress": "0x1a4b499833a79a09ad7cf1d42d7dacf71e92eb00",
+        "symbol": "AMZNB",
+        "ticker": "AMZN",
+        "type": 3,
+        "multiplier": "1"
+      }
+    ],
+    "views": [
+      {
+        "contractAddress": "0x1a4b499833a79a09ad7cf1d42d7dacf71e92eb00",
+        "complete": true,
+        "tokenPriceUsd": "250.6",
+        "multiplier": "1",
+        "listMultiplier": "1",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": null,
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": null,
+        "fetchedAt": "2026-09-25T19:50:06.084Z"
+      },
+      {
+        "contractAddress": "0x3557ba345b01efa20a1bddc61f573bfd87195081",
+        "complete": true,
+        "tokenPriceUsd": "256.379475804368627468988474820594408",
+        "multiplier": "1",
+        "listMultiplier": "1",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": null,
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": "250.59",
+        "fetchedAt": "2026-09-25T19:50:06.084Z"
+      },
+      {
+        "contractAddress": "0x4553cfe1c09f37f38b12dc509f676964e392f8fc",
+        "complete": true,
+        "tokenPriceUsd": "250.504",
+        "multiplier": "1",
+        "listMultiplier": "1",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": "regular",
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": "250.59",
+        "fetchedAt": "2026-09-25T19:50:06.084Z"
+      }
+    ],
+    "venue": {
+      "marketStatus": "regular",
+      "openState": true
+    },
+    "intent": "Buy $20 of AMZNx",
+    "policy": {
+      "version": 1,
+      "issuer": "xstock",
+      "neverSwitchIssuer": true,
+      "noiseBandBps": 10,
+      "maxRegularPremiumBps": 30,
+      "maxClosedPremiumBps": 80,
+      "implausibleAbsBps": 500,
+      "maxSlippageBps": 50,
+      "quoteTtlSec": 25,
+      "maxOrderUsd": "20",
+      "maxDayUsd": "50",
+      "blockCorporateActions": true
+    },
+    "lastOfficialClose": {
+      "ticker": "AMZN",
+      "priceUsd": "250.59",
+      "asOf": "2026-09-25T19:50:06.084Z"
+    },
+    "filledTodayUsd": "0"
+  },
+  "ticket": {
+    "kind": "decision",
+    "engineVersion": "0.1.0",
+    "asOf": "2026-09-25T19:50:06.084Z",
+    "intentId": "fc9a73fc4b9842b6",
+    "intent": {
+      "raw": "Buy $20 of AMZNx",
+      "side": "buy",
+      "unit": "usd",
+      "amount": "20",
+      "query": "AMZNx"
+    },
+    "chosen": {
+      "chainId": "56",
+      "contractAddress": "0x3557ba345b01efa20a1bddc61f573bfd87195081",
+      "symbol": "AMZNx",
+      "ticker": "AMZN",
+      "issuer": "xstock"
+    },
+    "rejected": [
+      {
+        "symbol": "AMZNon",
+        "issuer": "ondo",
+        "contractAddress": "0x4553cfe1c09f37f38b12dc509f676964e392f8fc",
+        "reason": "NEVER_SWITCH"
+      },
+      {
+        "symbol": "AMZNB",
+        "issuer": "bstock",
+        "contractAddress": "0x1a4b499833a79a09ad7cf1d42d7dacf71e92eb00",
+        "reason": "NEVER_SWITCH"
+      }
+    ],
+    "session": "regular",
+    "sessionSource": "venue",
+    "marketStatus": "regular",
+    "reasonCode": "TRADING",
+    "reasonMsg": null,
+    "multiplier": "1",
+    "listMultiplier": "1",
+    "tokenPriceUsd": "256.379475804368627468988474820594408",
+    "economicPriceUsd": "256.379476",
+    "referenceUsd": "250.59",
+    "referenceSource": "stockInfo",
+    "referenceAsOf": "2026-09-25T19:50:06.084Z",
+    "referenceSibling": null,
+    "premiumBps": 231,
+    "overpayUsd": "0.45",
+    "notionalUsd": "20.00",
+    "tokenUnits": "0.07800936",
+    "economicShares": "0.07800936",
+    "unitReadings": null,
+    "formula": "economicPrice = tokenInfo.price / sharesMultiplier",
+    "inputsHash": "59c049ce3958cc1e012d7971010145b60bf2b36d304520d5481debc32b8779c9",
+    "policyHash": "7d1fd3d2f6911dfdf727820b46d574cd56f459d266e7faddcedd73843f05898a",
+    "verdict": "WARN",
+    "reasons": [
+      "SESSION_RICH"
+    ],
+    "notes": [],
+    "hash": "b08d1137a1ecdf2320f88faccbb7bb001470b5f6233f4a1c27bbf9a307cb6a2d",
+    "narration": "WARN. During market hours, AMZNx is 231 bps above the stock price ($250.59) — about $0.45 of overpay on this order. Parked. $20.00 buys 0.07800936 AMZNx tokens = 0.07800936 shares (multiplier 1). Not the same instrument: AMZNon (Ondo), AMZNB (bStock). Hash b08d1137a1ec…"
+  }
+}

@@ -31,21 +31,33 @@ export function parseSnapshotLines(text: string): { rows: SnapshotRow[]; bad: nu
 
 /**
  * Reference store for when stockInfo.price is null (bStocks; possibly everyone on weekends).
- * `lastOfficialClose` is the last stock price recorded while the venue said `regular`,
- * at or before `asOf`. With a 10-minute cadence that print is from the final ~10 minutes
- * of the session, not the exchange's official closing auction; tickets label the source.
+ * `lastOfficialClose` is the last stock price recorded while the venue said `regular`, or the
+ * `paused` print that immediately follows one: at the 16:00 close Binance pauses "for session
+ * transition" and that print is the closing price (on 2026-09-25 it was 41 bps away from the
+ * 19:50 regular print). With a 10-minute cadence it is not the auction tape; tickets label
+ * the source and its time.
  */
 export class SnapshotStore {
   private readonly byTicker = new Map<string, SnapshotRow[]>();
 
   constructor(rows: SnapshotRow[]) {
+    const all = new Map<string, SnapshotRow[]>();
     for (const r of rows) {
-      if (r.venueMarketStatus !== "regular" || typeof r.stockPrice !== "string") continue;
-      const list = this.byTicker.get(r.ticker) ?? [];
+      const list = all.get(r.ticker) ?? [];
       list.push(r);
-      this.byTicker.set(r.ticker, list);
+      all.set(r.ticker, list);
     }
-    for (const list of this.byTicker.values()) list.sort((a, b) => Date.parse(a.capturedAt) - Date.parse(b.capturedAt));
+    for (const [ticker, list] of all) {
+      list.sort((a, b) => Date.parse(a.capturedAt) - Date.parse(b.capturedAt));
+      const kept: SnapshotRow[] = [];
+      for (let i = 0; i < list.length; i++) {
+        const r = list[i]!;
+        if (typeof r.stockPrice !== "string") continue;
+        const afterRegular = i > 0 && list[i - 1]!.venueMarketStatus === "regular";
+        if (r.venueMarketStatus === "regular" || (r.venueMarketStatus === "paused" && afterRegular)) kept.push(r);
+      }
+      if (kept.length > 0) this.byTicker.set(ticker, kept);
+    }
   }
 
   static async fromDir(dir: string): Promise<SnapshotStore> {

@@ -49,7 +49,7 @@ npm test          # golden verdict tests, offline
 npm run replay    # re-derives last weekend's tickets and checks every hash
 ```
 
-Expected: one line per ticket, then `103 tickets recomputed · all hashes match`, for example:
+Expected: one line per ticket, then `325 tickets recomputed · all hashes match` (the test cases plus four real 2026-09-25 captures: premarket, the last regular print, the 20:00 close pause, and postmarket), for example:
 
 ```
 ok     golden                  Buy 1 NFLX                  NFLXon    BLOCK  UNIT_AMBIGUOUS    476b8e4ef3e9

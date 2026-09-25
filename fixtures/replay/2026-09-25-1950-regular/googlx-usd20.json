@@ -1,0 +1,171 @@
+{
+  "name": "googlx-usd20",
+  "capture": "fixtures/captures/2026-09-25/195006.json",
+  "input": {
+    "asOf": "2026-09-25T19:50:06.084Z",
+    "universe": [
+      {
+        "chainId": "56",
+        "contractAddress": "0x091fc7778e6932d4009b087b191d1ee3bac5729a",
+        "symbol": "GOOGLon",
+        "ticker": "GOOGL",
+        "type": 1,
+        "multiplier": "1.002460326637435211"
+      },
+      {
+        "chainId": "56",
+        "contractAddress": "0xe92f673ca36c5e2efd2de7628f815f84807e803f",
+        "symbol": "GOOGLx",
+        "ticker": "GOOGL",
+        "type": 2,
+        "multiplier": "1"
+      },
+      {
+        "chainId": "56",
+        "contractAddress": "0x3f53de71c126bdabae20f9cd64848d317f6c3238",
+        "symbol": "GOOGLB",
+        "ticker": "GOOGL",
+        "type": 3,
+        "multiplier": "1.000478058978107511"
+      }
+    ],
+    "views": [
+      {
+        "contractAddress": "0x091fc7778e6932d4009b087b191d1ee3bac5729a",
+        "complete": true,
+        "tokenPriceUsd": "344.593732360965078911",
+        "multiplier": "1.002460326637435211",
+        "listMultiplier": "1.002460326637435211",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": "regular",
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": "344.133333",
+        "fetchedAt": "2026-09-25T19:50:06.084Z"
+      },
+      {
+        "contractAddress": "0x3f53de71c126bdabae20f9cd64848d317f6c3238",
+        "complete": true,
+        "tokenPriceUsd": "344.23448575259745130977",
+        "multiplier": "1.000478058978107511",
+        "listMultiplier": "1.000478058978107511",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": null,
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": null,
+        "fetchedAt": "2026-09-25T19:50:06.084Z"
+      },
+      {
+        "contractAddress": "0xe92f673ca36c5e2efd2de7628f815f84807e803f",
+        "complete": true,
+        "tokenPriceUsd": "339.016674120845457854582165810368658577",
+        "multiplier": "1.001926722393864",
+        "listMultiplier": "1",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": null,
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": "344.133333",
+        "fetchedAt": "2026-09-25T19:50:06.084Z"
+      }
+    ],
+    "venue": {
+      "marketStatus": "regular",
+      "openState": true
+    },
+    "intent": "Buy $20 of GOOGLx",
+    "policy": {
+      "version": 1,
+      "issuer": "xstock",
+      "neverSwitchIssuer": true,
+      "noiseBandBps": 10,
+      "maxRegularPremiumBps": 30,
+      "maxClosedPremiumBps": 80,
+      "implausibleAbsBps": 500,
+      "maxSlippageBps": 50,
+      "quoteTtlSec": 25,
+      "maxOrderUsd": "20",
+      "maxDayUsd": "50",
+      "blockCorporateActions": true
+    },
+    "lastOfficialClose": {
+      "ticker": "GOOGL",
+      "priceUsd": "344.133333",
+      "asOf": "2026-09-25T19:50:06.084Z"
+    },
+    "filledTodayUsd": "0"
+  },
+  "ticket": {
+    "kind": "decision",
+    "engineVersion": "0.1.0",
+    "asOf": "2026-09-25T19:50:06.084Z",
+    "intentId": "997299474d3c9925",
+    "intent": {
+      "raw": "Buy $20 of GOOGLx",
+      "side": "buy",
+      "unit": "usd",
+      "amount": "20",
+      "query": "GOOGLx"
+    },
+    "chosen": {
+      "chainId": "56",
+      "contractAddress": "0xe92f673ca36c5e2efd2de7628f815f84807e803f",
+      "symbol": "GOOGLx",
+      "ticker": "GOOGL",
+      "issuer": "xstock"
+    },
+    "rejected": [
+      {
+        "symbol": "GOOGLon",
+        "issuer": "ondo",
+        "contractAddress": "0x091fc7778e6932d4009b087b191d1ee3bac5729a",
+        "reason": "NEVER_SWITCH"
+      },
+      {
+        "symbol": "GOOGLB",
+        "issuer": "bstock",
+        "contractAddress": "0x3f53de71c126bdabae20f9cd64848d317f6c3238",
+        "reason": "NEVER_SWITCH"
+      }
+    ],
+    "session": "regular",
+    "sessionSource": "venue",
+    "marketStatus": "regular",
+    "reasonCode": "TRADING",
+    "reasonMsg": null,
+    "multiplier": "1.001926722393864",
+    "listMultiplier": "1",
+    "tokenPriceUsd": "339.016674120845457854582165810368658577",
+    "economicPriceUsd": "338.364739",
+    "referenceUsd": "344.133333",
+    "referenceSource": "stockInfo",
+    "referenceAsOf": "2026-09-25T19:50:06.084Z",
+    "referenceSibling": null,
+    "premiumBps": -168,
+    "overpayUsd": null,
+    "notionalUsd": "20.00",
+    "tokenUnits": "0.05899415",
+    "economicShares": "0.05910781",
+    "unitReadings": null,
+    "formula": "economicPrice = tokenInfo.price / sharesMultiplier",
+    "inputsHash": "450a8bab6c4f7cb325f0477f23f7667083283a45329d2fcabcb1aa06a2acb8b2",
+    "policyHash": "7d1fd3d2f6911dfdf727820b46d574cd56f459d266e7faddcedd73843f05898a",
+    "verdict": "ALLOW",
+    "reasons": [
+      "OK"
+    ],
+    "notes": [
+      "MULTIPLIER_DRIFT",
+      "THIN_BOOK"
+    ],
+    "hash": "ab7546b79cc38de5aec85abe41ec53fd7578dc7389461caba2424ed0f18099a5",
+    "narration": "ALLOW. GOOGLx (xStock) passes every check. $20.00 buys 0.05899415 GOOGLx tokens = 0.05910781 shares (multiplier 1.001926722393864). It is 168 bps below the reference; Stamp does not buy more because it looks cheap. Not the same instrument: GOOGLon (Ondo), GOOGLB (bStock). Hash ab7546b79cc3…"
+  }
+}

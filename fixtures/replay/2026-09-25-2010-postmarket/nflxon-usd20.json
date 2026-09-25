@@ -1,0 +1,168 @@
+{
+  "name": "nflxon-usd20",
+  "capture": "fixtures/captures/2026-09-25/201005.json",
+  "input": {
+    "asOf": "2026-09-25T20:10:05.514Z",
+    "universe": [
+      {
+        "chainId": "56",
+        "contractAddress": "0x7048f5227b032326cc8dbc53cf3fddd947a2c757",
+        "symbol": "NFLXon",
+        "ticker": "NFLX",
+        "type": 1,
+        "multiplier": "10"
+      },
+      {
+        "chainId": "56",
+        "contractAddress": "0xa6a65ac27e76cd53cb790473e4345c46e5ebf961",
+        "symbol": "NFLXx",
+        "ticker": "NFLX",
+        "type": 2,
+        "multiplier": "1"
+      },
+      {
+        "chainId": "56",
+        "contractAddress": "0xd6829ea836b6fa224d099d40e54b31262f874631",
+        "symbol": "NFLXB",
+        "ticker": "NFLX",
+        "type": 3,
+        "multiplier": "1"
+      }
+    ],
+    "views": [
+      {
+        "contractAddress": "0x7048f5227b032326cc8dbc53cf3fddd947a2c757",
+        "complete": true,
+        "tokenPriceUsd": "711.48095",
+        "multiplier": "10",
+        "listMultiplier": "10",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": "postmarket",
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": "71.148095",
+        "fetchedAt": "2026-09-25T20:10:05.514Z"
+      },
+      {
+        "contractAddress": "0xa6a65ac27e76cd53cb790473e4345c46e5ebf961",
+        "complete": true,
+        "tokenPriceUsd": "77.189826648928371027658010605297330854",
+        "multiplier": "10",
+        "listMultiplier": "1",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": null,
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": "71.148095",
+        "fetchedAt": "2026-09-25T20:10:05.514Z"
+      },
+      {
+        "contractAddress": "0xd6829ea836b6fa224d099d40e54b31262f874631",
+        "complete": true,
+        "tokenPriceUsd": "71.14",
+        "multiplier": "1",
+        "listMultiplier": "1",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": null,
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": null,
+        "fetchedAt": "2026-09-25T20:10:05.514Z"
+      }
+    ],
+    "venue": {
+      "marketStatus": "postmarket",
+      "openState": true
+    },
+    "intent": "Buy $20 of NFLXon",
+    "policy": {
+      "version": 1,
+      "issuer": "ondo",
+      "neverSwitchIssuer": true,
+      "noiseBandBps": 10,
+      "maxRegularPremiumBps": 30,
+      "maxClosedPremiumBps": 80,
+      "implausibleAbsBps": 500,
+      "maxSlippageBps": 50,
+      "quoteTtlSec": 25,
+      "maxOrderUsd": "20",
+      "maxDayUsd": "50",
+      "blockCorporateActions": true
+    },
+    "lastOfficialClose": {
+      "ticker": "NFLX",
+      "priceUsd": "71.132",
+      "asOf": "2026-09-25T20:00:06.276Z"
+    },
+    "filledTodayUsd": "0"
+  },
+  "ticket": {
+    "kind": "decision",
+    "engineVersion": "0.1.0",
+    "asOf": "2026-09-25T20:10:05.514Z",
+    "intentId": "1619214563ca015f",
+    "intent": {
+      "raw": "Buy $20 of NFLXon",
+      "side": "buy",
+      "unit": "usd",
+      "amount": "20",
+      "query": "NFLXon"
+    },
+    "chosen": {
+      "chainId": "56",
+      "contractAddress": "0x7048f5227b032326cc8dbc53cf3fddd947a2c757",
+      "symbol": "NFLXon",
+      "ticker": "NFLX",
+      "issuer": "ondo"
+    },
+    "rejected": [
+      {
+        "symbol": "NFLXx",
+        "issuer": "xstock",
+        "contractAddress": "0xa6a65ac27e76cd53cb790473e4345c46e5ebf961",
+        "reason": "NEVER_SWITCH"
+      },
+      {
+        "symbol": "NFLXB",
+        "issuer": "bstock",
+        "contractAddress": "0xd6829ea836b6fa224d099d40e54b31262f874631",
+        "reason": "NEVER_SWITCH"
+      }
+    ],
+    "session": "extended",
+    "sessionSource": "asset",
+    "marketStatus": "postmarket",
+    "reasonCode": "TRADING",
+    "reasonMsg": null,
+    "multiplier": "10",
+    "listMultiplier": "10",
+    "tokenPriceUsd": "711.48095",
+    "economicPriceUsd": "71.148095",
+    "referenceUsd": "71.148095",
+    "referenceSource": "stockInfo",
+    "referenceAsOf": "2026-09-25T20:10:05.514Z",
+    "referenceSibling": null,
+    "premiumBps": 0,
+    "overpayUsd": null,
+    "notionalUsd": "20.00",
+    "tokenUnits": "0.02811038",
+    "economicShares": "0.28110380",
+    "unitReadings": null,
+    "formula": "economicPrice = tokenInfo.price / sharesMultiplier",
+    "inputsHash": "aba6b77bfe05ece0f2652b15f5edfda98d372fadbb7ae7c218d6a6dbbbf3ec01",
+    "policyHash": "819a2bcaeeec65005a0d17f38a68e8fa26b165047ffec295b6f9d460a4a36043",
+    "verdict": "ALLOW",
+    "reasons": [
+      "OK"
+    ],
+    "notes": [],
+    "hash": "da949e49bcc6c3d02812e4c22a32c6f345fa1c93848a74f0b1a935d2c1669ce8",
+    "narration": "ALLOW. NFLXon (Ondo) passes every check. $20.00 buys 0.02811038 NFLXon tokens = 0.2811038 shares (multiplier 10). Not the same instrument: NFLXx (xStock), NFLXB (bStock). Hash da949e49bcc6…"
+  }
+}

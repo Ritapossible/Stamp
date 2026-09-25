@@ -1,0 +1,120 @@
+{
+  "name": "cvna-bare1",
+  "capture": "fixtures/captures/2026-09-25/195006.json",
+  "input": {
+    "asOf": "2026-09-25T19:50:06.084Z",
+    "universe": [
+      {
+        "chainId": "56",
+        "contractAddress": "0xc145dc2ebdbe8ead1fecdebf46c76eb1fdd0104d",
+        "symbol": "CVNAon",
+        "ticker": "CVNA",
+        "type": 1,
+        "multiplier": "5"
+      }
+    ],
+    "views": [
+      {
+        "contractAddress": "0xc145dc2ebdbe8ead1fecdebf46c76eb1fdd0104d",
+        "complete": true,
+        "tokenPriceUsd": "323.34",
+        "multiplier": "5",
+        "listMultiplier": "5",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": "regular",
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": "64.666154",
+        "fetchedAt": "2026-09-25T19:50:06.084Z"
+      }
+    ],
+    "venue": {
+      "marketStatus": "regular",
+      "openState": true
+    },
+    "intent": "Buy 1 CVNA",
+    "policy": {
+      "version": 1,
+      "issuer": "ondo",
+      "neverSwitchIssuer": true,
+      "noiseBandBps": 10,
+      "maxRegularPremiumBps": 30,
+      "maxClosedPremiumBps": 80,
+      "implausibleAbsBps": 500,
+      "maxSlippageBps": 50,
+      "quoteTtlSec": 25,
+      "maxOrderUsd": "20",
+      "maxDayUsd": "50",
+      "blockCorporateActions": true
+    },
+    "lastOfficialClose": {
+      "ticker": "CVNA",
+      "priceUsd": "64.666154",
+      "asOf": "2026-09-25T19:50:06.084Z"
+    },
+    "filledTodayUsd": "0"
+  },
+  "ticket": {
+    "kind": "decision",
+    "engineVersion": "0.1.0",
+    "asOf": "2026-09-25T19:50:06.084Z",
+    "intentId": "efa6e6a15742e94b",
+    "intent": {
+      "raw": "Buy 1 CVNA",
+      "side": "buy",
+      "unit": "ambiguous",
+      "amount": "1",
+      "query": "CVNA"
+    },
+    "chosen": {
+      "chainId": "56",
+      "contractAddress": "0xc145dc2ebdbe8ead1fecdebf46c76eb1fdd0104d",
+      "symbol": "CVNAon",
+      "ticker": "CVNA",
+      "issuer": "ondo"
+    },
+    "rejected": [],
+    "session": null,
+    "sessionSource": null,
+    "marketStatus": "regular",
+    "reasonCode": "TRADING",
+    "reasonMsg": null,
+    "multiplier": "5",
+    "listMultiplier": "5",
+    "tokenPriceUsd": "323.34",
+    "economicPriceUsd": null,
+    "referenceUsd": null,
+    "referenceSource": null,
+    "referenceAsOf": null,
+    "referenceSibling": null,
+    "premiumBps": null,
+    "overpayUsd": null,
+    "notionalUsd": null,
+    "tokenUnits": null,
+    "economicShares": null,
+    "unitReadings": {
+      "asTokens": {
+        "tokens": "1.00000000",
+        "shares": "5.00000000",
+        "usd": "323.34"
+      },
+      "asShares": {
+        "tokens": "0.20000000",
+        "shares": "1.00000000",
+        "usd": "64.67"
+      }
+    },
+    "formula": "economicPrice = tokenInfo.price / sharesMultiplier",
+    "inputsHash": "246d7dea0e6156075d8294fbafaa294d5297f41c67edd9671e6cf468313709bb",
+    "policyHash": "819a2bcaeeec65005a0d17f38a68e8fa26b165047ffec295b6f9d460a4a36043",
+    "verdict": "BLOCK",
+    "reasons": [
+      "UNIT_AMBIGUOUS"
+    ],
+    "notes": [],
+    "hash": "5203773614486ec30cc19671794e3129b786f33d4480ec816521e2d20fde845f",
+    "narration": "BLOCK. \"1 CVNA\" could mean 1 token = 5 shares ≈ $323.34, or 1 share = 0.2 token ≈ $64.67. One CVNAon token holds 5 shares. Say \"$… of\" or \"… shares of\". Hash 520377361448…"
+  }
+}

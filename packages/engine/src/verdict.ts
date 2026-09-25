@@ -27,6 +27,8 @@ const ASSET_PAUSE_CODES = new Set(["ASSET_PAUSED", "ASSET_LIMITED"]);
 const MARKET_HALT_CODES = new Set(["MARKET_PAUSED", "MARKET_MAINTENANCE", "UNSUPPORTED"]);
 const TRADABLE_CODES = new Set(["TRADING", "MARKET_CLOSED"]);
 const KNOWN_CODES = new Set([...ASSET_PAUSE_CODES, ...MARKET_HALT_CODES, ...TRADABLE_CODES]);
+/** Docs say "pause"; the live API sends "paused" (seen at the 2026-09-25 20:00Z close). */
+const PAUSED_STATUSES = new Set(["pause", "paused"]);
 
 /** Multipliers that differ by this factor or more are a split-scale disagreement. */
 const CONFLICT_RATIO = new Dec(2);
@@ -142,7 +144,7 @@ export function decide(input: DecideInput): DecisionTicket {
   if (ASSET_PAUSE_CODES.has(status.reasonCode)) {
     return finish(CORPORATE_ACTIONS.some((c) => msg.includes(c)) ? "HALTED_CORPORATE_ACTION" : "MARKET_HALTED");
   }
-  if (MARKET_HALT_CODES.has(status.reasonCode) || status.marketStatus === "pause" || input.venue?.marketStatus === "pause") {
+  if (MARKET_HALT_CODES.has(status.reasonCode) || PAUSED_STATUSES.has(status.marketStatus ?? "") || PAUSED_STATUSES.has(input.venue?.marketStatus ?? "")) {
     return finish("MARKET_HALTED");
   }
   if (status.openState === false) return finish("VENUE_CLOSED");

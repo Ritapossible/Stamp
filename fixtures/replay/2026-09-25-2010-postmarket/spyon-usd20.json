@@ -1,0 +1,168 @@
+{
+  "name": "spyon-usd20",
+  "capture": "fixtures/captures/2026-09-25/201005.json",
+  "input": {
+    "asOf": "2026-09-25T20:10:05.514Z",
+    "universe": [
+      {
+        "chainId": "56",
+        "contractAddress": "0x6a708ead771238919d85930b5a0f10454e1c331a",
+        "symbol": "SPYon",
+        "ticker": "SPY",
+        "type": 1,
+        "multiplier": "1.009473072784042724"
+      },
+      {
+        "chainId": "56",
+        "contractAddress": "0x90a2a4c76b5d8c0bc892a69ea28aa775a8f2dd48",
+        "symbol": "SPYx",
+        "ticker": "SPY",
+        "type": 2,
+        "multiplier": "1"
+      },
+      {
+        "chainId": "56",
+        "contractAddress": "0x7138b48df7d98d7e3cc221bfe7192d0a178182d8",
+        "symbol": "SPYB",
+        "ticker": "SPY",
+        "type": 3,
+        "multiplier": "1.001729792036835231"
+      }
+    ],
+    "views": [
+      {
+        "contractAddress": "0x6a708ead771238919d85930b5a0f10454e1c331a",
+        "complete": true,
+        "tokenPriceUsd": "778.671476024289147992",
+        "multiplier": "1.009473072784042724",
+        "listMultiplier": "1.009473072784042724",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": "postmarket",
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": "771.518037",
+        "fetchedAt": "2026-09-25T20:10:05.514Z"
+      },
+      {
+        "contractAddress": "0x7138b48df7d98d7e3cc221bfe7192d0a178182d8",
+        "complete": true,
+        "tokenPriceUsd": "772.65422319385175037492",
+        "multiplier": "1.001729792036835231",
+        "listMultiplier": "1.001729792036835231",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": null,
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": null,
+        "fetchedAt": "2026-09-25T20:10:05.514Z"
+      },
+      {
+        "contractAddress": "0x90a2a4c76b5d8c0bc892a69ea28aa775a8f2dd48",
+        "complete": true,
+        "tokenPriceUsd": "768.997507326827997104349119974361448609",
+        "multiplier": "1.005714560286254",
+        "listMultiplier": "1",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": null,
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": "771.518037",
+        "fetchedAt": "2026-09-25T20:10:05.514Z"
+      }
+    ],
+    "venue": {
+      "marketStatus": "postmarket",
+      "openState": true
+    },
+    "intent": "Buy $20 of SPYon",
+    "policy": {
+      "version": 1,
+      "issuer": "ondo",
+      "neverSwitchIssuer": true,
+      "noiseBandBps": 10,
+      "maxRegularPremiumBps": 30,
+      "maxClosedPremiumBps": 80,
+      "implausibleAbsBps": 500,
+      "maxSlippageBps": 50,
+      "quoteTtlSec": 25,
+      "maxOrderUsd": "20",
+      "maxDayUsd": "50",
+      "blockCorporateActions": true
+    },
+    "lastOfficialClose": {
+      "ticker": "SPY",
+      "priceUsd": "771.487143",
+      "asOf": "2026-09-25T20:00:06.276Z"
+    },
+    "filledTodayUsd": "0"
+  },
+  "ticket": {
+    "kind": "decision",
+    "engineVersion": "0.1.0",
+    "asOf": "2026-09-25T20:10:05.514Z",
+    "intentId": "1c9bb0fb738a4fe4",
+    "intent": {
+      "raw": "Buy $20 of SPYon",
+      "side": "buy",
+      "unit": "usd",
+      "amount": "20",
+      "query": "SPYon"
+    },
+    "chosen": {
+      "chainId": "56",
+      "contractAddress": "0x6a708ead771238919d85930b5a0f10454e1c331a",
+      "symbol": "SPYon",
+      "ticker": "SPY",
+      "issuer": "ondo"
+    },
+    "rejected": [
+      {
+        "symbol": "SPYx",
+        "issuer": "xstock",
+        "contractAddress": "0x90a2a4c76b5d8c0bc892a69ea28aa775a8f2dd48",
+        "reason": "NEVER_SWITCH"
+      },
+      {
+        "symbol": "SPYB",
+        "issuer": "bstock",
+        "contractAddress": "0x7138b48df7d98d7e3cc221bfe7192d0a178182d8",
+        "reason": "NEVER_SWITCH"
+      }
+    ],
+    "session": "extended",
+    "sessionSource": "asset",
+    "marketStatus": "postmarket",
+    "reasonCode": "TRADING",
+    "reasonMsg": null,
+    "multiplier": "1.009473072784042724",
+    "listMultiplier": "1.009473072784042724",
+    "tokenPriceUsd": "778.671476024289147992",
+    "economicPriceUsd": "771.364286",
+    "referenceUsd": "771.518037",
+    "referenceSource": "stockInfo",
+    "referenceAsOf": "2026-09-25T20:10:05.514Z",
+    "referenceSibling": null,
+    "premiumBps": -2,
+    "overpayUsd": null,
+    "notionalUsd": "20.00",
+    "tokenUnits": "0.02568477",
+    "economicShares": "0.02592809",
+    "unitReadings": null,
+    "formula": "economicPrice = tokenInfo.price / sharesMultiplier",
+    "inputsHash": "5da5f309950a69e0696b137a114bef36c516e0a53660dc271e76aee6579915a6",
+    "policyHash": "819a2bcaeeec65005a0d17f38a68e8fa26b165047ffec295b6f9d460a4a36043",
+    "verdict": "ALLOW",
+    "reasons": [
+      "OK"
+    ],
+    "notes": [],
+    "hash": "8b76e8c37c776e32368df08aaafd070c4e06edfa462b6be659129cdd513ac562",
+    "narration": "ALLOW. SPYon (Ondo) passes every check. $20.00 buys 0.02568477 SPYon tokens = 0.02592809 shares (multiplier 1.009473072784042724). Not the same instrument: SPYx (xStock), SPYB (bStock). Hash 8b76e8c37c77…"
+  }
+}

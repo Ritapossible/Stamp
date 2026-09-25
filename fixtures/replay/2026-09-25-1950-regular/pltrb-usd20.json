@@ -1,0 +1,168 @@
+{
+  "name": "pltrb-usd20",
+  "capture": "fixtures/captures/2026-09-25/195006.json",
+  "input": {
+    "asOf": "2026-09-25T19:50:06.084Z",
+    "universe": [
+      {
+        "chainId": "56",
+        "contractAddress": "0x9351abd19f42101dd36025e495b98e910b255d78",
+        "symbol": "PLTRon",
+        "ticker": "PLTR",
+        "type": 1,
+        "multiplier": "1"
+      },
+      {
+        "chainId": "56",
+        "contractAddress": "0x6d482cec5f9dd1f05ccee9fd3ff79b246170f8e2",
+        "symbol": "PLTRx",
+        "ticker": "PLTR",
+        "type": 2,
+        "multiplier": "1"
+      },
+      {
+        "chainId": "56",
+        "contractAddress": "0x0ca5d51d0277bd006fd9607d3e560785ebad8222",
+        "symbol": "PLTRB",
+        "ticker": "PLTR",
+        "type": 3,
+        "multiplier": "1.000000000000000000"
+      }
+    ],
+    "views": [
+      {
+        "contractAddress": "0x0ca5d51d0277bd006fd9607d3e560785ebad8222",
+        "complete": true,
+        "tokenPriceUsd": "190.11",
+        "multiplier": "1",
+        "listMultiplier": "1.000000000000000000",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": null,
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": null,
+        "fetchedAt": "2026-09-25T19:50:06.084Z"
+      },
+      {
+        "contractAddress": "0x6d482cec5f9dd1f05ccee9fd3ff79b246170f8e2",
+        "complete": true,
+        "tokenPriceUsd": "171.72500579504944457531987254268772",
+        "multiplier": "1",
+        "listMultiplier": "1",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": null,
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": "190.078571",
+        "fetchedAt": "2026-09-25T19:50:06.084Z"
+      },
+      {
+        "contractAddress": "0x9351abd19f42101dd36025e495b98e910b255d78",
+        "complete": true,
+        "tokenPriceUsd": "189.913333",
+        "multiplier": "1",
+        "listMultiplier": "1",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": "regular",
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": "190.078571",
+        "fetchedAt": "2026-09-25T19:50:06.084Z"
+      }
+    ],
+    "venue": {
+      "marketStatus": "regular",
+      "openState": true
+    },
+    "intent": "Buy $20 of PLTRB",
+    "policy": {
+      "version": 1,
+      "issuer": "bstock",
+      "neverSwitchIssuer": true,
+      "noiseBandBps": 10,
+      "maxRegularPremiumBps": 30,
+      "maxClosedPremiumBps": 80,
+      "implausibleAbsBps": 500,
+      "maxSlippageBps": 50,
+      "quoteTtlSec": 25,
+      "maxOrderUsd": "20",
+      "maxDayUsd": "50",
+      "blockCorporateActions": true
+    },
+    "lastOfficialClose": {
+      "ticker": "PLTR",
+      "priceUsd": "190.078571",
+      "asOf": "2026-09-25T19:50:06.084Z"
+    },
+    "filledTodayUsd": "0"
+  },
+  "ticket": {
+    "kind": "decision",
+    "engineVersion": "0.1.0",
+    "asOf": "2026-09-25T19:50:06.084Z",
+    "intentId": "dd01187769b5c616",
+    "intent": {
+      "raw": "Buy $20 of PLTRB",
+      "side": "buy",
+      "unit": "usd",
+      "amount": "20",
+      "query": "PLTRB"
+    },
+    "chosen": {
+      "chainId": "56",
+      "contractAddress": "0x0ca5d51d0277bd006fd9607d3e560785ebad8222",
+      "symbol": "PLTRB",
+      "ticker": "PLTR",
+      "issuer": "bstock"
+    },
+    "rejected": [
+      {
+        "symbol": "PLTRon",
+        "issuer": "ondo",
+        "contractAddress": "0x9351abd19f42101dd36025e495b98e910b255d78",
+        "reason": "NEVER_SWITCH"
+      },
+      {
+        "symbol": "PLTRx",
+        "issuer": "xstock",
+        "contractAddress": "0x6d482cec5f9dd1f05ccee9fd3ff79b246170f8e2",
+        "reason": "NEVER_SWITCH"
+      }
+    ],
+    "session": "regular",
+    "sessionSource": "venue",
+    "marketStatus": "regular",
+    "reasonCode": "TRADING",
+    "reasonMsg": null,
+    "multiplier": "1",
+    "listMultiplier": "1.000000000000000000",
+    "tokenPriceUsd": "190.11",
+    "economicPriceUsd": "190.110000",
+    "referenceUsd": "190.078571",
+    "referenceSource": "stockInfo-sibling",
+    "referenceAsOf": "2026-09-25T19:50:06.084Z",
+    "referenceSibling": "PLTRon",
+    "premiumBps": 2,
+    "overpayUsd": "0.00",
+    "notionalUsd": "20.00",
+    "tokenUnits": "0.10520225",
+    "economicShares": "0.10520225",
+    "unitReadings": null,
+    "formula": "economicPrice = tokenInfo.price / sharesMultiplier",
+    "inputsHash": "e05d765259d3198f9581cb0c7aad093c4d37fc545d806496faf26487181f0652",
+    "policyHash": "9e8674455dead36b87beb162c96bd029487a38b531400b99e764e2df6662c0a3",
+    "verdict": "ALLOW",
+    "reasons": [
+      "OK"
+    ],
+    "notes": [],
+    "hash": "3c7e5bab195e2e4d0367902cfc8fa0feeeba2631283a15b5cb6afcd4e869db5e",
+    "narration": "ALLOW. PLTRB (bStock) passes every check. $20.00 buys 0.10520225 PLTRB tokens = 0.10520225 shares (multiplier 1). Not the same instrument: PLTRon (Ondo), PLTRx (xStock). Hash 3c7e5bab195e…"
+  }
+}

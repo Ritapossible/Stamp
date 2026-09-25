@@ -1,0 +1,168 @@
+{
+  "name": "metaon-usd20",
+  "capture": "fixtures/captures/2026-09-25/201005.json",
+  "input": {
+    "asOf": "2026-09-25T20:10:05.514Z",
+    "universe": [
+      {
+        "chainId": "56",
+        "contractAddress": "0xd7df5863a3e742f0c767768cdfcb63f09e0422f6",
+        "symbol": "METAon",
+        "ticker": "META",
+        "type": 1,
+        "multiplier": "1.002826918305349555"
+      },
+      {
+        "chainId": "56",
+        "contractAddress": "0x96702be57cd9777f835117a809c7124fe4ec989a",
+        "symbol": "METAx",
+        "ticker": "META",
+        "type": 2,
+        "multiplier": "1"
+      },
+      {
+        "chainId": "56",
+        "contractAddress": "0x7425889fe94f9d693e8daefe88bcced6acfef4c0",
+        "symbol": "METAB",
+        "ticker": "META",
+        "type": 3,
+        "multiplier": "1.00054829041074495"
+      }
+    ],
+    "views": [
+      {
+        "contractAddress": "0x7425889fe94f9d693e8daefe88bcced6acfef4c0",
+        "complete": true,
+        "tokenPriceUsd": "751.051568713921589268",
+        "multiplier": "1.00054829041074495",
+        "listMultiplier": "1.00054829041074495",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": null,
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": null,
+        "fetchedAt": "2026-09-25T20:10:05.514Z"
+      },
+      {
+        "contractAddress": "0x96702be57cd9777f835117a809c7124fe4ec989a",
+        "complete": true,
+        "tokenPriceUsd": "573.753797102305679962107408139948762449",
+        "multiplier": "1.002298265651938",
+        "listMultiplier": "1",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": null,
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": "750.657143",
+        "fetchedAt": "2026-09-25T20:10:05.514Z"
+      },
+      {
+        "contractAddress": "0xd7df5863a3e742f0c767768cdfcb63f09e0422f6",
+        "complete": true,
+        "tokenPriceUsd": "752.634972879466606253",
+        "multiplier": "1.002826918305349555",
+        "listMultiplier": "1.002826918305349555",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": "postmarket",
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": "750.513333",
+        "fetchedAt": "2026-09-25T20:10:05.514Z"
+      }
+    ],
+    "venue": {
+      "marketStatus": "postmarket",
+      "openState": true
+    },
+    "intent": "Buy $20 of METAon",
+    "policy": {
+      "version": 1,
+      "issuer": "ondo",
+      "neverSwitchIssuer": true,
+      "noiseBandBps": 10,
+      "maxRegularPremiumBps": 30,
+      "maxClosedPremiumBps": 80,
+      "implausibleAbsBps": 500,
+      "maxSlippageBps": 50,
+      "quoteTtlSec": 25,
+      "maxOrderUsd": "20",
+      "maxDayUsd": "50",
+      "blockCorporateActions": true
+    },
+    "lastOfficialClose": {
+      "ticker": "META",
+      "priceUsd": "751.95",
+      "asOf": "2026-09-25T20:00:06.276Z"
+    },
+    "filledTodayUsd": "0"
+  },
+  "ticket": {
+    "kind": "decision",
+    "engineVersion": "0.1.0",
+    "asOf": "2026-09-25T20:10:05.514Z",
+    "intentId": "a000714e0d75db72",
+    "intent": {
+      "raw": "Buy $20 of METAon",
+      "side": "buy",
+      "unit": "usd",
+      "amount": "20",
+      "query": "METAon"
+    },
+    "chosen": {
+      "chainId": "56",
+      "contractAddress": "0xd7df5863a3e742f0c767768cdfcb63f09e0422f6",
+      "symbol": "METAon",
+      "ticker": "META",
+      "issuer": "ondo"
+    },
+    "rejected": [
+      {
+        "symbol": "METAx",
+        "issuer": "xstock",
+        "contractAddress": "0x96702be57cd9777f835117a809c7124fe4ec989a",
+        "reason": "NEVER_SWITCH"
+      },
+      {
+        "symbol": "METAB",
+        "issuer": "bstock",
+        "contractAddress": "0x7425889fe94f9d693e8daefe88bcced6acfef4c0",
+        "reason": "NEVER_SWITCH"
+      }
+    ],
+    "session": "extended",
+    "sessionSource": "asset",
+    "marketStatus": "postmarket",
+    "reasonCode": "TRADING",
+    "reasonMsg": null,
+    "multiplier": "1.002826918305349555",
+    "listMultiplier": "1.002826918305349555",
+    "tokenPriceUsd": "752.634972879466606253",
+    "economicPriceUsd": "750.513333",
+    "referenceUsd": "750.513333",
+    "referenceSource": "stockInfo",
+    "referenceAsOf": "2026-09-25T20:10:05.514Z",
+    "referenceSibling": null,
+    "premiumBps": 0,
+    "overpayUsd": null,
+    "notionalUsd": "20.00",
+    "tokenUnits": "0.02657331",
+    "economicShares": "0.02664843",
+    "unitReadings": null,
+    "formula": "economicPrice = tokenInfo.price / sharesMultiplier",
+    "inputsHash": "6a44b05f629895678999f94b164ecd353991115bf301b5ac806b9d67ad6a4430",
+    "policyHash": "819a2bcaeeec65005a0d17f38a68e8fa26b165047ffec295b6f9d460a4a36043",
+    "verdict": "ALLOW",
+    "reasons": [
+      "OK"
+    ],
+    "notes": [],
+    "hash": "647f6cdd49f75240161b1b15e1dadafb7095c789948cac7a66ce9fee884537ae",
+    "narration": "ALLOW. METAon (Ondo) passes every check. $20.00 buys 0.02657331 METAon tokens = 0.02664843 shares (multiplier 1.002826918305349555). Not the same instrument: METAx (xStock), METAB (bStock). Hash 647f6cdd49f7…"
+  }
+}

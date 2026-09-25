@@ -44,7 +44,8 @@ else got built.
          and on every tick from 19:50 to 20:20 UTC around the close
 - [x] `.github/workflows/snapshot.yml` runs it every 10 min and commits to the **`snapshots`
       branch**. The schedule only runs from the default branch.
-- [ ] Confirm the first scheduled runs landed on `snapshots`. GitHub cron is best-effort, so
+- [x] Confirmed at 20:40Z: 53 ticks, no gaps after 12:23, the close captured (19:50 regular, 20:00 paused, 20:10 postmarket); replay sets built from them
+- [ ] ~~Confirm the first scheduled runs landed on `snapshots`.~~ GitHub cron is best-effort, so
       if runs are skipped or Binance refuses GitHub's US runners, start the backup on any
       always-on machine outside the US: `npm ci && npx tsx scripts/snapshot.ts --loop 600`
 - **Done when:** `snapshots` has rows from today's regular session and keeps growing with

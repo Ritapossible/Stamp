@@ -1,0 +1,168 @@
+{
+  "name": "crwdon-usd20",
+  "capture": "fixtures/captures/2026-09-25/200006.json",
+  "input": {
+    "asOf": "2026-09-25T20:00:06.276Z",
+    "universe": [
+      {
+        "chainId": "56",
+        "contractAddress": "0xe6837794fbc6dd024733a1a31f86061296fa2752",
+        "symbol": "CRWDon",
+        "ticker": "CRWD",
+        "type": 1,
+        "multiplier": "4"
+      },
+      {
+        "chainId": "56",
+        "contractAddress": "0x214151022c2a5e380ab80cdac31f23ae554a7345",
+        "symbol": "CRWDx",
+        "ticker": "CRWD",
+        "type": 2,
+        "multiplier": "1"
+      },
+      {
+        "chainId": "56",
+        "contractAddress": "0x814981cf5df4a14d4d7328f9abf0d02e9ed54cd1",
+        "symbol": "CRWDB",
+        "ticker": "CRWD",
+        "type": 3,
+        "multiplier": "1"
+      }
+    ],
+    "views": [
+      {
+        "contractAddress": "0x214151022c2a5e380ab80cdac31f23ae554a7345",
+        "complete": true,
+        "tokenPriceUsd": "225.9370602046390890006432",
+        "multiplier": "4",
+        "listMultiplier": "1",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": null,
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": "252.226",
+        "fetchedAt": "2026-09-25T20:00:06.276Z"
+      },
+      {
+        "contractAddress": "0x814981cf5df4a14d4d7328f9abf0d02e9ed54cd1",
+        "complete": true,
+        "tokenPriceUsd": "252.68",
+        "multiplier": "1",
+        "listMultiplier": "1",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": null,
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": null,
+        "fetchedAt": "2026-09-25T20:00:06.276Z"
+      },
+      {
+        "contractAddress": "0xe6837794fbc6dd024733a1a31f86061296fa2752",
+        "complete": true,
+        "tokenPriceUsd": "1008.337832",
+        "multiplier": "4",
+        "listMultiplier": "4",
+        "assetStatus": {
+          "openState": false,
+          "marketStatus": "paused",
+          "reasonCode": "MARKET_PAUSED",
+          "reasonMsg": "Paused for session transition"
+        },
+        "stockPriceUsd": "252.226",
+        "fetchedAt": "2026-09-25T20:00:06.276Z"
+      }
+    ],
+    "venue": {
+      "marketStatus": "paused",
+      "openState": false
+    },
+    "intent": "Buy $20 of CRWDon",
+    "policy": {
+      "version": 1,
+      "issuer": "ondo",
+      "neverSwitchIssuer": true,
+      "noiseBandBps": 10,
+      "maxRegularPremiumBps": 30,
+      "maxClosedPremiumBps": 80,
+      "implausibleAbsBps": 500,
+      "maxSlippageBps": 50,
+      "quoteTtlSec": 25,
+      "maxOrderUsd": "20",
+      "maxDayUsd": "50",
+      "blockCorporateActions": true
+    },
+    "lastOfficialClose": {
+      "ticker": "CRWD",
+      "priceUsd": "252.226",
+      "asOf": "2026-09-25T20:00:06.276Z"
+    },
+    "filledTodayUsd": "0"
+  },
+  "ticket": {
+    "kind": "decision",
+    "engineVersion": "0.1.0",
+    "asOf": "2026-09-25T20:00:06.276Z",
+    "intentId": "aa1897ca5a1d6d74",
+    "intent": {
+      "raw": "Buy $20 of CRWDon",
+      "side": "buy",
+      "unit": "usd",
+      "amount": "20",
+      "query": "CRWDon"
+    },
+    "chosen": {
+      "chainId": "56",
+      "contractAddress": "0xe6837794fbc6dd024733a1a31f86061296fa2752",
+      "symbol": "CRWDon",
+      "ticker": "CRWD",
+      "issuer": "ondo"
+    },
+    "rejected": [
+      {
+        "symbol": "CRWDx",
+        "issuer": "xstock",
+        "contractAddress": "0x214151022c2a5e380ab80cdac31f23ae554a7345",
+        "reason": "NEVER_SWITCH"
+      },
+      {
+        "symbol": "CRWDB",
+        "issuer": "bstock",
+        "contractAddress": "0x814981cf5df4a14d4d7328f9abf0d02e9ed54cd1",
+        "reason": "NEVER_SWITCH"
+      }
+    ],
+    "session": null,
+    "sessionSource": null,
+    "marketStatus": "paused",
+    "reasonCode": "MARKET_PAUSED",
+    "reasonMsg": "Paused for session transition",
+    "multiplier": "4",
+    "listMultiplier": "4",
+    "tokenPriceUsd": "1008.337832",
+    "economicPriceUsd": null,
+    "referenceUsd": null,
+    "referenceSource": null,
+    "referenceAsOf": null,
+    "referenceSibling": null,
+    "premiumBps": null,
+    "overpayUsd": null,
+    "notionalUsd": "20.00",
+    "tokenUnits": "0.01983462",
+    "economicShares": "0.07933849",
+    "unitReadings": null,
+    "formula": "economicPrice = tokenInfo.price / sharesMultiplier",
+    "inputsHash": "cc0ce6b6a0afed976ef91916e8b0e43d3e7f5ee16c81ce716cfe347d0d53fa01",
+    "policyHash": "819a2bcaeeec65005a0d17f38a68e8fa26b165047ffec295b6f9d460a4a36043",
+    "verdict": "BLOCK",
+    "reasons": [
+      "MARKET_HALTED"
+    ],
+    "notes": [],
+    "hash": "9a869b713e5e63683bbd1148fda65a71b91f1a0d55f05cac1b30b01843c5947b",
+    "narration": "BLOCK. Trading in CRWDon (Ondo) is paused (MARKET_PAUSED: Paused for session transition). $20.00 buys 0.01983462 CRWDon tokens = 0.07933849 shares (multiplier 4). Not the same instrument: CRWDx (xStock), CRWDB (bStock). Hash 9a869b713e5e…"
+  }
+}
