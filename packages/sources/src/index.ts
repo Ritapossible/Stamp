@@ -5,3 +5,5 @@ export { toAssetStatus, toMarketView, toVenueStatus } from "./adapters.js";
 export { fromCapture, type CaptureFile, type MarketInputs } from "./capture.js";
 export { LiveMarket, type LiveMarketOptions } from "./market.js";
 export { parseSnapshotLines, SnapshotStore, type SnapshotRow } from "./snapshots.js";
+export { BSC_USDT, FakeWallet, type OrderStatus, type PreparedOrder, type QuoteRequest, type StockWallet } from "./wallet.js";
+export { signRequest, TRADING_BASE, TradingApiClient, TradingApiError, TradingApiWallet, type TradingApiOptions } from "./trading.js";

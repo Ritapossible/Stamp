@@ -241,14 +241,24 @@ This step runs only after a decision `ALLOW`, and only when the human presses **
 
 | # | Check | Result |
 |---|---|---|
-| E1 | The decision ticket re-hashes to the same value it was stored under. | else BLOCK `TICKET_TAMPERED` |
+| E1 | The decision ticket re-hashes to the same value it was stored under, and the policy supplied hashes to its `policyHash`. | else BLOCK `TICKET_TAMPERED` |
+| E1b | The decision is `ALLOW` (never `WARN`). | else BLOCK `DECISION_NOT_ALLOWED` |
 | E2 | The decision was made ≤ 120 s ago. Otherwise re-run the decision. | else BLOCK `DECISION_STALE` |
 | E3 | Quote `executionMode` is `RFQ` or `SWAP`. Record which. | — |
 | E4 | Quote age ≤ `policy.quoteTtlSec` (25 s, which leaves room for the ~30 s API expiry). | else BLOCK `QUOTE_STALE` |
-| E5 | Quoted `toTokenAddress` equals the decision's `chosen.contractAddress`. | else BLOCK `ISSUER_MISMATCH` |
+| E5 | Quoted `toTokenAddress` equals the decision's `chosen.contractAddress`, paid with BSC USDT. | else BLOCK `ISSUER_MISMATCH` |
+| E5b | The quote spends the decision's notional (±$0.01), and the raw amounts are plain integers. | else BLOCK `AMOUNT_MISMATCH` |
 | E6 | Effective price from the quote (`amountIn / amountOut`) versus the decision's `tokenPriceUsd` stays within `maxSlippageBps` (50). | else BLOCK `SLIPPAGE` |
 | E7 | RFQ: decode `rfq.typedDataToSign`. The token, amount and recipient must match the ticket, and the recipient must be the user's address. SWAP: `pre-transaction/simulate` must pass. | else BLOCK `TYPED_DATA_MISMATCH` / `SIMULATION_FAILED` |
 | E8 | If an approval is needed, simulate the approve tx. | else BLOCK `SIMULATION_FAILED` |
+
+E7's typed-data check does not trust field names (the real RFQ layout is recorded on plan
+Day 7). Every string or integer in `message` is collected, and the ticket's token, the
+user's address and one of the quoted amounts must all appear, while no sibling issuer's
+token may appear. `domain.chainId` must be 56. Implemented in `packages/engine/src/execution.ts`.
+Wallets live behind `StockWallet` in `packages/sources/src/wallet.ts` (`FakeWallet`, labelled
+`vendor: "fake"`) and `trading.ts` (`TradingApiWallet`: HMAC client, never signs, and
+unknown response shapes are errors).
 
 The execution ticket stores `typedDataHash = sha256(canonicalJson(typedDataToSign))`. The web
 confirm screen shows the ticket and hands exactly that typed data to the wallet. The human

@@ -34,7 +34,9 @@ export type ReasonCode =
   | "THIN_BOOK"
   | "NEVER_SWITCH"
   | "OK"
-  // execution (plan Day 7)
+  // execution
+  | "DECISION_NOT_ALLOWED"
+  | "AMOUNT_MISMATCH"
   | "TICKET_TAMPERED"
   | "DECISION_STALE"
   | "QUOTE_STALE"
@@ -175,6 +177,82 @@ export interface DecisionTicket {
   formula: "economicPrice = tokenInfo.price / sharesMultiplier";
   inputsHash: string;
   policyHash: string;
+  hash: string;
+  narration: string;
+}
+
+/** A quote as returned by the Trading API (or the Agentic Wallet), normalized. Raw amounts are integer strings. */
+export interface QuoteView {
+  quoteId: string;
+  quotedAt: string;
+  executionMode: "RFQ" | "SWAP";
+  vendor: string | null;
+  fromToken: string;
+  toToken: string;
+  amountInRaw: string;
+  amountOutRaw: string;
+  fromDecimals: number;
+  toDecimals: number;
+}
+
+export interface SimulationResult {
+  ok: boolean;
+  error: string | null;
+}
+
+export interface ExecuteInput {
+  decision: DecisionTicket;
+  /** The policy the decision was made under; must hash to decision.policyHash. */
+  policy: Policy;
+  asOf: string;
+  /** The wallet that will sign and receive. */
+  user: string;
+  /** The stablecoin the order pays with (BSC USDT). */
+  quoteAsset: string;
+  quote: QuoteView;
+  /** RFQ: rfq.typedDataToSign exactly as returned. */
+  typedData: unknown | null;
+  /** SWAP: result of pre-transaction/simulate on the swap tx. */
+  swapSimulation: SimulationResult | null;
+  /** Present when an ERC-20 approval is needed first. */
+  approvalSimulation: SimulationResult | null;
+}
+
+export interface TypedDataChecks {
+  hashable: boolean;
+  chainId56: boolean;
+  tokenFound: boolean;
+  userFound: boolean;
+  amountFound: boolean;
+  otherIssuerFound: string | null;
+}
+
+export interface ExecutionTicket {
+  kind: "execution";
+  engineVersion: string;
+  asOf: string;
+  decisionHash: string;
+  policyHash: string;
+  user: string;
+  symbol: string | null;
+  quoteId: string;
+  quotedAt: string;
+  quoteAgeSec: number;
+  executionMode: "RFQ" | "SWAP";
+  vendor: string | null;
+  fromToken: string;
+  toToken: string;
+  amountInUsd: string | null;
+  amountOutTokens: string | null;
+  economicShares: string | null;
+  effectivePriceUsd: string | null;
+  slippageBps: number | null;
+  typedDataHash: string | null;
+  typedDataChecks: TypedDataChecks | null;
+  swapSimulation: SimulationResult | null;
+  approvalSimulation: SimulationResult | null;
+  verdict: Verdict;
+  reasons: ReasonCode[];
   hash: string;
   narration: string;
 }

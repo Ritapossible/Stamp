@@ -92,7 +92,7 @@ else got built.
 
 ### Fri 2 Oct — Day 7: execution ticket
 - [ ] `prepare` → `rfq.typedDataToSign`, and decode it. Record which fields hold token, amount and recipient
-- [ ] `execution.ts` checks E1–E8, `FakeWallet` tests for each row
+- [x] `execution.ts` checks E1–E8, 25 tests; `FakeWallet`; `TradingApiClient` HMAC signing verified against independently computed signatures — done Fri 25 Sep
 - [ ] Approve-tx simulate via `pre-transaction/simulate`
 - [ ] Snapshotter check before 20:00 UTC
 - **Done when:** an execution ticket is produced from a live quote, and **nothing is submitted**.
