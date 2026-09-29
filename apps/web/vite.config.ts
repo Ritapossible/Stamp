@@ -56,13 +56,6 @@ function nflxTicket(): string {
 </div>`;
 }
 
-/** The hero sentence, rounded from the same fixture as the ticket card, so the two never disagree. */
-function nflxLede(): string {
-  const t = JSON.parse(readFileSync(resolve(here, "../../fixtures/golden/nflx-bare-one.json"), "utf8")).ticket;
-  const usd = (s: string) => `$${Math.round(Number(s))}`;
-  return `One reading is ${usd(t.unitReadings.asTokens.usd)}. The other is ${usd(t.unitReadings.asShares.usd)}.`;
-}
-
 const SITE = "https://stamp-iizn.onrender.com";
 
 /** Link-preview tags for chat apps, forms and social sites, from the page's own title and description. */
@@ -107,8 +100,7 @@ function layout(): Plugin {
           .replace("<!-- @header -->", mark(partial("header.html"), false))
           .replace("<!-- @footer -->", partial("footer.html"))
           .replace("<!-- @docs-nav -->", () => mark(partial("docs-nav.html"), true))
-          .replace("<!-- @nflx-ticket -->", () => nflxTicket())
-          .replace("<!-- @nflx-lede -->", () => nflxLede());
+          .replace("<!-- @nflx-ticket -->", () => nflxTicket());
       },
     },
   };
