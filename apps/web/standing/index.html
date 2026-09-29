@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- @head -->
+    <title>Standing order - Stamp</title>
+    <meta name="description" content="One tokenized-stock order, re-checked every ten minutes. When the verdict is ALLOW it waits for your signature." />
+  </head>
+  <body>
+    <!-- @header -->
+    <main id="main">
+      <section class="page-head">
+        <div class="wrap">
+          <p class="eyebrow">standing order</p>
+          <h1 class="headline h2"><span class="dim">Buy when it's fair.</span><br />Park when it isn't.</h1>
+          <p>One order, re-checked every ten minutes. When the verdict is ALLOW it waits for you to sign - Stamp never holds a key, and never says "bought" without a fill.</p>
+        </div>
+      </section>
+
+      <section class="wrap page-body">
+        <div class="panel" id="standing-panel">
+          <div class="panel-bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span>stamp - standing order</span></div>
+          <div id="standing-body"><p class="placeholder"><span class="spinner"></span>loading…</p></div>
+        </div>
+        <ol class="steps compact">
+          <li><b>PARKED</b><span>The last check said WARN or BLOCK, or the market is shut and the price is rich. Nothing happens.</span></li>
+          <li><b>READY</b><span>A check said ALLOW. Press review: Stamp decides again, then gets a fresh quote.</span></li>
+          <li><b>AWAITING SIGNATURE</b><span>The quote passed the execution checks. Your wallet asks you - approval first if it's the first time.</span></li>
+          <li><b>FILLED</b><span>Only after BSC confirms the transaction. The daily $50 cap counts fills, not attempts.</span></li>
+        </ol>
+      </section>
+    </main>
+    <!-- @footer -->
+    <script type="module" src="/src/pages/standing.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- @head -->
+    <title>HTTP API - Stamp docs</title>
+    <meta name="description" content="Every Stamp HTTP endpoint: tickets, verify, replay, execution and standing orders." />
+  </head>
+  <body>
+    <!-- @header -->
+    <main id="main">
+      <div class="wrap docs">
+        <!-- @docs-nav -->
+        <article class="prose">
+          <p class="eyebrow">docs · build on it</p>
+          <h1 class="headline">HTTP API</h1>
+
+          <p class="lead">JSON over HTTPS, no key, no account. The base is <code>https://stamp-iizn.onrender.com</code> (a free host: the first call after a quiet spell can take ~30 s).</p>
+
+          <h2>Decide</h2>
+          <div class="endpoint"><span class="m">POST</span><code>/v1/tickets</code></div>
+          <p>Body <code>{ intent, policy? }</code>. Reads live Binance data and returns <code>{ ticket, verify }</code>. <code>503</code> if Binance is unreachable - Stamp never makes a ticket from guessed data.</p>
+          <pre data-copy><code>curl -s https://stamp-iizn.onrender.com/v1/tickets \
+  -H 'content-type: application/json' \
+  -d '{"intent":"Buy $20 of NVIDIA"}'</code></pre>
+          <p>Fields you'll use most: <code>verdict</code>, <code>reasons</code>, <code>notes</code>, <code>narration</code>, <code>chosen</code>, <code>rejected</code>, <code>multiplier</code>, <code>economicPriceUsd</code>, <code>referenceUsd</code>, <code>premiumBps</code>, <code>overpayUsd</code>, <code>tokenUnits</code>, <code>economicShares</code>, <code>unitReadings</code>, <code>hash</code>. Money is always a decimal string, never a float.</p>
+
+          <h2>Verify</h2>
+          <div class="endpoint"><span class="m get">GET</span><code>/v1/tickets/:hash</code></div>
+          <p>The stored ticket plus the exact inputs it was decided from. Re-hashed on read; <code>500</code> if it no longer matches.</p>
+          <div class="endpoint"><span class="m">POST</span><code>/v1/verify</code></div>
+          <p>Body <code>{ input, ticket? }</code>. Runs the engine on <code>input</code> and returns <code>{ hash, verdict, reasons, matches }</code>. See <a href="/docs/verify/">verify a ticket</a>.</p>
+          <div class="endpoint"><span class="m get">GET</span><code>/v1/replay</code></div>
+          <p>Recomputes every recorded ticket (test cases and real captures). <code>{ ok, count, drifted, rows }</code>.</p>
+          <div class="endpoint"><span class="m get">GET</span><code>/v1/summary</code></div>
+          <p>Live universe counts: instruments, per issuer, tickers sold by more than one issuer, largest multipliers.</p>
+
+          <h2>Execute (a person signs)</h2>
+          <div class="endpoint"><span class="m">POST</span><code>/v1/execution</code></div>
+          <p>Body <code>{ decisionHash, user }</code>. Only a stored ALLOW is quoted (else <code>409</code>). Returns the execution ticket, plus <code>tx</code> (SWAP) or <code>typedData</code> (RFQ) only when it is ALLOW, or <code>approvalTx</code> when <code>APPROVAL_REQUIRED</code>. <code>501</code> when the server has no Trading API key.</p>
+          <div class="endpoint"><span class="m">POST</span><code>/v1/execution/:hash/sent</code></div>
+          <p>Body <code>{ txHash }</code>: records the transaction your wallet sent (SWAP).</p>
+          <div class="endpoint"><span class="m">POST</span><code>/v1/execution/:hash/submit</code></div>
+          <p>Body <code>{ signature }</code>: forwards your typed-data signature (RFQ). Refused unless the execution is ALLOW and the quote is fresh.</p>
+          <div class="endpoint"><span class="m get">GET</span><code>/v1/execution/:hash</code></div>
+          <p>Status: <code>PENDING</code>, <code>FILLED</code> or <code>FAILED</code>.</p>
+
+          <h2>Standing order</h2>
+          <div class="endpoint"><span class="m get">GET</span><code>/v1/standing</code></div>
+          <div class="endpoint"><span class="m">POST</span><code>/v1/standing</code></div>
+          <p>List orders and <code>filledTodayUsd</code>, or create <code>{ intent, user }</code>. One active order at a time (<code>409</code>).</p>
+          <div class="endpoint"><span class="m">POST</span><code>/v1/standing/:id/{recheck,review,cancel,sent}</code></div>
+          <p><code>review</code> decides again before quoting, because the last check may be ten minutes old.</p>
+
+          <h2>Health</h2>
+          <div class="endpoint"><span class="m get">GET</span><code>/health</code></div>
+          <p><code>{ ok, tickets, wallet }</code>. <code>wallet</code> is <code>binance-trading-api</code>, <code>fake</code> (demo only, labelled) or <code>null</code>.</p>
+          <a class="docs-next" href="/docs/agent/">next: agent studio face →</a>
+        </article>
+      </div>
+    </main>
+    <!-- @footer -->
+    <script type="module" src="/src/pages/docs.ts"></script>
+  </body>
+</html>

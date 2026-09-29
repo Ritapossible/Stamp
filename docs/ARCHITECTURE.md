@@ -39,7 +39,7 @@ execution ticket, and the typed data being signed is checked against that ticket
 ```mermaid
 flowchart LR
   human[Person / standing order] --> web[apps/web]
-  agent2[Other agent] -->|x402 via b402| face[apps/agent: MCP + /x402]
+  agent2[Other agent] -->|MCP / x402 via b402| face[agent/: MCP + /x402]
   web --> api[packages/api]
   face --> api
   api --> engine[packages/engine - pure]
@@ -60,7 +60,7 @@ The engine is pure: data in, ticket out. Everything that does I/O lives in `sour
 |---|---|---|
 | `packages/api` + snapshot cron | one small Node host (Fly/Render/Railway) | Trading API key for the live execution path only |
 | `apps/web` | static host, or served by the API | no |
-| `apps/agent` | `bag dev` locally plus a public tunnel, or Studio runtime (testnet credits) | agent wallet + b402 key |
+| `agent/` | `bag dev` locally, or `bag deploy` (managed trial: testnet, 48 h; or aws/azure/nodeops) | agent wallet + B402 merchant values |
 
 ## 4. Packages
 
@@ -109,12 +109,12 @@ The engine is pure: data in, ticket out. Everything that does I/O lives in `sour
 
 One screen, no charts, no component library. See §10.
 
-### 4.5 `apps/agent`
+### 4.5 `agent/`
 
-This is the BNB Agent Studio project scaffolded by `bag init`. It exposes one MCP tool,
-`stamp.ticket`, and one paid route, `POST /x402`. Both call `packages/api` over HTTP or
-import the engine directly. **Neither reimplements a check.** The price is a config
-constant.
+This is the BNB Agent Studio project scaffolded by `bag init`, at `agent/` (its own pnpm
+workspace). It exposes two free MCP tools, `stamp_ticket` and `stamp_verify`, and one paid
+route, `POST /x402` ($0.02 via B402). All three call `packages/api` over HTTP (D24).
+**None reimplements a check.** The price is a config constant.
 
 ## 5. External data
 
@@ -371,7 +371,7 @@ Free (judges and web):
 Wallet selection at startup: `STAMP_TRADING_API_KEY` + `STAMP_TRADING_API_SECRET` → Trading API;
 `STAMP_FAKE_WALLET=1` → the labelled fake wallet; neither → execution routes answer 501.
 
-Paid (agent face only): MCP tool `stamp.ticket` (same body as `POST /v1/tickets`), and
+Agent face: free MCP tools `stamp_ticket` (same body as `POST /v1/tickets`) and `stamp_verify`, and paid
 `POST /x402` using the b402 verify/settle flow at a fixed price of `"0.02"` USDT. **Payment
 settles before the engine runs.**
 

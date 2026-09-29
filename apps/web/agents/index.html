@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- @head -->
+    <title>For agents - Stamp</title>
+    <meta name="description" content="Stamp for AI agents: a free HTTP API, MCP tools, and a paid x402 route settled by B402, built on BNB Agent Studio with an ERC-8004 identity." />
+  </head>
+  <body>
+    <!-- @header -->
+    <main id="main">
+      <section class="page-head">
+        <div class="wrap">
+          <p class="eyebrow">for agents</p>
+          <h1 class="headline h2"><span class="dim">Ask before you buy.</span><br />Pay two cents.</h1>
+          <p>An agent that wants to buy a tokenized stock is the one party that shouldn't grade its own order. Stamp gives it the same ticket a person gets - same code, same hash - over HTTP, MCP, or a paid x402 route.</p>
+        </div>
+      </section>
+
+      <section class="wrap page-body">
+        <div class="cards three">
+          <div class="card static"><span class="card-k">http · free</span><b>POST /v1/tickets</b><span>The API this page runs on. JSON in, ticket out. No key, no account.</span></div>
+          <div class="card static"><span class="card-k">mcp · free</span><b>stamp_ticket · stamp_verify</b><span>Two read-only tools on a BNB Agent Studio agent. Decide an order; recompute a hash.</span></div>
+          <div class="card static"><span class="card-k">x402 · $0.02</span><b>POST /x402</b><span>The same ticket behind a payment challenge. B402 verifies and settles before the work runs.</span></div>
+        </div>
+
+        <div class="split">
+          <div>
+            <h2 class="h3">Over HTTP</h2>
+            <pre data-copy><code>curl -s https://stamp-iizn.onrender.com/v1/tickets \
+  -H 'content-type: application/json' \
+  -d '{"intent":"Buy 1 NFLX","policy":{"issuer":"ondo"}}'</code></pre>
+            <p class="aside">Returns <code>{ ticket, verify }</code>. Act on <code>ticket.verdict === "ALLOW"</code> only. Full reference in <a href="/docs/api/">http api</a>.</p>
+          </div>
+          <div>
+            <h2 class="h3">Over MCP</h2>
+            <pre data-copy><code>{
+  "mcpServers": {
+    "stamp": { "url": "http://localhost:8000/mcp" }
+  }
+}</code></pre>
+            <p class="aside">Run the agent with <code>bag dev</code> from <code>agent/</code>, then call <code>stamp_ticket</code> with <code>{"intent":"Buy $20 of NVIDIA"}</code>. Setup in <a href="/docs/agent/">agent studio face</a>.</p>
+          </div>
+        </div>
+
+        <div class="split">
+          <div>
+            <h2 class="h3">Paying over x402</h2>
+            <pre data-copy><code>bag x402 buy https://&lt;agent-host&gt;/x402 --method POST \
+  --json '{"prompt":"Buy $20 of NVIDIA"}' \
+  --max-usd 0.05 --asset USDT</code></pre>
+            <p class="aside">The body comes back as <code>{"result": "&lt;ticket JSON&gt;"}</code>. Its <code>verifyUrl</code> opens on <a href="/proof/">proof</a>, where anyone can recompute the hash.</p>
+          </div>
+          <div>
+            <h2 class="h3">What the agent will not do</h2>
+            <ul class="plain">
+              <li>Run an LLM anywhere in the verdict. The provider is set to <code>none</code>.</li>
+              <li>Re-implement a check. It calls the Stamp API; the engine decides.</li>
+              <li>Sign a trade. Its wallet only receives the $0.02 and signs its own identity.</li>
+              <li>Pretend a paid call is free: payment settles before the work, so try the order on MCP first.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="notice">
+          <b>Status, honestly:</b> the MCP tools and the x402 work path run locally today. The paid route stays dormant (<code>503</code>) until Binance approves a B402 merchant for the agent's wallet, and the managed Agent Studio host is a 48-hour BSC testnet trial. The ticket's data is always BSC mainnet.
+        </div>
+      </section>
+    </main>
+    <!-- @footer -->
+    <script type="module" src="/src/pages/agents.ts"></script>
+  </body>
+</html>

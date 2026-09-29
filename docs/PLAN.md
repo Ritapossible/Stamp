@@ -122,16 +122,17 @@ else got built.
 - **Done when:** one `FILLED` ticket exists with a BscScan link. Otherwise, record the attempt honestly.
 
 ### Tue 6 – Wed 7 Oct - Days 11–12: Agent Studio
-- [ ] `npm i -g @bnbagent/studio-cli`, `bag skills install`, `bag init` in `apps/agent`
-- [ ] MCP tool `stamp.ticket` (the same zod schema as the HTTP body)
-- [ ] `POST /x402` settled via b402 verify/settle at a fixed `0.02` USDT
+- [x] `bag init` → `agent/` (done early, 29 Sep; MCP + X402 faces, B402 rail, no LLM)
+- [x] MCP tools `stamp_ticket` and `stamp_verify`, calling the Stamp API (tested with `bag dev`)
+- [x] `POST /x402` at a fixed $0.02, wired and dormant; the work path was tested at price 0
+- [ ] **(user)** Apply for a B402 merchant for the agent wallet; put the values in `agent/.studio/.env.local`
 - [ ] Register the ERC-8004 identity on BSC. Record the tx.
 - [ ] A second client pays once (`bag x402 buy` or a script). Record the settlement tx.
 - **Done when:** a paid call returns a ticket whose hash verifies on the free `/v1/verify`.
 
 ### Thu 8 Oct - Day 13: harden and README
 - [ ] README judge path: three commands, expected output pasted in
-- [ ] README prior-art paragraph. Verify each named repo exists first, and drop any that don't.
+- [x] README prior-art paragraph (29 Sep: bozBasket, PixStock and Binance's skill verified; "STOCK.sh" not found, dropped)
 - [ ] Error states on the web app (API down, no reference, quote stale)
 - [ ] Freeze the fixtures and tag `v1.0.0-rc`
 - **Done when:** a fresh clone on another machine passes `npm ci && npm test && npm run replay`.

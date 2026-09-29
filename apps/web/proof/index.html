@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- @head -->
+    <title>Proof and replay - Stamp</title>
+    <meta name="description" content="Every recorded Stamp ticket, recomputed on this server from real Binance captures. Paste any ticket hash to verify it." />
+  </head>
+  <body>
+    <!-- @header -->
+    <main id="main">
+      <section class="page-head">
+        <div class="wrap">
+          <p class="eyebrow">proof</p>
+          <h1 class="headline h2"><span class="dim">Every ticket recomputes.</span><br />Anyone can check.</h1>
+          <p>Real captures of Binance's responses, including the 20:00 close pause, re-decided on this server right now. A single changed hash would show here as drift.</p>
+        </div>
+      </section>
+
+      <section class="wrap page-body">
+        <div class="panel">
+          <div class="panel-bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span id="replay-title-bar">stamp - replay</span></div>
+          <div class="tabs" id="replay-tabs" role="tablist" aria-label="Recorded sets"></div>
+          <div class="table-wrap" id="replay-table"><p class="placeholder"><span class="spinner"></span>recomputing recorded tickets…</p></div>
+          <div class="cmd"><code>npm run replay</code><span>same check, on your machine, no key</span></div>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="verify-title">
+        <div class="wrap">
+          <div class="section-head">
+            <p class="eyebrow">verify one</p>
+            <h2 class="headline h2" id="verify-title"><span class="dim">Got a hash?</span><br />Check it here.</h2>
+            <p>Paste a ticket hash from this server. Stamp fetches the exact inputs it decided from, runs the engine again, and compares.</p>
+          </div>
+          <div class="panel">
+            <div class="panel-bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span>stamp - verify</span></div>
+            <form class="order-form" id="verify-form">
+              <label class="sr-only" for="verify-input">Ticket hash</label>
+              <input class="order-input mono" id="verify-input" autocomplete="off" spellcheck="false" maxlength="64" placeholder="64-character ticket hash" required />
+              <button class="btn" type="submit">verify →</button>
+            </form>
+            <div class="result" id="verify-result" aria-live="polite">
+              <p class="placeholder">Make a ticket on <a href="/check/">check</a> and press "verify", or read <a href="/docs/verify/">how verification works</a>.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <!-- @footer -->
+    <script type="module" src="/src/pages/proof.ts"></script>
+  </body>
+</html>

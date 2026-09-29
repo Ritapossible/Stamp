@@ -116,7 +116,23 @@ async function call<T>(method: "GET" | "POST", path: string, body?: unknown): Pr
   return json as T;
 }
 
+export interface Health {
+  ok: boolean;
+  tickets: number;
+  wallet: string | null;
+}
+
+export interface VerifyResult {
+  hash: string;
+  verdict: Verdict;
+  reasons: string[];
+  matches: boolean | null;
+}
+
 export const api = {
+  health: () => call<Health>("GET", "/health"),
+  stored: (hash: string) => call<{ ticket: Ticket; input: unknown }>("GET", `/v1/tickets/${hash}`),
+  verify: (input: unknown, ticket: unknown) => call<VerifyResult>("POST", "/v1/verify", { input, ticket }),
   ticket: (intent: string, issuer: string | null) =>
     call<{ ticket: Ticket; verify: string }>("POST", "/v1/tickets", { intent, policy: { issuer } }),
   replay: () => call<{ ok: boolean; count: number; drifted: number; rows: ReplayRow[] }>("GET", "/v1/replay"),

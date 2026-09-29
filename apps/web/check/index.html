@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- @head -->
+    <title>Check an order - Stamp</title>
+    <meta name="description" content="Type a tokenized-stock order the way you'd say it. Stamp reads live Binance data, runs the checks, and hands back a hashed ticket." />
+  </head>
+  <body>
+    <!-- @header -->
+    <main id="main">
+      <section class="page-head">
+        <div class="wrap">
+          <p class="eyebrow">check</p>
+          <h1 class="headline h2"><span class="dim">Say it plainly.</span><br />Get a verdict.</h1>
+          <p>Type an order the way you'd say it. Stamp reads live Binance data, runs the checks in a fixed order, and hands back a ticket you can verify. Only an ALLOW can go on to your wallet.</p>
+        </div>
+      </section>
+
+      <section class="wrap page-body">
+        <div class="panel">
+          <div class="panel-bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span>stamp - check an order</span></div>
+          <p class="policy-line" id="policy-line">
+            <b>Ondo only.</b> Other issuers' tokens for the same stock are shown, never bought. Never guess what "1" means. Park if the market is shut and the price is more than 0.80% above the last close. <b>$20 an order, $50 a day.</b>
+          </p>
+          <form class="order-form" id="order-form">
+            <label class="sr-only" for="order-input">Order</label>
+            <input class="order-input" id="order-input" name="intent" autocomplete="off" spellcheck="false" maxlength="200" placeholder="Buy $20 of NVIDIA" required />
+            <label class="sr-only" for="issuer-select">Issuer</label>
+            <select class="order-input" id="issuer-select" name="issuer">
+              <option value="ondo">issuer: Ondo</option>
+              <option value="bstock">issuer: bStock</option>
+              <option value="xstock">issuer: xStock</option>
+              <option value="any">issuer: name it</option>
+            </select>
+            <button class="btn" type="submit" id="order-submit">check →</button>
+          </form>
+          <div class="chips" id="chips" aria-label="Examples"></div>
+          <div class="result" id="result" aria-live="polite">
+            <p class="placeholder">No order yet. Try one of the examples - "Buy 1 NFLX" is the interesting one.</p>
+          </div>
+        </div>
+
+        <div class="legend">
+          <div><span class="verdict ALLOW">ALLOW</span><p>Every check passed. You can review a fresh quote and sign it in your wallet.</p></div>
+          <div><span class="verdict WARN">WARN</span><p>Something is off - a rich off-hours price, no reference. Never signed; a standing order stays parked.</p></div>
+          <div><span class="verdict BLOCK">BLOCK</span><p>A hard stop: wrong unit, halted, bad data, over the cap. The ticket says which, in plain words.</p></div>
+        </div>
+        <p class="aside">Every code is explained in <a href="/docs/checks/">checks &amp; reason codes</a>. The numbers behind "0.80%" and "$20" are in the <a href="/docs/policy/">policy</a>.</p>
+      </section>
+    </main>
+    <!-- @footer -->
+    <script type="module" src="/src/pages/check.ts"></script>
+  </body>
+</html>

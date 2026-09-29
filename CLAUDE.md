@@ -53,8 +53,8 @@ This is for the BNB Hack: Tokenized Stocks Edition. Submissions are due
 packages/engine    pure TS, no I/O. types, policy, units, issuer, session, premium, verdict, hash, narrate
 packages/sources   Binance RWA client, issuer classifier, snapshot store, wallet adapters (fake + live)
 packages/api       HTTP server (Hono), ticket store, standing order worker
-apps/web           one screen (Vite + React, no component library)
-apps/agent         BNB Agent Studio seller: ERC-8004 identity, MCP tool stamp.ticket, x402 via b402
+apps/web           the site: one HTML page per route + /docs (Vite MPA, plain TS)
+agent/             BNB Agent Studio project (bag init, pnpm): MCP stamp_ticket + stamp_verify, paid /x402 via B402, ERC-8004
 fixtures/          recorded payloads, never edited by hand; golden/ has expected verdicts
 scripts/           probe.ts (record payloads), replay.ts (judge command), snapshot.ts (cron)
 docs/              ARCHITECTURE, PLAN, DECISIONS, API-NOTES, HACKATHON
@@ -85,7 +85,12 @@ npm run build && npm start                 build apps/web, then serve API + page
 npm run dev:web                            Vite dev server for the page (proxies /v1 to :8787)
 ```
 
-`apps/web` is a single page in plain TypeScript + CSS (no framework, no component library),
+`apps/web` is a multi-page site in plain TypeScript + CSS (no framework, no component library):
+home, /check/, /proof/, /standing/, /agents/, /docs/* and 404.html, each a real HTML file listed in
+`vite.config.ts`. A build-time plugin injects `partials/` (head, header, footer, docs nav), marks
+the current nav link, and renders the home page's Buy 1 NFLX ticket from `fixtures/golden/nflx-bare-one.json`.
+Page scripts live in `src/pages/`; shared code in `common.ts` and `ticket.ts`. The server redirects
+`/x` to `/x/` and serves `404.html` with status 404. The site is
 styled after the user's gitlawb-like sample: monochrome, grid background, heavy JetBrains Mono
 headlines (self-hosted via @fontsource), and light and dark themes through tokens on `:root`.
 All text goes through `textContent` (`dom.ts` → `h()`), never innerHTML. Deploy is
@@ -169,3 +174,12 @@ and orders above the policy cap.
 - Tokenized-stock swaps run in **RFQ mode** in the Trading API: you sign EIP-712 typed data
   and submit an order. There is no transaction to simulate, so the check is "typed data
   matches the ticket".
+
+## Agent (`agent/`, D24)
+Scaffolded by `bag init stampagent --protocols MCP,X402 --rails b402 --llm-provider none`. It is its
+own pnpm workspace, outside the npm workspaces. `app/agent/src/stamp.ts` calls the Stamp API
+(`STAMP_API_URL`); `mcpMain.ts` registers `stamp_ticket` and `stamp_verify` and uses Stamp's work
+as `buildRunWork()`. Never reimplement a check there. Wallet steps (`bag wallet`, B402 merchant
+values in `agent/.studio/.env.local`, deploy, `bag erc8004 register`) are the user's to run; never
+ask for or handle those secrets. Tests: `agent/app/agent/test/stamp.test.ts` runs in the root vitest.
+

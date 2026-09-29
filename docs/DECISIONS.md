@@ -151,3 +151,19 @@ EIP-6963 announcement with rdns `wallet.binance.com` / `com.binance.wallet` (ext
 **open in Binance app** (the link format of `getDeepLink` in `@binance/w3w-utils` 1.1.8,
 reimplemented in a few lines) instead of an error. Source:
 https://developers.binance.com/docs/binance-w3w/evm-compatible-provider
+
+### D23 - One HTML page per route, with docs on the site (2026-09-29)
+**Why:** One long page read like a landing page, and the docs lived only in the repo. Each
+product area (check, proof, standing order, agents) and each doc topic now has its own URL and
+a real HTML file, so it reads without JavaScript and can be linked from the submission. The
+header, footer and docs nav are partials injected at build time (no framework). The home page
+shows a real recorded ticket (Buy 1 NFLX, BLOCK, with its hash) rendered at build time, so a
+cold free-tier start never shows an empty hero.
+
+### D24 - The agent calls the Stamp API; the MCP tools are free, /x402 costs $0.02 (2026-09-29)
+**Why:** Re-implementing checks in the agent would give two verdicts that could drift. The
+agent is a thin Studio project whose work hook posts to `/v1/tickets`, so a paid answer and a
+free answer for the same order are the same ticket with the same hash. MCP tools stay free so a
+caller can try an order before paying, because B402 settles before the work runs. MCP tool
+names use `stamp_ticket` / `stamp_verify` (underscores), which every MCP client accepts.
+

@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- @head -->
+    <title>Checks and reason codes - Stamp docs</title>
+    <meta name="description" content="Every Stamp check in the order it runs, and every reason code it can return." />
+  </head>
+  <body>
+    <!-- @header -->
+    <main id="main">
+      <div class="wrap docs">
+        <!-- @docs-nav -->
+        <article class="prose">
+          <p class="eyebrow">docs · how it decides</p>
+          <h1 class="headline">Checks &amp; reason codes</h1>
+
+          <p class="lead">Checks run in a fixed order and stop at the first BLOCK. WARN codes pile up. The verdict is BLOCK if anything blocked, otherwise WARN if anything warned, otherwise ALLOW. The code lives in <code>packages/engine/src/verdict.ts</code> - the only place a verdict is made.</p>
+
+          <h2>Decision checks</h2>
+          <div class="table-scroll"><table>
+            <thead><tr><th>#</th><th>check</th><th>codes</th><th>result</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>Parse the order with a fixed grammar. No model.</td><td><code>UNPARSEABLE_INTENT</code></td><td><span class="v BLOCK">BLOCK</span></td></tr>
+              <tr><td>2</td><td>Find the token on chain 56 by symbol, company name or ticker. Buy only the policy issuer; list the rest as not the same instrument.</td><td><code>UNKNOWN_TOKEN</code> <code>AMBIGUOUS_QUERY</code> <code>AMBIGUOUS_ISSUER</code> <code>ISSUER_NOT_ALLOWED</code></td><td><span class="v BLOCK">BLOCK</span></td></tr>
+              <tr><td>3</td><td>Complete data: a price, a status, a documented reasonCode. <code>data: null</code> after one retry counts as missing.</td><td><code>INCOMPLETE_STATUS</code></td><td><span class="v BLOCK">BLOCK</span></td></tr>
+              <tr><td>4</td><td>A multiplier exists and is above zero.</td><td><code>NO_MULTIPLIER</code></td><td><span class="v BLOCK">BLOCK</span></td></tr>
+              <tr><td>5</td><td>List and live multipliers agree. 2× apart or more is a conflict; a smaller gap is drift (a note for xStock, whose list lags).</td><td><code>MULTIPLIER_CONFLICT</code> <code>MULTIPLIER_DRIFT</code></td><td><span class="v BLOCK">BLOCK · WARN</span></td></tr>
+              <tr><td>6</td><td>A bare number with a multiplier other than 1 has two readings. Both are shown.</td><td><code>UNIT_AMBIGUOUS</code></td><td><span class="v BLOCK">BLOCK</span></td></tr>
+              <tr><td>7</td><td>Halts: corporate actions, market pauses (including Binance's 20:00 close pause), a closed venue.</td><td><code>HALTED_CORPORATE_ACTION</code> <code>MARKET_HALTED</code> <code>VENUE_CLOSED</code></td><td><span class="v BLOCK">BLOCK</span></td></tr>
+              <tr><td>8</td><td>Session from Binance, cross-checked against the New York clock.</td><td><code>SESSION_DISAGREEMENT</code> <code>SESSION_UNKNOWN</code></td><td><span class="v WARN">WARN</span></td></tr>
+              <tr><td>9</td><td>A reference price: the live stock price, a sibling's live stock price, or Stamp's recorded close.</td><td><code>NO_REFERENCE</code></td><td><span class="v WARN">WARN</span></td></tr>
+              <tr><td>10</td><td>More than 5% off the reference either way is a data error.</td><td><code>PRICE_IMPLAUSIBLE</code></td><td><span class="v BLOCK">BLOCK</span></td></tr>
+              <tr><td>11</td><td>Premium above the policy limit (0.30% in cash hours, 0.80% otherwise).</td><td><code>SESSION_RICH</code></td><td><span class="v WARN">WARN</span></td></tr>
+              <tr><td>12</td><td>A discount past the 0.10% noise band. Size is never increased.</td><td><code>THIN_BOOK</code></td><td><span class="v note">note</span></td></tr>
+              <tr><td>13</td><td>$20 an order, $50 a day of filled orders.</td><td><code>OVER_CAP</code></td><td><span class="v BLOCK">BLOCK</span></td></tr>
+              <tr><td>14</td><td>Everything passed.</td><td><code>OK</code></td><td><span class="v ALLOW">ALLOW</span></td></tr>
+            </tbody>
+          </table></div>
+          <p>Notes (<code>THIN_BOOK</code>, xStock <code>MULTIPLIER_DRIFT</code>) never change the verdict. Rejected siblings carry <code>NEVER_SWITCH</code>.</p>
+
+          <h2>The unit math, on every ticket</h2>
+          <pre data-copy><code>token units   = dollars / token price
+shares        = token units × multiplier
+price / share = token price / multiplier     (Binance's formula, cited on the ticket)
+premium (bps) = round((price per share - reference) / reference × 10000)</code></pre>
+
+          <h2>Execution checks</h2>
+          <p>These run only after an ALLOW, when you press <b>review &amp; sign</b>. Stamp gets a fresh quote from the Binance Trading API and checks it against the decision before your wallet sees anything.</p>
+          <div class="table-scroll"><table>
+            <thead><tr><th>#</th><th>check</th><th>blocks with</th></tr></thead>
+            <tbody>
+              <tr><td>E1</td><td>The decision re-hashes to its stored hash; the policy matches its hash.</td><td><code>TICKET_TAMPERED</code></td></tr>
+              <tr><td>E1b</td><td>The decision is ALLOW, never WARN.</td><td><code>DECISION_NOT_ALLOWED</code></td></tr>
+              <tr><td>E2</td><td>The decision is at most 120 s old.</td><td><code>DECISION_STALE</code></td></tr>
+              <tr><td>E4</td><td>The quote is at most 25 s old.</td><td><code>QUOTE_STALE</code></td></tr>
+              <tr><td>E5</td><td>The quote buys the decision's token with BSC USDT.</td><td><code>ISSUER_MISMATCH</code></td></tr>
+              <tr><td>E5b</td><td>The quote spends the decision's dollars (±$0.01).</td><td><code>AMOUNT_MISMATCH</code></td></tr>
+              <tr><td>E6</td><td>Quoted price within 0.50% of the decision's price.</td><td><code>SLIPPAGE</code></td></tr>
+              <tr><td>E7</td><td>SWAP: the transaction is from you, sends no BNB, and simulation shows you gain the chosen token and no sibling. RFQ: the typed data names the token, amount and you.</td><td><code>TX_MISMATCH</code> <code>SIMULATION_FAILED</code> <code>SIMULATION_MISMATCH</code> <code>TYPED_DATA_MISMATCH</code></td></tr>
+              <tr><td>E8</td><td>USDT allowance short: an exact-amount approval comes first, then a fresh review.</td><td><code>APPROVAL_REQUIRED</code></td></tr>
+            </tbody>
+          </table></div>
+          <p>Binance returned SWAP mode (a normal transaction) for tokenized stocks from Frankfurt, not the RFQ typed-data flow its docs describe. Stamp handles both.</p>
+          <a class="docs-next" href="/docs/policy/">next: policy →</a>
+        </article>
+      </div>
+    </main>
+    <!-- @footer -->
+    <script type="module" src="/src/pages/docs.ts"></script>
+  </body>
+</html>

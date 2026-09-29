@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- @head -->
+    <title>Verify a ticket - Stamp docs</title>
+    <meta name="description" content="How Stamp hashes tickets and how anyone can recompute one: in the browser, over HTTP, or offline." />
+  </head>
+  <body>
+    <!-- @header -->
+    <main id="main">
+      <div class="wrap docs">
+        <!-- @docs-nav -->
+        <article class="prose">
+          <p class="eyebrow">docs · trust it</p>
+          <h1 class="headline">Verify a ticket</h1>
+
+          <p class="lead">A Stamp ticket is a promise you can check. The engine is pure - data in, ticket out - so the same inputs always give the same ticket, byte for byte, and the same hash.</p>
+
+          <h2>What the hash covers</h2>
+          <p><code>hash = sha256(canonical JSON of the ticket without hash and narration)</code>. Canonical means keys sorted and no floats: every price and amount is a decimal string. The narration is a template written after the verdict, so it's left out. The ticket also carries <code>inputsHash</code> (the exact Binance data it saw) and <code>policyHash</code>.</p>
+
+          <h2>Three ways to check</h2>
+          <ol>
+            <li><b>In the browser:</b> press <b>verify</b> on any ticket, or paste a hash on <a href="/proof/">proof</a>. Stamp fetches the stored inputs, recomputes, and says MATCH or NO MATCH.</li>
+            <li><b>Over HTTP:</b> <code>GET /v1/tickets/:hash</code>, then send its <code>input</code> and <code>ticket</code> to <code>POST /v1/verify</code>. <code>matches: true</code> means the ticket is genuine and unchanged.</li>
+            <li><b>Offline:</b> clone the repo and run the replay. It recomputes every recorded ticket with no network and exits 1 if one hash drifts.</li>
+          </ol>
+          <pre data-copy><code>npm ci && npm run replay
+# 325 tickets recomputed · all hashes match</code></pre>
+
+          <h2>What's recorded</h2>
+          <p>Test cases in <code>fixtures/golden/</code> (one per rule), and real captures of Binance's responses in <code>fixtures/replay/</code>: pre-market, cash hours, the 20:00 close pause, and after-hours on 25 Sep 2026. A GitHub Action snapshots 20 tickers every ten minutes into the <code>snapshots</code> branch; that is where Stamp's recorded close comes from.</p>
+
+          <h2>What a match doesn't prove</h2>
+          <p>A match proves the verdict follows from the recorded inputs under the recorded policy. It doesn't prove Binance's data was right - that is why Stamp blocks on data that disagrees with itself instead of choosing.</p>
+          <a class="docs-next" href="/docs/limits/">next: honest limits →</a>
+        </article>
+      </div>
+    </main>
+    <!-- @footer -->
+    <script type="module" src="/src/pages/docs.ts"></script>
+  </body>
+</html>

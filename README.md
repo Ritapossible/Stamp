@@ -2,40 +2,48 @@
 
 **A pre-trade gate for tokenized US stocks on BSC.** *Your agent can't buy the wrong Netflix.*
 
-Say "Buy 1 share of Netflix" to an agent on BSC and it may buy `NFLXon`. One `NFLXon` token
-is **10 Netflix shares, about $716, not $72**. Say "Buy NVIDIA" and there are three different
-legal products to pick from: `NVDAon` (Ondo), `NVDAx` (xStock) and `NVDAB` (bStock). Over the
-weekend, a token can trade well above Friday's close with no live print behind it.
+Ondo's Netflix token is ten shares. Binance's is one. xStock's own data disagrees with itself.
+Stamp will not guess, and nothing gets signed until the issuer, the share count, the halt, and
+the off-hours price all pass.
 
 Stamp checks an order **before** anything is signed and returns a hashed ticket:
 
 ```
 BLOCK · UNIT_AMBIGUOUS
-"1 NFLX" could mean 1 token (= 10 shares ≈ $716) or 1 share (= 0.1 token ≈ $72).
-Say "$72 of Netflix" or "1 share of Netflix".
-hash 3f9c…   (recompute it yourself: POST /v1/verify)
+"1 NFLX" could mean 1 token = 10 shares ≈ $716.15, or 1 share = 0.1 token ≈ $71.62.
+Say "$… of" or "… shares of".
+hash 476b8e4ef3e9…   (recompute it yourself: npm run replay, or POST /v1/verify)
 ```
 
 It checks four things in fixed code, in order: **issuer** (never switched), **share count**
 (the multiplier is never assumed to be 1), **halt state** (a corporate action blocks) and
-**session premium** (no overpaying while the market is shut). No LLM decides the verdict.
-Signing is only prepared from an `ALLOW` execution ticket tied to a fresh quote, with the
-exact typed data you sign checked against the ticket. Other agents can buy the same ticket
-over x402, settled through Binance b402.
+**off-hours premium** (no overpaying while the market is shut). No LLM decides the verdict.
+The guarantee covers **orders that ask Stamp first**: Stamp does not sit inside Binance's
+wallet or signer. For those orders, a quote is only requested after an `ALLOW`, the quote and
+transaction are checked against that ticket, and you sign in your own Binance Wallet. Other
+agents get the same ticket over MCP or a paid x402 route ([`agent/`](agent/README.md)).
+
+**Live:** https://stamp-iizn.onrender.com ([check](https://stamp-iizn.onrender.com/check/) ·
+[proof](https://stamp-iizn.onrender.com/proof/) · [docs](https://stamp-iizn.onrender.com/docs/)).
+It runs on a free host, so the first request after a quiet spell takes ~30 s.
 
 <p>
   <img src="docs/screenshots/hero-dark.png" alt="Stamp home page, dark theme" width="49%" />
   <img src="docs/screenshots/ticket-block-light.png" alt="A BLOCK ticket for Buy 1 NFLX, light theme" width="49%" />
 </p>
 
-> Status: **in progress**. Built and tested (`npm test`): the verdict engine, the Binance data
-> client, the free API with replay and verify, execution tickets, the standing order and the
-> web page (light and dark). Deploys to Render in Frankfurt ([`docs/DEPLOY.md`](docs/DEPLOY.md)).
-> Next: a live Trading API quote from the deployed server. The design is in [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md), the
-> schedule in [`docs/PLAN.md`](docs/PLAN.md), and the reasoning in
-> [`docs/DECISIONS.md`](docs/DECISIONS.md). Live API findings are in
-> [`docs/API-NOTES.md`](docs/API-NOTES.md). Built for the
-> [BNB Hack: Tokenized Stocks Edition](https://www.bnbchain.org/en/hackathons/tokenized-stocks).
+> **Status (2026-09-29).** Working and deployed: the verdict engine, the Binance data client,
+> the free API with replay and verify, execution tickets (SWAP and RFQ), the standing order, the
+> multi-page site with docs (light and dark), and the Agent Studio agent (MCP tools work
+> locally; the paid `/x402` route waits on B402 merchant approval).
+> **Execution, by region:** from Render in Frankfurt the Binance Trading API quotes, approves
+> and builds the swap. A live review reached `APPROVAL_REQUIRED`, and Binance's approve calldata
+> matched Stamp's byte for byte. From US IP addresses the same API answers **`40304` inside an
+> HTTP 200**, for tokenized stocks and for WBNB alike. So don't demo execution from GitHub
+> Actions or a US laptop. Decisions use public endpoints and work everywhere.
+> Design: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) · reasoning: [`docs/DECISIONS.md`](docs/DECISIONS.md) ·
+> live API findings: [`docs/API-NOTES.md`](docs/API-NOTES.md) · deploy: [`docs/DEPLOY.md`](docs/DEPLOY.md).
+> Built for the [BNB Hack: Tokenized Stocks Edition](https://www.bnbchain.org/en/hackathons/tokenized-stocks).
 
 ## Try it live - no key needed
 
@@ -80,14 +88,26 @@ curl -s -X POST localhost:8787/v1/verify -H 'content-type: application/json' --d
   Stamp takes the session from the venue-level status and the reference from a same-ticker
   sibling or its own snapshot, and says so on the ticket.
 - v1 is buy-only, spot-only, BSC-only, capped at $20 per order, and a person signs every fill.
+- Binance returned SWAP mode, not the RFQ its docs describe, for tokenized stocks from
+  Frankfurt. Stamp checks SWAP by simulation and balance changes. The RFQ path is built and
+  tested but has not been seen live.
+- The full list is on the site: [/docs/limits](https://stamp-iizn.onrender.com/docs/limits/).
 
 ## Prior art
 
-_(To be written on Day 13, after verifying each project exists. The candidates are a Solana
-keeper that skips buys when the pool and Pyth disagree, a CLI that blocks orders while the
-US market is closed, an offline signer with a 1% price band, and Binance's own
-tokenized-securities skill. Each blocks on one signal. Stamp won't prepare a signature unless
-all four pass.)_
+- [bozBasket](https://github.com/elaris-xyz/bozBasket) (Solana, Stocklana) defers a recurring
+  basket buy on Pyth freshness, confidence, venue divergence, depth and session.
+- [PixStock](https://github.com/PixStock/pixstock) (Solana, Stocklana) is an air-gapped phone
+  signer that refuses an order more than 1% from a signed Pyth price.
+- Binance's [`binance-tokenized-securities-info`](https://www.binance.com/en/skills/detail/binance-web3/binance-tokenized-securities-info)
+  skill gives an agent the status codes, multipliers and prices as data and prose. The agent
+  that wants the fill still decides.
+
+The two Solana projects gate on price; the skill doesn't gate at all. None of them, as their
+READMEs describe it, treats *which issuer's product* or *how many
+shares one token holds* as a blocking check, and on BSC those are the two that cost a buyer 10×
+or the wrong legal product. Stamp blocks on all four, issuer, share count, halt and off-hours
+price, and hashes the answer.
 
 ## Layout
 
@@ -95,7 +115,7 @@ all four pass.)_
 packages/engine   pure verdict engine (no I/O)
 packages/sources  Binance RWA client, issuer adapters, snapshots, wallet adapters
 packages/api      HTTP API, ticket store, standing order
-apps/web          one-screen UI
-apps/agent        BNB Agent Studio: ERC-8004 identity, MCP tool, x402 via b402
+apps/web          the site: one HTML page per route, plus /docs
+agent/            BNB Agent Studio project (bag init): MCP tools, paid /x402 via B402, ERC-8004
 fixtures/         recorded API payloads and golden cases
 ```

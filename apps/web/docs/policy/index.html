@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- @head -->
+    <title>Policy - Stamp docs</title>
+    <meta name="description" content="The default Stamp policy in plain English, its fields, and how to override it per request." />
+  </head>
+  <body>
+    <!-- @header -->
+    <main id="main">
+      <div class="wrap docs">
+        <!-- @docs-nav -->
+        <article class="prose">
+          <p class="eyebrow">docs · how it decides</p>
+          <h1 class="headline">Policy</h1>
+
+          <blockquote>Ondo only. Never switch issuer. Never guess what "1" means. Don't buy while a stock is halted. If the US market is shut, don't pay more than 0.80% above the last official price. At most $20 per order and $50 per day. A person signs every order.</blockquote>
+          <p>The same values live in <code>packages/engine/src/policy.ts</code>. Their hash, <code>policyHash</code>, is on every ticket, so a ticket made under a different policy can't pass for one made under this one.</p>
+
+          <div class="table-scroll"><table>
+            <thead><tr><th>field</th><th>default</th><th>meaning</th></tr></thead>
+            <tbody>
+              <tr><td><code>issuer</code></td><td><code>"ondo"</code></td><td>Which issuer's token to buy. <code>null</code> means the order must name the token (NVDAon, NVDAx, NVDAB).</td></tr>
+              <tr><td><code>neverSwitchIssuer</code></td><td><code>true</code></td><td>A cheaper sibling is never used instead. The type system forbids <code>false</code>.</td></tr>
+              <tr><td><code>noiseBandBps</code></td><td>10</td><td>±0.10% from the reference counts as normal.</td></tr>
+              <tr><td><code>maxRegularPremiumBps</code></td><td>30</td><td>Cash hours: warn above 0.30% over the live price.</td></tr>
+              <tr><td><code>maxClosedPremiumBps</code></td><td>80</td><td>Pre-market, after-hours, overnight, weekend: warn above 0.80%.</td></tr>
+              <tr><td><code>implausibleAbsBps</code></td><td>500</td><td>More than 5% off either way is a data error: BLOCK.</td></tr>
+              <tr><td><code>maxSlippageBps</code></td><td>50</td><td>The quote may be at most 0.50% worse than the ticket.</td></tr>
+              <tr><td><code>quoteTtlSec</code></td><td>25</td><td>Older quotes are fetched again.</td></tr>
+              <tr><td><code>maxOrderUsd</code></td><td><code>"20"</code></td><td>Per-order cap.</td></tr>
+              <tr><td><code>maxDayUsd</code></td><td><code>"50"</code></td><td>Daily cap, counted from filled orders only.</td></tr>
+              <tr><td><code>blockCorporateActions</code></td><td><code>true</code></td><td>Splits, dividends, mergers, spinoffs and earnings halts block.</td></tr>
+            </tbody>
+          </table></div>
+
+          <h2>Overriding it per request</h2>
+          <p>Send a partial <code>policy</code> with <code>POST /v1/tickets</code>. Unknown keys are rejected and the result is validated again, so an override can tighten or loosen numbers but never turn off <code>neverSwitchIssuer</code> or the corporate-action block.</p>
+          <pre data-copy><code>{ "intent": "Buy $20 of NVDAx", "policy": { "issuer": "xstock", "maxClosedPremiumBps": 50 } }</code></pre>
+          <p>A WARN never leads to a signature. A standing order stays parked until a later check says ALLOW.</p>
+          <a class="docs-next" href="/docs/api/">next: http api →</a>
+        </article>
+      </div>
+    </main>
+    <!-- @footer -->
+    <script type="module" src="/src/pages/docs.ts"></script>
+  </body>
+</html>

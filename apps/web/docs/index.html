@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- @head -->
+    <title>Overview and quickstart - Stamp docs</title>
+    <meta name="description" content="What Stamp is, what it checks, and how to run it in three minutes." />
+  </head>
+  <body>
+    <!-- @header -->
+    <main id="main">
+      <div class="wrap docs">
+        <!-- @docs-nav -->
+        <article class="prose">
+          <p class="eyebrow">docs · start</p>
+          <h1 class="headline">Overview &amp; quickstart</h1>
+
+          <p class="lead">Stamp is a pre-trade gate for tokenized US stocks on BNB Smart Chain. Before an order is signed it answers one question - <em>is this the thing you meant to buy, at a fair price, right now?</em> - with a verdict made by code and a hash anyone can recompute.</p>
+
+          <h2>Why it exists</h2>
+          <p>A tokenized stock is not a share. On BSC one ticker can be up to three different legal products (Ondo <code>NVDAon</code>, xStock <code>NVDAx</code>, bStock <code>NVDAB</code>). One token can hold ten shares (<code>NFLXon</code>) or one (<code>NFLXB</code>). Tokens trade 24/7 while the stock doesn't, so a weekend price can sit well above Friday's close. And xStock's own two endpoints disagreed about how many shares <code>NFLXx</code> holds: 1 in one, 10 in the other.</p>
+          <p>Binance documents these rules as prose for an agent to follow. Stamp turns them into code that the agent - or the person - cannot talk its way past.</p>
+
+          <h2>The four checks</h2>
+          <table>
+            <thead><tr><th>check</th><th>rule</th></tr></thead>
+            <tbody>
+              <tr><td>Issuer</td><td>Buy only the policy's issuer. A cheaper sibling is listed as "not the same instrument", never bought.</td></tr>
+              <tr><td>Shares</td><td>Read the multiplier behind every token. A bare "Buy 1 NFLX" is blocked until you say dollars or shares.</td></tr>
+              <tr><td>Halt</td><td>Corporate actions, market pauses and a closed venue block. Missing data is never treated as "trading".</td></tr>
+              <tr><td>Price</td><td>Price per share vs the real stock. Rich while the market is shut: WARN, with the overpay in dollars.</td></tr>
+            </tbody>
+          </table>
+          <p>The full ordered list, with every reason code, is on <a href="/docs/checks/">checks &amp; reason codes</a>.</p>
+
+          <h2>Try it in the browser</h2>
+          <ol>
+            <li>Open <a href="/check/">check</a> and press <b>Buy 1 NFLX</b>. You get BLOCK <code>UNIT_AMBIGUOUS</code> with both readings.</li>
+            <li>Press <b>Buy $20 of NVIDIA</b>. During US hours this is usually ALLOW.</li>
+            <li>On an ALLOW, <b>review &amp; sign</b> opens Binance Wallet. First time: an exact-amount USDT approval, then the swap.</li>
+          </ol>
+
+          <h2>Run it yourself (no key)</h2>
+          <pre data-copy><code>git clone https://github.com/Ritapossible/Stamp && cd Stamp
+npm ci
+npm test          # engine, sources, API and agent tests
+npm run replay    # "325 tickets recomputed · all hashes match"
+npm run build && npm start   # this site on http://localhost:8787</code></pre>
+          <p>Decisions use Binance's public RWA endpoints and need no key. Execution needs a Binance Trading API key on the server (<code>STAMP_TRADING_API_KEY</code>, <code>STAMP_TRADING_API_SECRET</code>) and does not work from US IP addresses - see <a href="/docs/limits/">honest limits</a>.</p>
+
+          <h2>What Stamp promises, and what it doesn't</h2>
+          <p>Stamp guarantees the orders that <b>ask it first</b>. It does not sit inside Binance's wallet or signer: a caller that skips Stamp can still trade. What it does promise is that nothing reaches your wallet from Stamp unless the decision was ALLOW, and the quote and transaction were checked against that decision.</p>
+          <a class="docs-next" href="/docs/checks/">next: checks &amp; reason codes →</a>
+        </article>
+      </div>
+    </main>
+    <!-- @footer -->
+    <script type="module" src="/src/pages/docs.ts"></script>
+  </body>
+</html>

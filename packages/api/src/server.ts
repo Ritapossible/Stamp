@@ -12,9 +12,9 @@
  *   WEB_DIR             built web page (default apps/web/dist); skipped if missing
  *   STAMP_TRADING_API_KEY + STAMP_TRADING_API_SECRET  → live Binance Trading API (RFQ)
  *   STAMP_FAKE_WALLET=1 → labelled fake wallet (vendor "fake"), demo only
- * The server never holds a signing key; the human's wallet signs the typed data.
+ * The server never holds a signing key; the human's wallet signs every fill.
  */
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { serve } from "@hono/node-server";
 import { serveStatic } from "@hono/node-server/serve-static";
@@ -98,8 +98,18 @@ const app = createApp({
 });
 
 if (existsSync(webDir)) {
+  // The site is one HTML file per page (/check/index.html). "/check" redirects to "/check/".
+  app.use("*", async (c, next) => {
+    const path = c.req.path;
+    if (!path.startsWith("/v1/") && !path.endsWith("/") && !/\.[a-z0-9]+$/i.test(path) && existsSync(join(webDir, path, "index.html"))) {
+      const query = new URL(c.req.url).search;
+      return c.redirect(`${path}/${query}`, 301);
+    }
+    await next();
+  });
   app.use("/*", serveStatic({ root: webDir }));
-  app.get("*", serveStatic({ path: join(webDir, "index.html") }));
+  const notFoundPage = readFileSync(join(webDir, "404.html"), "utf8");
+  app.notFound((c) => (c.req.path.startsWith("/v1/") ? c.json({ error: "not found" }, 404) : c.html(notFoundPage, 404)));
 }
 
 serve({ fetch: app.fetch, port, hostname: "0.0.0.0" }, () => {

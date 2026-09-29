@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- @head -->
+    <title>Agent Studio face - Stamp docs</title>
+    <meta name="description" content="Stamp as a BNB Agent Studio agent: MCP tools, a paid x402 route settled by B402, and an ERC-8004 identity." />
+  </head>
+  <body>
+    <!-- @header -->
+    <main id="main">
+      <div class="wrap docs">
+        <!-- @docs-nav -->
+        <article class="prose">
+          <p class="eyebrow">docs · build on it</p>
+          <h1 class="headline">Agent Studio face</h1>
+
+          <p class="lead">The <code>agent/</code> folder is a BNB Agent Studio project, scaffolded by <code>bag init</code>. It gives other agents the same ticket a person gets, and it is paid per call over x402.</p>
+
+          <div class="table-scroll"><table>
+            <thead><tr><th>face</th><th>input → output</th><th>price</th></tr></thead>
+            <tbody>
+              <tr><td>MCP <code>stamp_ticket</code></td><td><code>{ intent, issuer? }</code> → the ticket</td><td>free</td></tr>
+              <tr><td>MCP <code>stamp_verify</code></td><td><code>{ hash }</code> → <code>{ matches, verdict, reasons }</code></td><td>free</td></tr>
+              <tr><td><code>POST /x402</code></td><td><code>{"prompt":"Buy $20 of NVIDIA"}</code> → <code>{"result":"&lt;ticket JSON&gt;"}</code></td><td>$0.02, B402</td></tr>
+              <tr><td>ERC-8004</td><td>on-chain identity pointing at <code>/mcp</code></td><td>gas</td></tr>
+            </tbody>
+          </table></div>
+          <p>The agent calls the Stamp API; it does not re-implement a check, and no LLM runs on any path. Its wallet never signs a trade - it only receives payment and signs its own identity.</p>
+
+          <h2>Run it locally</h2>
+          <pre data-copy><code>corepack enable && cd agent && pnpm install
+(cd app/agent && bag wallet new --generate-password)   # throwaway testnet key
+STAMP_API_URL=https://stamp-iizn.onrender.com bag dev  # http://localhost:8000/mcp</code></pre>
+          <p>Until a B402 merchant exists for the agent's wallet, <code>POST /x402</code> answers <code>503 x402 rail dormant</code>. Nobody can pay, and nothing else breaks.</p>
+
+          <h2>Turn on payments</h2>
+          <ol>
+            <li><code>bag wallet show</code> - the address that receives the $0.02.</li>
+            <li>Apply for a B402 merchant for that exact wallet. Approval is manual.</li>
+            <li>Put the four <code>B402_*</code> values in <code>agent/.studio/.env.local</code> with an editor. Never in a chat, commit or command line.</li>
+            <li><code>bag doctor</code>, then <code>bag dev</code>. <code>/x402</code> now answers <code>402</code> with a payment challenge.</li>
+          </ol>
+
+          <h2>Deploy and register</h2>
+          <pre data-copy><code>bag deploy --provider bnb        # managed trial: BSC testnet, 48 hours
+bag erc8004 register --protocol MCP --name stamp \
+  --description "Pre-trade gate for tokenized stocks on BSC"</code></pre>
+          <p>For something that outlives 48 hours, <code>bag deploy --provider aws | azure | nodeops</code> deploys to your own cloud.</p>
+
+          <h2>Pay it from another agent</h2>
+          <pre data-copy><code>bag x402 buy https://&lt;agent-host&gt;/x402 --method POST \
+  --json '{"prompt":"Buy $20 of NVIDIA"}' --max-usd 0.05 --asset USDT</code></pre>
+          <p>Payment settles <b>before</b> the work runs, so a malformed order still costs $0.02 and comes back as <code>{"error": …}</code>. Try the order on MCP first.</p>
+          <a class="docs-next" href="/docs/verify/">next: verify a ticket →</a>
+        </article>
+      </div>
+    </main>
+    <!-- @footer -->
+    <script type="module" src="/src/pages/docs.ts"></script>
+  </body>
+</html>

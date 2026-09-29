@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- @head -->
+    <title>Honest limits - Stamp docs</title>
+    <meta name="description" content="What Stamp does not claim: scope, data quirks per issuer, region limits and the agent payment caveats." />
+  </head>
+  <body>
+    <!-- @header -->
+    <main id="main">
+      <div class="wrap docs">
+        <!-- @docs-nav -->
+        <article class="prose">
+          <p class="eyebrow">docs · trust it</p>
+          <h1 class="headline">Honest limits</h1>
+
+          <p class="lead">Specific beats polite. This is what Stamp does not do, and what we found in the data that it can't fix.</p>
+
+          <h2>Scope</h2>
+          <ol>
+            <li><b>Only orders that ask Stamp first.</b> Binance Wallet and the Trading API don't know about Stamp tickets. A caller that skips Stamp can still trade.</li>
+            <li>Buy only, spot only, BSC mainnet only, $20 an order, $50 a day, and a person signs every fill.</li>
+            <li>The server never holds a signing key. The approval is for the exact order amount, never unlimited.</li>
+          </ol>
+
+          <h2>Data, per issuer</h2>
+          <div class="table-scroll"><table>
+            <thead><tr><th></th><th>Ondo</th><th>bStock</th><th>xStock</th></tr></thead>
+            <tbody>
+              <tr><td>market session</td><td>per token</td><td><b>null</b> - Stamp uses the venue session</td><td><b>null</b> - venue session</td></tr>
+              <tr><td>stock price</td><td>present</td><td><b>null</b> - a sibling's live price or Stamp's recorded close</td><td>present</td></tr>
+              <tr><td>multiplier</td><td>list and live agree</td><td>list and live agree</td><td>list said 1, live said 10 for NFLXx: <b>BLOCK</b>, not a guess</td></tr>
+              <tr><td>empty responses</td><td>-</td><td>-</td><td><code>data: null</code> seen; one retry, then BLOCK</td></tr>
+            </tbody>
+          </table></div>
+          <p>The recorded close is the print at Binance's 20:00 session pause, sampled every ten minutes - close to the official close, not the auction tape. On 25 Sep NVDA's 20:00 print was 41 bps from its 19:50 print, which is why Stamp takes the paused print that follows the session, not the last one inside it.</p>
+
+          <h2>Region</h2>
+          <p>From US IP addresses the Binance Trading API answers <code>40304</code> inside an HTTP 200 - for tokenized stocks and for WBNB alike. From Frankfurt (where this server runs) the quote, approval and swap work. Decisions use public endpoints and work everywhere. Don't run execution from a US laptop or from GitHub Actions.</p>
+
+          <h2>Execution mode</h2>
+          <p>Binance's docs describe RFQ (sign typed data) for tokenized stocks. Live, from Frankfurt, it returned SWAP (a normal transaction, vendor LiquidMesh). Stamp checks SWAP by simulation and balance changes; the RFQ path is built and tested but has not been seen live.</p>
+
+          <h2>The agent</h2>
+          <ul>
+            <li>x402 payment settles before the work runs; a malformed order still costs $0.02.</li>
+            <li>The paid route stays dormant until Binance approves a B402 merchant for the agent's wallet.</li>
+            <li>Paid replay protection is Studio's in-memory store, lost on restart.</li>
+            <li>The managed Agent Studio host is a 48-hour BSC testnet trial. Ticket data is always mainnet.</li>
+          </ul>
+
+          <h2>Hosting</h2>
+          <p>This site runs on a free Render instance: it sleeps when idle and has no disk, so tickets made here don't survive a restart. Every ticket still verifies offline with <code>npm run replay</code> or <code>POST /v1/verify</code> and its inputs.</p>
+          
+        </article>
+      </div>
+    </main>
+    <!-- @footer -->
+    <script type="module" src="/src/pages/docs.ts"></script>
+  </body>
+</html>
