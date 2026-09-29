@@ -15,52 +15,16 @@
       <section class="hero">
         <div class="wrap hero-grid">
           <div class="hero-copy">
-            <span class="tag">stamp · pre-trade gate · bsc mainnet</span>
             <h1 class="headline h1"><span class="dim">Never buy</span><br />the wrong Netflix.</h1>
-            <p class="lede">
-              Ondo's Netflix token is ten shares. Binance's is one. xStock's own data disagrees with itself. Stamp will
-              not guess, and nothing gets signed until the issuer, the share count, the halt, and the off-hours price
-              all pass.
-            </p>
-            <p class="hero-note">
-              A deterministic check for orders that ask Stamp first. You sign every fill in your own Binance Wallet;
-              Stamp never holds a key and does not sit inside Binance's signer.
-            </p>
-            <div class="btn-row">
-              <a class="btn" href="/check/">check an order →</a>
-              <a class="btn ghost" href="/proof/">see the proof</a>
-            </div>
+            <p class="lede">One Netflix token is $716. Another is $72.</p>
           </div>
           <div class="hero-ticket">
             <!-- @nflx-ticket -->
           </div>
-        </div>
-      </section>
-
-      <section class="wrap" id="checks" aria-labelledby="checks-title">
-        <div class="panel">
-          <div class="panel-bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span id="checks-title">stamp - the four checks</span></div>
-          <div class="stack-row">
-            <span class="stack-label">Issuer</span>
-            <span class="stack-value">never switched<small>NVDAon, NVDAx and NVDAB are different legal products. A cheaper sibling is shown, never bought.</small></span>
-            <span class="live-dot" aria-hidden="true"></span>
+          <div class="hero-actions">
+            <a class="btn" href="/check/">check an order →</a>
+            <a class="text-link" href="/proof/">or see the proof →</a>
           </div>
-          <div class="stack-row">
-            <span class="stack-label">Shares</span>
-            <span class="stack-value">never assumed to be 1<small>Tokens carry a multiplier. "Buy 1 NFLX" is blocked until you say $ or shares.</small></span>
-            <span class="live-dot" aria-hidden="true"></span>
-          </div>
-          <div class="stack-row">
-            <span class="stack-label">Halt</span>
-            <span class="stack-value">corporate actions block<small>Splits, dividends, mergers and session pauses stop the order. Missing data is never "trading".</small></span>
-            <span class="live-dot" aria-hidden="true"></span>
-          </div>
-          <div class="stack-row">
-            <span class="stack-label">Price</span>
-            <span class="stack-value">no overpaying off-hours<small>Price per share vs the real stock. Rich while the market is shut: parked, with the overpay in dollars.</small></span>
-            <span class="live-dot" aria-hidden="true"></span>
-          </div>
-          <div class="panel-foot">● verdict is code · no LLM decides · every ticket is hashed and recomputable · <a href="/docs/checks/">all checks →</a></div>
         </div>
       </section>
 
@@ -85,44 +49,6 @@
         </div>
       </section>
 
-      <section class="section" aria-labelledby="how-title">
-        <div class="wrap">
-          <div class="section-head">
-            <p class="eyebrow">how it works</p>
-            <h2 class="headline h2" id="how-title"><span class="dim">Say it plainly.</span><br />Code decides. You sign.</h2>
-          </div>
-          <ol class="steps">
-            <li>
-              <b>You say the order.</b>
-              <span>"Buy $20 of NVIDIA", the way you'd say it. A fixed grammar reads it - no model guesses what you meant.</span>
-            </li>
-            <li>
-              <b>Stamp runs the checks.</b>
-              <span>Live Binance data, one issuer, the real share count, halts, the off-hours premium. ALLOW, WARN or BLOCK, with a hash anyone can recompute.</span>
-            </li>
-            <li>
-              <b>You sign in Binance Wallet.</b>
-              <span>Only an ALLOW gets a quote. The quote and the transaction are checked against the ticket, then your wallet asks you. Stamp never holds a key.</span>
-            </li>
-          </ol>
-        </div>
-      </section>
-
-      <section class="section" aria-labelledby="where-title">
-        <div class="wrap">
-          <div class="section-head">
-            <p class="eyebrow">where to go</p>
-            <h2 class="headline h2" id="where-title"><span class="dim">One gate,</span><br />five ways in.</h2>
-          </div>
-          <div class="cards">
-            <a class="card" href="/check/"><span class="card-k">01 · check</span><b>Check an order</b><span>Type it, get a verdict and a ticket. Sign an ALLOW in Binance Wallet.</span></a>
-            <a class="card" href="/proof/"><span class="card-k">02 · proof</span><b>Replay &amp; verify</b><span>Every recorded ticket recomputed on this server. Paste any hash to check it.</span></a>
-            <a class="card" href="/standing/"><span class="card-k">03 · standing</span><b>Standing order</b><span>Buy when it's fair, park when it isn't. Re-checked every ten minutes.</span></a>
-            <a class="card" href="/agents/"><span class="card-k">04 · agents</span><b>For agents</b><span>The same gate over HTTP, MCP and a paid x402 route on BNB Agent Studio.</span></a>
-            <a class="card" href="/docs/"><span class="card-k">05 · docs</span><b>Docs</b><span>Checks and reason codes, policy, the API, how to verify, and the honest limits.</span></a>
-          </div>
-        </div>
-      </section>
     </main>
 
     <!-- @footer -->

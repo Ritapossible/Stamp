@@ -51,8 +51,7 @@ function nflxTicket(): string {
       ${fact("not the same instrument", esc(others))}
       ${fact("ticket hash", `<span class="hash-row"><code class="hash-short" title="${t.hash}">${t.hash.slice(0, 16)}…</code><a class="chip" href="/proof/?set=golden">recomputed on /proof ↗</a></span>`)}
     </dl>
-    <p class="ticket-foot">recorded ${esc(when)} UTC from Binance's live data · test case <code>nflx-bare-one</code></p>
-    <div class="ticket-actions"><a class="btn small" href="/check/?q=${encodeURIComponent(t.intent.raw)}">run it live →</a></div>
+    <p class="ticket-foot">recorded ${esc(when)} UTC from Binance's live data · <a href="/check/?q=${encodeURIComponent(t.intent.raw)}">run it live ↗</a></p>
   </div>
 </div>`;
 }
