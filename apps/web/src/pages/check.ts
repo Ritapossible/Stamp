@@ -18,8 +18,8 @@ function paintPolicy(): void {
   mount(
     $("policy-line"),
     ...first,
-    ` Never guess what "1" means. Park if the market is shut and the price is more than 0.80% above the last close. `,
-    h("b", null, "$20 an order, $50 a day."),
+    ` Never guess what "1" means. Warn if the price per share is more than 0.30% above the stock while the market is open, or 0.80% above the last close while it's shut. `,
+    h("b", null, "$20 an order."),
   );
 }
 issuerSelect.addEventListener("change", paintPolicy);

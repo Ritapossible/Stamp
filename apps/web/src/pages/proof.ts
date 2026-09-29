@@ -69,7 +69,7 @@ async function verify(hash: string): Promise<void> {
     );
   } catch (err) {
     const e = err as Error & { status?: number };
-    mount(out, h("p", { class: "notice error" }, e.status === 404 ? "This server has no ticket with that hash. Tickets made on another server, or before a restart of this free host, verify with npm run replay or POST /v1/verify." : e.message));
+    mount(out, h("p", { class: "notice error" }, e.status === 404 ? "This server has no ticket with that hash. It may come from another server, or from before a restart of this free host. Anyone holding the ticket and its inputs can still verify it with POST /v1/verify." : e.message));
   }
 }
 

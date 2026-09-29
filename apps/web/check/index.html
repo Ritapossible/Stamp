@@ -20,7 +20,7 @@
         <div class="panel">
           <div class="panel-bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span>stamp - check an order</span></div>
           <p class="policy-line" id="policy-line">
-            <b>Ondo only.</b> Other issuers' tokens for the same stock are shown, never bought. Never guess what "1" means. Park if the market is shut and the price is more than 0.80% above the last close. <b>$20 an order, $50 a day.</b>
+            <b>Ondo only.</b> Other issuers' tokens for the same stock are shown, never bought. Never guess what "1" means. Warn if the price per share is more than 0.30% above the stock while the market is open, or 0.80% above the last close while it's shut. <b>$20 an order.</b>
           </p>
           <form class="order-form" id="order-form">
             <label class="sr-only" for="order-input">Order</label>
@@ -42,8 +42,8 @@
 
         <div class="legend">
           <div><span class="verdict ALLOW">ALLOW</span><p>Every check passed. You can review a fresh quote and sign it in your wallet.</p></div>
-          <div><span class="verdict WARN">WARN</span><p>Something is off - a rich off-hours price, no reference. Never signed; a standing order stays parked.</p></div>
-          <div><span class="verdict BLOCK">BLOCK</span><p>A hard stop: wrong unit, halted, bad data, over the cap. The ticket says which, in plain words.</p></div>
+          <div><span class="verdict WARN">WARN</span><p>Something is off - a rich price, no reference price, a session mismatch. Never signed; a standing order stays parked.</p></div>
+          <div><span class="verdict BLOCK">BLOCK</span><p>A hard stop: the wrong issuer, an unclear unit, a halt, bad data, over $20. The ticket says which, in plain words.</p></div>
         </div>
         <p class="aside">Every code is explained in <a href="/docs/checks/">checks &amp; reason codes</a>. The numbers behind "0.80%" and "$20" are in the <a href="/docs/policy/">policy</a>.</p>
       </section>

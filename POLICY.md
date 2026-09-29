@@ -4,8 +4,9 @@ This is the policy in plain English. The same values live in `packages/engine/sr
 and their hash (`policyHash`) is on every ticket.
 
 > **Ondo only. Never switch issuer. Never guess what "1" means. Don't buy while a stock is
-> halted. If the US market is shut, don't pay more than 0.80% above the last official price.
-> At most $20 per order and $50 per day. A person signs every order.**
+> halted. Don't pay more than 0.30% over the stock while the US market is open, or 0.80% over
+> the last official close while it's shut. At most $20 per order, and $50 a day for standing
+> orders. A person signs every order.**
 
 | Field | Value | Meaning |
 |---|---|---|
@@ -18,7 +19,7 @@ and their hash (`policyHash`) is on every ticket.
 | `maxSlippageBps` | 50 | The quote may be at most 0.50% worse than the price on the decision ticket. |
 | `quoteTtlSec` | 25 | Quotes older than 25 s are re-requested. |
 | `maxOrderUsd` | "20" | Per-order cap. |
-| `maxDayUsd` | "50" | Daily cap, counted from filled orders only. |
+| `maxDayUsd` | "50" | Daily cap for standing orders, counted from filled orders only. A one-off check applies the per-order cap only. |
 | `blockCorporateActions` | `true` | Splits, dividends, mergers, spinoffs and earnings halts block. |
 
 A `WARN` never leads to a signature. A standing order stays parked until a later check says `ALLOW`.

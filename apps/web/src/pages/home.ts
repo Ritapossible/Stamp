@@ -15,7 +15,7 @@ async function loadStats(): Promise<void> {
     items.push(stat(String(s.multiIssuerTickers), "tickers sold by more than one issuer", "/v1/summary"));
     const top = s.largestMultipliers[0];
     if (top) items.push(stat(`${trimNum(Number.parseFloat(top.multiplier).toFixed(2))}×`, `shares inside one ${top.symbol} token`, "/v1/summary"));
-    items.push(stat(String(s.instruments), "tokenized stocks priced on BSC", "/v1/summary"));
+    items.push(stat(String(s.instruments), "tokenized stocks listed on BSC", "/v1/summary"));
   }
   if (replay.status === "fulfilled") {
     items.push(stat(String(replay.value.count), "tickets recomputed", "/proof/"));

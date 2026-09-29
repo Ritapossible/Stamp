@@ -64,7 +64,7 @@ void api
   })
   .catch(() => {
     $("foot-dot").classList.add("down");
-    $("foot-status").textContent = "server unreachable - the page still works offline for docs";
+    $("foot-status").textContent = "server unreachable right now - try again in a minute";
   });
 
 /**

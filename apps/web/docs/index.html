@@ -27,7 +27,7 @@
               <tr><td>Issuer</td><td>Buy only the policy's issuer. A cheaper sibling is listed as "not the same instrument", never bought.</td></tr>
               <tr><td>Shares</td><td>Read the multiplier behind every token. A bare "Buy 1 NFLX" is blocked until you say dollars or shares.</td></tr>
               <tr><td>Halt</td><td>Corporate actions, market pauses and a closed venue block. Missing data is never treated as "trading".</td></tr>
-              <tr><td>Price</td><td>Price per share vs the real stock. Rich while the market is shut: WARN, with the overpay in dollars.</td></tr>
+              <tr><td>Price</td><td>Price per share vs the real stock: over 0.30% while the market is open, or 0.80% above the last close while it's shut, is a WARN, with the overpay in dollars.</td></tr>
             </tbody>
           </table>
           <p>The full ordered list, with every reason code, is on <a href="/docs/checks/">checks &amp; reason codes</a>.</p>

@@ -14,7 +14,7 @@
           <p class="eyebrow">docs · build on it</p>
           <h1 class="headline">Agent Studio face</h1>
 
-          <p class="lead">The <code>agent/</code> folder is a BNB Agent Studio project, scaffolded by <code>bag init</code>. It gives other agents the same ticket a person gets, and it is paid per call over x402.</p>
+          <p class="lead">The <code>agent/</code> folder is a BNB Agent Studio project, scaffolded by <code>bag init</code>. It gives other agents the same ticket a person gets, free over MCP, and at $0.02 per call over x402 once Binance approves its B402 merchant.</p>
 
           <div class="table-scroll"><table>
             <thead><tr><th>face</th><th>input → output</th><th>price</th></tr></thead>
@@ -22,13 +22,14 @@
               <tr><td>MCP <code>stamp_ticket</code></td><td><code>{ intent, issuer? }</code> → the ticket</td><td>free</td></tr>
               <tr><td>MCP <code>stamp_verify</code></td><td><code>{ hash }</code> → <code>{ matches, verdict, reasons }</code></td><td>free</td></tr>
               <tr><td><code>POST /x402</code></td><td><code>{"prompt":"Buy $20 of NVIDIA"}</code> → <code>{"result":"&lt;ticket JSON&gt;"}</code></td><td>$0.02, B402</td></tr>
-              <tr><td>ERC-8004</td><td>on-chain identity pointing at <code>/mcp</code></td><td>gas</td></tr>
+              <tr><td>ERC-8004</td><td>on-chain identity pointing at <code>/mcp</code> (registered at deploy)</td><td>gas</td></tr>
             </tbody>
           </table></div>
           <p>The agent calls the Stamp API; it does not re-implement a check, and no LLM runs on any path. Its wallet never signs a trade - it only receives payment and signs its own identity.</p>
 
           <h2>Run it locally</h2>
-          <pre data-copy><code>corepack enable && cd agent && pnpm install
+          <pre data-copy><code>npm i -g @bnbagent/studio-cli     # the bag CLI
+corepack enable && cd agent && pnpm install
 (cd app/agent && bag wallet new --generate-password)   # throwaway testnet key
 STAMP_API_URL=https://stamp-iizn.onrender.com bag dev  # http://localhost:8000/mcp</code></pre>
           <p>Until a B402 merchant exists for the agent's wallet, <code>POST /x402</code> answers <code>503 x402 rail dormant</code>. Nobody can pay, and nothing else breaks.</p>

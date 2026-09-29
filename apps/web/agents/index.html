@@ -11,8 +11,8 @@
       <section class="page-head">
         <div class="wrap">
           <p class="eyebrow">for agents</p>
-          <h1 class="headline h2"><span class="dim">Ask before you buy.</span><br />Pay two cents.</h1>
-          <p>An agent that wants to buy a tokenized stock is the one party that shouldn't grade its own order. Stamp gives it the same ticket a person gets - same code, same hash - over HTTP, MCP, or a paid x402 route.</p>
+          <h1 class="headline h2"><span class="dim">Ask before you buy.</span><br />Get the same ticket.</h1>
+          <p>An agent that wants to buy a tokenized stock is the one party that shouldn't grade its own order. Stamp gives it the same ticket a person gets - same code, same hash - over HTTP, over MCP, or in front of Binance's Agentic Wallet. A paid x402 route is wired and waits on Binance's B402 approval.</p>
         </div>
       </section>
 
@@ -21,7 +21,7 @@
           <div class="card static"><span class="card-k">http · free</span><b>POST /v1/tickets</b><span>The API this page runs on. JSON in, ticket out. No key, no account.</span></div>
           <div class="card static"><span class="card-k">mcp · free</span><b>stamp_ticket · stamp_verify</b><span>Two read-only tools on a BNB Agent Studio agent. Decide an order; recompute a hash.</span></div>
           <div class="card static"><span class="card-k">agentic wallet</span><b>npm run agentic</b><span>Stamp in front of Binance's <code>baw</code>: no swap unless ALLOW, and the fill checked on BSC.</span></div>
-          <div class="card static"><span class="card-k">x402 · $0.02</span><b>POST /x402</b><span>The same ticket behind a payment challenge. B402 verifies and settles before the work runs.</span></div>
+          <div class="card static"><span class="card-k">x402 · $0.02 · pending</span><b>POST /x402</b><span>The same ticket behind a payment challenge. B402 verifies and settles before the work runs.</span></div>
         </div>
 
         <div class="split">
@@ -39,7 +39,7 @@
     "stamp": { "url": "http://localhost:8000/mcp" }
   }
 }</code></pre>
-            <p class="aside">Run the agent with <code>bag dev</code> from <code>agent/</code>, then call <code>stamp_ticket</code> with <code>{"intent":"Buy $20 of NVIDIA"}</code>. Setup in <a href="/docs/agent/">agent studio face</a>.</p>
+            <p class="aside">Install the Studio CLI (<code>npm i -g @bnbagent/studio-cli</code>), run <code>bag dev</code> from <code>agent/</code>, then call <code>stamp_ticket</code> with <code>{"intent":"Buy $20 of NVIDIA"}</code>. Setup in <a href="/docs/agent/">agent studio face</a>.</p>
           </div>
         </div>
 
