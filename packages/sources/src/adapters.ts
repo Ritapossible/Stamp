@@ -4,9 +4,9 @@ import type { RawDynamic, RawStatusInfo, RawVenueStatus } from "./rwa.js";
 /**
  * Raw dynamic payload → MarketView. One adapter serves all three issuers because Binance
  * returns one shape; what differs is which fields are filled (docs/API-NOTES.md):
- *   Ondo   — statusInfo.marketStatus and stockInfo.price present
- *   bStock — statusInfo.marketStatus null, stockInfo.price null
- *   xStock — statusInfo.marketStatus null; list multiplier stale; data: null seen
+ *   Ondo   - statusInfo.marketStatus and stockInfo.price present
+ *   bStock - statusInfo.marketStatus null, stockInfo.price null
+ *   xStock - statusInfo.marketStatus null; list multiplier stale; data: null seen
  * The adapter copies values through; it never fills a gap. The engine decides what a gap means.
  */
 export function toMarketView(row: UniverseRow, dynamic: RawDynamic | null, fetchedAt: string): MarketView {

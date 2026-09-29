@@ -38,10 +38,15 @@ const StandingRequest = z.object({ intent: z.string().min(1).max(200), policy: z
 
 /** What the browser needs to show the ticket and hand the exact typed data to the wallet. */
 function execView(rec: ExecRecord) {
+  const allow = rec.ticket.verdict === "ALLOW";
   return {
     ticket: rec.ticket,
-    typedData: rec.ticket.verdict === "ALLOW" ? rec.typedData : null,
+    // Only what the wallet may act on: the checked payload on ALLOW, the approval when that is the blocker.
+    typedData: allow ? rec.typedData : null,
+    tx: allow && rec.ticket.executionMode === "SWAP" ? rec.tx : null,
+    approvalTx: rec.ticket.reasons.includes("APPROVAL_REQUIRED") ? rec.approvalTx : null,
     submittedOrderId: rec.submittedOrderId,
+    txHash: rec.txHash,
     status: rec.status,
     settledAt: rec.settledAt,
   };
@@ -152,7 +157,7 @@ export function createApp(deps: AppDeps): Hono {
     return c.json(replayCache.body);
   });
 
-  // — execution: Review → sign in your own wallet → submit → fill —
+  // - execution: Review → sign in your own wallet → submit → fill -
   app.post("/v1/execution", (c) =>
     guarded(c, async () => {
       if (!deps.execution) return c.json({ error: NO_WALLET }, 501);
@@ -172,6 +177,22 @@ export function createApp(deps: AppDeps): Hono {
     }),
   );
 
+  app.post("/v1/execution/:hash/sent", (c) =>
+    guarded(c, async () => {
+      if (!deps.execution) return c.json({ error: NO_WALLET }, 501);
+      const body = z.object({ txHash: z.string() }).strict().safeParse(await c.req.json().catch(() => null));
+      if (!body.success) return c.json({ error: "bad request", issues: body.error.issues }, 400);
+      return c.json(execView(await deps.execution.sent(c.req.param("hash"), body.data.txHash)));
+    }),
+  );
+
+  /** Binance's raw responses behind an execution ticket (quote, swap, approve). No secrets. */
+  app.get("/v1/execution/:hash/raw", (c) => {
+    if (!deps.execution) return c.json({ error: NO_WALLET }, 501);
+    const rec = deps.execution.get(c.req.param("hash"));
+    return rec ? c.json({ ticket: rec.ticket, raw: rec.raw }) : c.json({ error: "not found" }, 404);
+  });
+
   app.get("/v1/execution/:hash", (c) =>
     guarded(c, async () => {
       if (!deps.execution) return c.json({ error: NO_WALLET }, 501);
@@ -179,7 +200,7 @@ export function createApp(deps: AppDeps): Hono {
     }),
   );
 
-  // — the one standing order —
+  // - the one standing order -
   app.get("/v1/standing", (c) => (deps.standing ? c.json({ orders: deps.standing.list(), filledTodayUsd: deps.standing.filledTodayUsd() }) : c.json({ error: "standing orders disabled" }, 501)));
 
   app.post("/v1/standing", (c) =>
@@ -203,6 +224,15 @@ export function createApp(deps: AppDeps): Hono {
       }),
     );
   }
+
+  app.post("/v1/standing/:id/sent", (c) =>
+    guarded(c, async () => {
+      if (!deps.standing) return c.json({ error: "standing orders disabled" }, 501);
+      const body = z.object({ txHash: z.string().regex(/^0x[0-9a-fA-F]{64}$/) }).strict().safeParse(await c.req.json().catch(() => null));
+      if (!body.success) return c.json({ error: "bad request", issues: body.error.issues }, 400);
+      return c.json(await deps.standing.sent(c.req.param("id"), body.data.txHash));
+    }),
+  );
 
   app.post("/v1/standing/:id/submit", (c) =>
     guarded(c, async () => {

@@ -22,7 +22,7 @@ const fmt = (r: ReplayRow) =>
     r.ok ? "ok   " : "DRIFT",
     pad(r.set, 22),
     pad(r.intent, 26),
-    pad(r.symbol ?? "—", 8),
+    pad(r.symbol ?? "-", 8),
     pad(r.verdict, 5),
     pad(r.reasons.join(","), 26),
     pad(r.premiumBps === null ? "" : `${r.premiumBps} bps`, 10),

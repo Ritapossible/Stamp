@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { DEFAULT_POLICY, type DecisionTicket, prepareExecution } from "@stamp/engine";
 import { describe, expect, it } from "vitest";
+import { approveCalldata } from "./bsc.js";
 import { signRequest, TradingApiClient, TradingApiError, TradingApiWallet } from "./trading.js";
 import { BSC_USDT, FakeWallet } from "./wallet.js";
 
@@ -91,5 +92,51 @@ describe("FakeWallet → prepareExecution", () => {
     expect(t.vendor).toBe("fake");
     const { orderId } = await w.submit({ quote, orderId: prepared.orderId!, signature: "0xsig" });
     expect(await w.status(orderId)).toBe("FILLED");
+  });
+});
+
+describe("SWAP mode (shape seen live from Frankfurt, 2026-09-29)", () => {
+  const ROUTER = "0x2222222222222222222222222222222222222222";
+  const SPENDER = "0x1111111111111111111111111111111111111111";
+  const quote = { quoteId: "q1", quotedAt: "t", executionMode: "SWAP" as const, vendor: "LiquidMesh", fromToken: BSC_USDT, toToken: decision.chosen!.contractAddress, amountInRaw: "20000000000000000000", amountOutRaw: "86377450000000000", fromDecimals: 18, toDecimals: 18 };
+
+  function routed(replies: Record<string, unknown>) {
+    const bodies: Record<string, unknown> = {};
+    const fn = (async (url: string, init: RequestInit) => {
+      const path = new URL(url).pathname;
+      if (init.body) bodies[path] = JSON.parse(String(init.body));
+      const key = Object.keys(replies).find((k) => path.endsWith(k))!;
+      return { ok: true, status: 200, json: async () => replies[key] } as Response;
+    }) as typeof fetch;
+    return { fn, bodies };
+  }
+
+  it("approve calldata is the standard ERC-20 encoding for exactly the amount", () => {
+    expect(approveCalldata(SPENDER, "20000000000000000000")).toBe(
+      "0x095ea7b30000000000000000000000001111111111111111111111111111111111111111000000000000000000000000000000000000000000000001158e460913d00000",
+    );
+  });
+
+  it("flags an approval when the allowance is short, spending only the amount", async () => {
+    const r = routed({
+      "/aggregator/swap": { code: "0", data: { tx: { from: USER, to: ROUTER, value: "0", data: "0xdead" } } },
+      "/aggregator/approve-transaction": { code: "0", data: [{ dexContractAddress: SPENDER, data: "0x095e" }] },
+    });
+    const w = new TradingApiWallet(new TradingApiClient({ apiKey: "k", secret: "s", fetchFn: r.fn }), () => "t", async () => 5n);
+    const p = await w.prepare(quote, USER, 50);
+    expect(p).toMatchObject({ mode: "SWAP", approvalRequired: true, approvalTx: { from: USER, to: BSC_USDT, value: "0", data: approveCalldata(SPENDER, quote.amountInRaw) } });
+    const enough = new TradingApiWallet(new TradingApiClient({ apiKey: "k", secret: "s", fetchFn: r.fn }), () => "t", async () => 10n ** 30n);
+    expect(await enough.prepare(quote, USER, 50)).toMatchObject({ approvalRequired: false, approvalTx: null });
+  });
+
+  it("simulates with evmParams and reads balance changes; only SUCCESS passes", async () => {
+    const ok = routed({ "/pre-transaction/simulate": { code: "0", data: { status: "SUCCESS", failReason: null, balanceChanges: [{ contractAddress: quote.toToken, owner: USER, change: "86377450000000000", tokenType: "ERC20" }] } } });
+    const w = new TradingApiWallet(new TradingApiClient({ apiKey: "k", secret: "s", fetchFn: ok.fn }));
+    const s = await w.simulate({ from: USER, to: ROUTER, value: "0", data: "0xdead" }, USER);
+    expect(s).toEqual({ ok: true, error: null, balanceChanges: [{ contractAddress: quote.toToken, owner: USER, change: "86377450000000000" }] });
+    expect(ok.bodies["/build/api/v1/dex/pre-transaction/simulate"]).toMatchObject({ binanceChainId: "56", evmParams: { from: USER, to: ROUTER, value: "0", data: "0xdead" } });
+
+    const odd = routed({ "/pre-transaction/simulate": { code: "0", data: { status: "UNKNOWN" } } });
+    expect((await new TradingApiWallet(new TradingApiClient({ apiKey: "k", secret: "s", fetchFn: odd.fn })).simulate({ to: ROUTER }, USER)).ok).toBe(false);
   });
 });

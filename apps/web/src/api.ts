@@ -45,6 +45,24 @@ export interface ExecutionTicket {
   symbol: string | null;
 }
 
+export interface Tx {
+  from?: string | null;
+  to: string;
+  value?: string;
+  data: string;
+}
+
+export interface ExecView {
+  ticket: ExecutionTicket & { executionMode: "RFQ" | "SWAP" };
+  typedData: unknown | null;
+  tx: Tx | null;
+  approvalTx: Tx | null;
+  submittedOrderId: string | null;
+  txHash: string | null;
+  status: string | null;
+  settledAt: string | null;
+}
+
 export interface ReplayRow {
   set: string;
   name: string;
@@ -103,10 +121,11 @@ export const api = {
     call<{ ticket: Ticket; verify: string }>("POST", "/v1/tickets", { intent, policy: { issuer } }),
   replay: () => call<{ ok: boolean; count: number; drifted: number; rows: ReplayRow[] }>("GET", "/v1/replay"),
   summary: () => call<Summary>("GET", "/v1/summary"),
-  review: (decisionHash: string, user: string) =>
-    call<{ wallet: string; ticket: ExecutionTicket; typedData: unknown | null }>("POST", "/v1/execution", { decisionHash, user }),
-  submit: (hash: string, signature: string) => call<{ status: string | null; submittedOrderId: string | null }>("POST", `/v1/execution/${hash}/submit`, { signature }),
-  execution: (hash: string) => call<{ status: string | null; submittedOrderId: string | null }>("GET", `/v1/execution/${hash}`),
+  review: (decisionHash: string, user: string) => call<ExecView & { wallet: string }>("POST", "/v1/execution", { decisionHash, user }),
+  submit: (hash: string, signature: string) => call<ExecView>("POST", `/v1/execution/${hash}/submit`, { signature }),
+  sent: (hash: string, txHash: string) => call<ExecView>("POST", `/v1/execution/${hash}/sent`, { txHash }),
+  execution: (hash: string) => call<ExecView>("GET", `/v1/execution/${hash}`),
+  standingSent: (id: string, txHash: string) => call<StandingOrder>("POST", `/v1/standing/${id}/sent`, { txHash }),
   standing: () => call<{ orders: StandingOrder[]; filledTodayUsd: string }>("GET", "/v1/standing"),
   createStanding: (intent: string, user: string) => call<StandingOrder>("POST", "/v1/standing", { intent, user }),
   standingAction: (id: string, action: "recheck" | "review" | "cancel") => call<StandingOrder>("POST", `/v1/standing/${id}/${action}`),

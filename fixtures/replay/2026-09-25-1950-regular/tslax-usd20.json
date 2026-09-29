@@ -163,6 +163,6 @@
     ],
     "notes": [],
     "hash": "bd5104a90d6f63cdab6fe0b7daeefd84a0df8127ccff4fb5ea4d83ff19cc1ac4",
-    "narration": "WARN. During market hours, TSLAx is 205 bps above the stock price ($372.223333) — about $0.40 of overpay on this order. Parked. $20.00 buys 0.05264966 TSLAx tokens = 0.05264966 shares (multiplier 1). Not the same instrument: TSLAon (Ondo), TSLAB (bStock). Hash bd5104a90d6f…"
+    "narration": "WARN. During market hours, TSLAx is 205 bps above the stock price ($372.223333) - about $0.40 of overpay on this order. Parked. $20.00 buys 0.05264966 TSLAx tokens = 0.05264966 shares (multiplier 1). Not the same instrument: TSLAon (Ondo), TSLAB (bStock). Hash bd5104a90d6f…"
   }
 }

@@ -7,3 +7,4 @@ export { LiveMarket, type LiveMarketOptions } from "./market.js";
 export { parseSnapshotLines, SnapshotStore, type SnapshotRow } from "./snapshots.js";
 export { BSC_USDT, FakeWallet, type OrderStatus, type PreparedOrder, type QuoteRequest, type StockWallet } from "./wallet.js";
 export { signRequest, TRADING_BASE, TradingApiClient, TradingApiError, TradingApiWallet, type TradingApiOptions } from "./trading.js";
+export { approveCalldata, BSC_RPC, erc20Allowance } from "./bsc.js";

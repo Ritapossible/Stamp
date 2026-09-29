@@ -1,10 +1,10 @@
-# API notes — verified facts
+# API notes - verified facts
 
 These are facts observed against the live APIs, dated, with raw payloads in `fixtures/`. The
 file is not a copy of the docs: an entry goes in only once we've seen the behavior
 ourselves. It feeds the DEVEX raw log.
 
-## 2026-09-25 ~10:00 UTC probe (Fri, US premarket) — `fixtures/probe-2026-09-25/`
+## 2026-09-25 ~10:00 UTC probe (Fri, US premarket) - `fixtures/probe-2026-09-25/`
 
 ### Access
 - All five RWA endpoints answered with no key, sending only `User-Agent: binance-web3/1.1 (Skill)`
@@ -43,7 +43,7 @@ ourselves. It feeds the DEVEX raw log.
 ### Per-issuer shape (dynamic `v2 …/dynamic/ai`)
 | Symbol | tokenInfo.price | sharesMultiplier | list multiplier | stockInfo.price | statusInfo.marketStatus | limitInfo |
 |---|---|---|---|---|---|---|
-| NVDAon | 226.484479035849056746 | 1.0017152487959898 | same | 226.083333 | premarket | — |
+| NVDAon | 226.484479035849056746 | 1.0017152487959898 | same | 226.083333 | premarket | - |
 | NVDAB | 226.2759563905098582765 | 1.000778223752807865 | same | **null** | **null** | null |
 | NVDAx | 224.269085228744065903122755434969591456 | 1.0009180758490996 | **"1"** | 226.083333 | **null** | null |
 | NFLXon | 716.26667 | 10 | same | 71.603333 | premarket | `{maxAttestationCount:"500", maxActiveNotionalValue:"400000"}` |
@@ -72,7 +72,7 @@ Ondo 10, bStock 1, and xStock "10" or "1" depending on which endpoint you ask.
 
 ### Status
 - The venue `market/status` returned `marketStatus: "premarket"`, `nextOpen` 13:31Z, `nextClose`
-  13:29Z (next close *before* next open — that's the premarket segment end), plus an
+  13:29Z (next close *before* next open - that's the premarket segment end), plus an
   `offhours` object.
 - Asset status for bStock and xStock: `openState: true`, `reasonCode: "TRADING"`, and
   `marketStatus`/`nextOpenTime`/`nextCloseTime` all **null**.
@@ -84,11 +84,11 @@ Ondo 10, bStock 1, and xStock "10" or "1" depending on which endpoint you ask.
   never read it as trading.
 
 ### Units
-- `tokenInfo.volume24h` for NFLXon = 2,021,676,790 — this is US equity dollar volume, not
+- `tokenInfo.volume24h` for NFLXon = 2,021,676,790 - this is US equity dollar volume, not
   on-chain volume. It is not a liquidity signal.
 - Prices carry up to 39 decimal places.
 
-## 2026-09-25 close (Fri) — `fixtures/captures/2026-09-25/`
+## 2026-09-25 close (Fri) - `fixtures/captures/2026-09-25/`
 - 19:50Z: venue `regular`. 20:00Z: venue `paused`, openState false, reasonCode `MARKET_PAUSED`,
   reasonMsg "Paused for session transition". 20:10Z onwards: `postmarket`.
 - Ondo statusInfo mirrors the venue (`paused` / `MARKET_PAUSED`). bStock and xStock statusInfo
@@ -96,6 +96,14 @@ Ondo 10, bStock 1, and xStock "10" or "1" depending on which endpoint you ask.
 - `stockInfo.price` keeps updating in postmarket (extended-hours prints), so after 20:00 it
   is no longer the close.
 - NVDA: 224.4475 (19:50, regular) → 225.3736 (20:00, paused) → 224.9933 (20:10, postmarket).
+
+## 2026-09-29 Trading API from Frankfurt (Render)
+- From the build container (US): `40304 compliance restriction` for every quote (HTTP 200).
+- From Render Frankfurt: the quote **works**. USDT→NVDAon $20: `executionMode: "SWAP"` (not RFQ),
+  vendor `LiquidMesh`, 0.08637745 NVDAon, 22 bps from the decision price.
+- `pre-transaction/simulate` wants `evmParams` (error 50000 names it); the docs page shows
+  `evmTx` with the same fields `{from,to,value,data}`. Response: `status`, `failReason`,
+  `balanceChanges[]` (`contractAddress, owner, change`), `allowanceChanges[]`.
 
 ## Official docs read 2026-09-25 (not yet exercised)
 
@@ -107,7 +115,7 @@ Ondo 10, bStock 1, and xStock "10" or "1" depending on which endpoint you ask.
   `GET /api/v1/dex/aggregator/order/{orderId}`.
 - `quoteId` "expires in about 30 seconds".
 - Transaction API: `POST /api/v1/dex/pre-transaction/simulate` and `.../broadcast-transaction`.
-- b402: x402 V1 and V2 facilitator — supported configs, verify, settle; `eip155:56`;
+- b402: x402 V1 and V2 facilitator - supported configs, verify, settle; `eip155:56`;
   `eip3009`, `permit2-exact` and `permit2-upto`.
 - Agentic Wallet (`baw` CLI): quote-only is supported ("Quote only"), limit orders work on BSC
   and Solana, and daily spending limits exist. **Tokenized stock swaps are not mentioned.**

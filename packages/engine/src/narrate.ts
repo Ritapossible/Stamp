@@ -76,7 +76,7 @@ function sentence(r: ReasonCode, t: Fields, name: string | null): string | null 
     case "PRICE_IMPLAUSIBLE":
       return `${name} is ${t.premiumBps} bps from the stock's price ($${t.economicPriceUsd} vs $${t.referenceUsd}). More than 5% apart is treated as bad data, not a bargain.`;
     case "SESSION_RICH":
-      return `${sessionWords(t)}, ${t.chosen?.symbol} is ${t.premiumBps} bps above ${refWords(t)} — about $${t.overpayUsd} of overpay on this order. Parked.`;
+      return `${sessionWords(t)}, ${t.chosen?.symbol} is ${t.premiumBps} bps above ${refWords(t)} - about $${t.overpayUsd} of overpay on this order. Parked.`;
     case "OVER_CAP":
       return `$${t.notionalUsd} is over the policy cap.`;
     default:

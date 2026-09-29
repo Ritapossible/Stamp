@@ -43,7 +43,10 @@ export type ReasonCode =
   | "ISSUER_MISMATCH"
   | "SLIPPAGE"
   | "TYPED_DATA_MISMATCH"
-  | "SIMULATION_FAILED";
+  | "SIMULATION_FAILED"
+  | "APPROVAL_REQUIRED"
+  | "TX_MISMATCH"
+  | "SIMULATION_MISMATCH";
 
 /** One row of the RWA list endpoint, as returned. */
 export interface UniverseRow {
@@ -195,9 +198,26 @@ export interface QuoteView {
   toDecimals: number;
 }
 
+export interface BalanceChange {
+  contractAddress: string;
+  owner: string;
+  /** signed raw integer string */
+  change: string;
+}
+
 export interface SimulationResult {
   ok: boolean;
   error: string | null;
+  /** From Binance's simulate response, when present: who gains or loses which token. */
+  balanceChanges?: BalanceChange[] | null;
+}
+
+/** SWAP mode: the unsigned transaction the human's wallet will send. */
+export interface SwapTx {
+  from?: string | null;
+  to: string;
+  value: string;
+  data: string;
 }
 
 export interface ExecuteInput {
@@ -212,6 +232,10 @@ export interface ExecuteInput {
   quote: QuoteView;
   /** RFQ: rfq.typedDataToSign exactly as returned. */
   typedData: unknown | null;
+  /** SWAP: the transaction the wallet will send, exactly as returned by /swap. */
+  swapTx?: SwapTx | null;
+  /** SWAP: the user's USDT allowance for the router is below the amount. */
+  approvalRequired?: boolean;
   /** SWAP: result of pre-transaction/simulate on the swap tx. */
   swapSimulation: SimulationResult | null;
   /** Present when an ERC-20 approval is needed first. */
@@ -249,6 +273,8 @@ export interface ExecutionTicket {
   slippageBps: number | null;
   typedDataHash: string | null;
   typedDataChecks: TypedDataChecks | null;
+  swapTxHash: string | null;
+  approvalRequired: boolean;
   swapSimulation: SimulationResult | null;
   approvalSimulation: SimulationResult | null;
   verdict: Verdict;

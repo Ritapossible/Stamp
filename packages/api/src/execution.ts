@@ -9,9 +9,15 @@ export interface ExecRecord {
   /** RFQ payload handed to the human's wallet, exactly as the ticket's typedDataHash covers. */
   typedData: unknown | null;
   tx: unknown | null;
+  /** SWAP: approve exactly the amount, sent by the human's wallet before the swap. */
+  approvalTx: unknown | null;
   orderId: string | null;
   user: string;
   submittedOrderId: string | null;
+  /** SWAP: the transaction hash the human's wallet broadcast. */
+  txHash: string | null;
+  /** Binance's raw responses (no secrets): shown on request and recorded as fixtures. */
+  raw: Record<string, unknown> | null;
   status: OrderStatus | null;
   settledAt: string | null;
 }
@@ -70,7 +76,9 @@ export class ExecutionService {
       throw new ExecError(`wallet: ${err instanceof Error ? err.message : String(err)}`, 502);
     }
     const approvalSimulation = prepared.approvalTx ? await this.deps.wallet.simulate(prepared.approvalTx, user) : null;
-    const swapSimulation = prepared.mode === "SWAP" && prepared.tx ? await this.deps.wallet.simulate(prepared.tx, user) : null;
+    // Without the allowance the swap cannot simulate; the ticket says "approve first" instead.
+    const swapSimulation = prepared.mode === "SWAP" && prepared.tx && !prepared.approvalRequired ? await this.deps.wallet.simulate(prepared.tx, user) : null;
+    const t = prepared.tx as { from?: string; to?: string; value?: string | number; data?: string } | null;
 
     const ticket = prepareExecution({
       decision,
@@ -80,6 +88,8 @@ export class ExecutionService {
       quoteAsset,
       quote,
       typedData: prepared.typedData,
+      swapTx: t && typeof t.to === "string" ? { from: t.from ?? null, to: t.to, value: String(t.value ?? "0"), data: String(t.data ?? "0x") } : null,
+      approvalRequired: prepared.approvalRequired,
       swapSimulation,
       approvalSimulation,
     });
@@ -88,9 +98,12 @@ export class ExecutionService {
       quote,
       typedData: prepared.typedData,
       tx: prepared.tx,
+      approvalTx: prepared.approvalTx,
       orderId: prepared.orderId,
       user: user.toLowerCase(),
       submittedOrderId: null,
+      txHash: null,
+      raw: prepared.raw ?? null,
       status: null,
       settledAt: null,
     };
@@ -122,11 +135,24 @@ export class ExecutionService {
     return rec;
   }
 
+  /** SWAP: the human's wallet broadcast the swap; remember its hash and follow it. */
+  async sent(hash: string, txHash: string): Promise<ExecRecord> {
+    const rec = this.records.get(hash);
+    if (!rec) throw new ExecError("execution not found", 404);
+    if (rec.ticket.verdict !== "ALLOW" || rec.ticket.executionMode !== "SWAP") throw new ExecError("only an ALLOW swap can be marked sent", 409);
+    if (!/^0x[0-9a-fA-F]{64}$/.test(txHash)) throw new ExecError("txHash must be a 0x transaction hash", 400);
+    if (rec.txHash) throw new ExecError("already sent", 409);
+    rec.txHash = txHash.toLowerCase();
+    rec.submittedOrderId = rec.txHash;
+    rec.status = "PENDING";
+    return rec;
+  }
+
   async refresh(hash: string): Promise<ExecRecord> {
     const rec = this.records.get(hash);
     if (!rec) throw new ExecError("execution not found", 404);
-    if (rec.submittedOrderId && rec.status === "PENDING") {
-      rec.status = await this.deps.wallet.status(rec.submittedOrderId);
+    if (rec.status === "PENDING") {
+      rec.status = rec.txHash ? await this.deps.wallet.txStatus(rec.txHash) : rec.submittedOrderId ? await this.deps.wallet.status(rec.submittedOrderId) : "PENDING";
       if (rec.status !== "PENDING") rec.settledAt = this.now();
     }
     return rec;

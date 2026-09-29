@@ -102,7 +102,7 @@ export interface GoldenCase {
 }
 
 export const CASES: GoldenCase[] = [
-  // — issuer —
+  // - issuer -
   {
     name: "nvda-usd-ondo",
     kind: "live",
@@ -148,7 +148,7 @@ export const CASES: GoldenCase[] = [
     chosen: null,
   },
 
-  // — share count —
+  // - share count -
   { name: "nflx-bare-one", kind: "live", input: base("Buy 1 NFLX"), verdict: "BLOCK", reasons: ["UNIT_AMBIGUOUS"], chosen: "NFLXon" },
   { name: "nflx-one-share-over-cap", kind: "live", input: base("Buy 1 share of Netflix"), verdict: "BLOCK", reasons: ["OVER_CAP"], chosen: "NFLXon" },
   { name: "nflx-usd", kind: "live", input: base("Buy $20 of Netflix"), verdict: "ALLOW", reasons: ["OK"], chosen: "NFLXon" },
@@ -164,7 +164,7 @@ export const CASES: GoldenCase[] = [
     chosen: "NVDAon",
   },
 
-  // — data and halts —
+  // - data and halts -
   {
     name: "xstock-data-null",
     kind: "synthetic",
@@ -220,7 +220,7 @@ export const CASES: GoldenCase[] = [
     chosen: "NVDAon",
   },
 
-  // — price —
+  // - price -
   { name: "mux-implausible", kind: "live", input: base("Buy $20 of Micron", { issuer: "xstock" }), verdict: "BLOCK", reasons: ["PRICE_IMPLAUSIBLE"], notes: ["MULTIPLIER_DRIFT"], chosen: "MUx" },
   { name: "weekend-rich", kind: "synthetic", change: "Saturday, listing closed, NVDAon +190 bps over a 226.00 Friday close", input: weekend(190), verdict: "WARN", reasons: ["SESSION_RICH"], chosen: "NVDAon" },
   { name: "weekend-noise", kind: "synthetic", change: "Saturday, NVDAon +5 bps", input: weekend(5), verdict: "ALLOW", reasons: ["OK"], chosen: "NVDAon" },

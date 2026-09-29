@@ -8,7 +8,7 @@
  *   SNAPSHOTS_DIR       local snapshot JSONL directory (default $DATA_DIR/snapshots)
  *   SNAPSHOTS_REMOTE    base URL of the `snapshots` branch, e.g.
  *                       https://raw.githubusercontent.com/Ritapossible/Stamp/snapshots
- *                       — used when the host has no local snapshots (Render free has no disk)
+ *                       - used when the host has no local snapshots (Render free has no disk)
  *   WEB_DIR             built web page (default apps/web/dist); skipped if missing
  *   STAMP_TRADING_API_KEY + STAMP_TRADING_API_SECRET  → live Binance Trading API (RFQ)
  *   STAMP_FAKE_WALLET=1 → labelled fake wallet (vendor "fake"), demo only
@@ -68,12 +68,18 @@ setInterval(async () => {
 let wallet: StockWallet | null = null;
 if (process.env.STAMP_TRADING_API_KEY && process.env.STAMP_TRADING_API_SECRET) {
   wallet = new TradingApiWallet(new TradingApiClient({ apiKey: process.env.STAMP_TRADING_API_KEY, secret: process.env.STAMP_TRADING_API_SECRET }));
-} else if (process.env.STAMP_FAKE_WALLET === "1") {
-  wallet = new FakeWallet((token) => {
-    const p = store.latestTokenPrice(token);
-    if (!p) throw new Error(`fake wallet has no recent price for ${token}`);
-    return p;
-  });
+} else if (process.env.STAMP_FAKE_WALLET === "1" || process.env.STAMP_FAKE_WALLET === "swap") {
+  // "swap" mimics what the live Trading API returned from Frankfurt (SWAP + one approval).
+  wallet = new FakeWallet(
+    (token) => {
+      const p = store.latestTokenPrice(token);
+      if (!p) throw new Error(`fake wallet has no recent price for ${token}`);
+      return p;
+    },
+    undefined,
+    5,
+    process.env.STAMP_FAKE_WALLET === "swap" ? "SWAP" : "RFQ",
+  );
 }
 
 const market = new LiveMarket(new RwaClient());

@@ -5,14 +5,14 @@ import "@fontsource/jetbrains-mono/latin-800.css";
 import "@fontsource/inter/latin-400.css";
 import "@fontsource/inter/latin-500.css";
 import "./styles.css";
-import { api, ApiError, type ReplayRow, type StandingOrder, type Summary, type Ticket } from "./api";
+import { api, ApiError, type ExecView, type ReplayRow, type StandingOrder, type Summary, type Ticket } from "./api";
 import { $, h, mount, roundNum, shortHash, trimNum } from "./dom";
-import { connect, hasWallet, signTypedData } from "./wallet";
+import { binanceAppLink, connect, type Eip1193, findWallet, sendTx, signTypedData, waitReceipt } from "./wallet";
 
 const EXAMPLES = ["Buy 1 NFLX", "Buy $20 of NVIDIA", "Buy $20 of NVDAB", "Buy 1 share of Netflix", "Buy $20 of Micron", "Buy 1 KLAC"];
 const ISSUER_NAME: Record<string, string> = { ondo: "Ondo", xstock: "xStock", bstock: "bStock" };
 
-// ——— theme ———
+// --- theme ---
 function effectiveTheme(): "light" | "dark" {
   const set = document.documentElement.dataset.theme;
   if (set === "light" || set === "dark") return set;
@@ -39,7 +39,7 @@ $("theme-toggle").addEventListener("click", () => {
 matchMedia("(prefers-color-scheme: dark)").addEventListener("change", paintThemeButton);
 paintThemeButton();
 
-// ——— menu ———
+// --- menu ---
 const menu = $("menu");
 const menuBtn = $("menu-toggle");
 function setMenu(open: boolean): void {
@@ -54,7 +54,7 @@ document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") setMenu(false);
 });
 
-// ——— live figures ———
+// --- live figures ---
 function stat(value: string, label: string, href: string | null): HTMLElement {
   return href
     ? h("a", { class: "stat", href, ...(href.startsWith("/") ? { target: "_blank", rel: "noopener" } : {}) }, h("b", null, value), h("span", null, label))
@@ -90,7 +90,7 @@ async function loadStats(): Promise<void> {
   }
 }
 
-// ——— checker ———
+// --- checker ---
 const input = $("order-input") as HTMLInputElement;
 const issuerSelect = $("issuer-select") as HTMLSelectElement;
 const result = $("result");
@@ -121,7 +121,7 @@ async function check(): Promise<void> {
     const { ticket } = await api.ticket(intent, issuer);
     mount(result, renderTicket(ticket));
   } catch (err) {
-    mount(result, h("p", { class: "notice error" }, err instanceof ApiError && err.status === 503 ? "Binance data is unreachable right now. No ticket was made — Stamp never guesses." : `Could not check: ${String((err as Error).message)}`));
+    mount(result, h("p", { class: "notice error" }, err instanceof ApiError && err.status === 503 ? "Binance data is unreachable right now. No ticket was made - Stamp never guesses." : `Could not check: ${String((err as Error).message)}`));
   } finally {
     btn.disabled = false;
   }
@@ -135,7 +135,7 @@ function sessionWords(t: Ticket): string | null {
     closed: "US market closed",
     unknown: "session unknown",
   };
-  return `${words[t.session] ?? t.session} · ${t.marketStatus ?? "—"}${t.sessionSource === "venue" ? " (venue status)" : ""}`;
+  return `${words[t.session] ?? t.session} · ${t.marketStatus ?? "-"}${t.sessionSource === "venue" ? " (venue status)" : ""}`;
 }
 
 function referenceWords(t: Ticket): string {
@@ -218,23 +218,75 @@ function plainNarration(n: string): string {
     .trim();
 }
 
-// ——— review & sign (the human's own wallet) ———
-async function reviewAndSign(t: Ticket, area: HTMLElement): Promise<void> {
-  const say = (text: string, error = false) => mount(area, h("p", { class: `notice${error ? " error" : ""}` }, text));
+// --- review & sign (the human's own wallet; Binance Wallet first) ---
+const clean = (n: string) => n.replace(/^(ALLOW|WARN|BLOCK)\. /, "").replace(/ Hash [0-9a-f]+…$/, "");
+
+/** Shown when no wallet is injected: reopen the page inside the Binance app, or install a wallet. */
+function noWalletHelp(): HTMLElement {
+  const link = binanceAppLink();
+  return h(
+    "div",
+    { class: "notice" },
+    h("p", { style: "margin:0 0 12px" }, "Sign with Binance Wallet. On a phone, open this page inside the Binance app; on a computer, install the Binance Wallet extension. Any other BSC wallet works too."),
+    h("div", { class: "hash-row" }, h("a", { class: "btn small", href: link.http }, "open in Binance app →"), h("a", { class: "chip", href: "https://www.binance.com/en/web3wallet", target: "_blank", rel: "noopener" }, "get Binance Wallet ↗")),
+  );
+}
+
+async function connectOrExplain(area: HTMLElement): Promise<{ user: string; provider: Eip1193; name: string } | null> {
   try {
-    if (!hasWallet()) return say("To sign, open this page in a browser with a wallet (MetaMask, Rabby, Binance Wallet). The ticket above stays valid proof either way.");
-    say("connecting your wallet…");
-    const user = await connect();
-    say("getting a fresh quote and checking it against the ticket…");
-    const exec = await api.review(t.hash, user);
-    const e = exec.ticket;
-    const body = h("div", { class: "notice" }, h("b", null, `execution ${e.verdict}`), ` · ${e.narration.replace(/ Hash [0-9a-f]+…$/, "")}`);
-    if (e.verdict !== "ALLOW" || !exec.typedData) return mount(area, body);
-    const signBtn = h("button", { class: "btn small", type: "button" }, "sign in wallet →");
-    signBtn.addEventListener("click", async () => {
+    return await connect();
+  } catch (err) {
+    if ((err as Error).message === "NO_WALLET") mount(area, noWalletHelp());
+    else mount(area, h("p", { class: "notice error" }, (err as Error).message));
+    return null;
+  }
+}
+
+/**
+ * Walks one execution to the end with the human's wallet:
+ * APPROVAL_REQUIRED → send the exact-amount approval, wait, review again;
+ * ALLOW + SWAP → send the checked transaction; ALLOW + RFQ → sign the checked typed data.
+ * `onSent` lets a standing order record the transaction too.
+ */
+async function carryOut(view: ExecView, w: { user: string; provider: Eip1193; name: string }, area: HTMLElement, again: () => Promise<void>, onSent?: (txHash: string) => Promise<void>): Promise<void> {
+  const say = (text: string, error = false) => mount(area, h("p", { class: `notice${error ? " error" : ""}` }, text));
+  const e = view.ticket;
+  const step = e.reasons.includes("APPROVAL_REQUIRED") ? "step 1 of 2 · approve" : e.verdict === "ALLOW" ? (e.executionMode === "SWAP" ? "ready to send" : "ready to sign") : `execution ${e.verdict}`;
+  const summary = h("p", { class: "notice" }, h("b", null, step), ` · ${clean(e.narration)}`);
+
+  if (e.reasons.includes("APPROVAL_REQUIRED") && view.approvalTx) {
+    const btn = h("button", { class: "btn small", type: "button" }, `approve $${e.amountInUsd} USDT in ${w.name} →`);
+    btn.addEventListener("click", async () => {
       try {
-        (signBtn as HTMLButtonElement).disabled = true;
-        const signature = await signTypedData(user, exec.typedData);
+        (btn as HTMLButtonElement).disabled = true;
+        say("waiting for the approval in your wallet…");
+        const hash = await sendTx(w.provider, view.approvalTx!, w.user);
+        say("approval sent · waiting for it to confirm…");
+        if (!(await waitReceipt(w.provider, hash))) return say("The approval failed on chain.", true);
+        say("approved · getting a fresh quote…");
+        await again();
+      } catch (err) {
+        say((err as Error).message, true);
+      }
+    });
+    return mount(area, summary, h("div", { class: "ticket-actions" }, btn));
+  }
+  if (e.verdict !== "ALLOW") return mount(area, summary);
+
+  const btn = h("button", { class: "btn small", type: "button" }, e.executionMode === "SWAP" ? `send in ${w.name} →` : `sign in ${w.name} →`);
+  btn.addEventListener("click", async () => {
+    try {
+      (btn as HTMLButtonElement).disabled = true;
+      if (e.executionMode === "SWAP" && view.tx) {
+        const hash = await sendTx(w.provider, view.tx, w.user);
+        await api.sent(e.hash, hash);
+        if (onSent) await onSent(hash);
+        say("sent · waiting for BSC to confirm…");
+        const ok = await waitReceipt(w.provider, hash);
+        return mount(area, h("p", { class: `notice${ok ? "" : " error"}` }, ok ? `FILLED · ` : `FAILED · `, h("a", { href: `https://bscscan.com/tx/${hash}`, target: "_blank", rel: "noopener" }, `${hash.slice(0, 18)}… on BscScan ↗`)));
+      }
+      if (view.typedData) {
+        const signature = await signTypedData(w.provider, w.user, view.typedData);
         say("submitted · waiting for the fill…");
         await api.submit(e.hash, signature);
         for (let i = 0; i < 20; i++) {
@@ -242,19 +294,37 @@ async function reviewAndSign(t: Ticket, area: HTMLElement): Promise<void> {
           const s = await api.execution(e.hash);
           if (s.status && s.status !== "PENDING") return say(`${s.status} · order ${s.submittedOrderId ?? ""}`, s.status !== "FILLED");
         }
-        say("still pending — check again in a minute.");
-      } catch (err) {
-        say(String((err as Error).message), true);
+        return say("still pending - check again in a minute.");
       }
-    });
-    mount(area, body, h("div", { class: "ticket-actions" }, signBtn));
-  } catch (err) {
-    if (err instanceof ApiError && err.status === 501) return say("Live execution is switched off on this server. The decision ticket above is still valid, verifiable proof.");
-    say(String((err as Error).message), true);
-  }
+      say("Nothing to sign for this execution.", true);
+    } catch (err) {
+      say((err as Error).message, true);
+    }
+  });
+  mount(area, summary, h("div", { class: "ticket-actions" }, btn));
 }
 
-// ——— replay ———
+async function reviewAndSign(t: Ticket, area: HTMLElement): Promise<void> {
+  const say = (text: string, error = false) => mount(area, h("p", { class: `notice${error ? " error" : ""}` }, text));
+  if (!findWallet()) return mount(area, noWalletHelp());
+  say("connecting your wallet…");
+  const w = await connectOrExplain(area);
+  if (!w) return;
+  const run = async (): Promise<void> => {
+    try {
+      say("getting a fresh quote and checking it against the ticket…");
+      const view = await api.review(t.hash, w.user);
+      await carryOut(view, w, area, run);
+    } catch (err) {
+      if (err instanceof ApiError && err.status === 501) return say("Live execution is switched off on this server. The decision ticket above is still valid, verifiable proof.");
+      if (err instanceof ApiError && err.status === 409 && /only ALLOW/.test(err.message)) return say("This decision is too old to sign or is not ALLOW. Check the order again first.", true);
+      say((err as Error).message, true);
+    }
+  };
+  await run();
+}
+
+// --- replay ---
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 /** "2026-09-25-2000-close-pause" → { key: "2026-09-25 2000", label: "25 Sep · 20:00 close pause" } */
@@ -268,7 +338,7 @@ function describeSet(set: string): { key: string; label: string } {
 }
 
 function renderReplay(rows: ReplayRow[], count: number, drifted: number): void {
-  $("replay-title-bar").textContent = `stamp — replay · ${count} recomputed · ${drifted} drifted`;
+  $("replay-title-bar").textContent = `stamp - replay · ${count} recomputed · ${drifted} drifted`;
   const sets = [...new Set(rows.map((r) => r.set))].sort((a, b) => describeSet(b).key.localeCompare(describeSet(a).key));
   const tabs = $("replay-tabs");
   const table = $("replay-table");
@@ -281,7 +351,7 @@ function renderReplay(rows: ReplayRow[], count: number, drifted: number): void {
           "tr",
           null,
           h("td", null, r.intent),
-          h("td", null, r.symbol ?? "—"),
+          h("td", null, r.symbol ?? "-"),
           h("td", null, h("span", { class: `v ${r.verdict}` }, r.verdict)),
           h("td", null, r.reasons.join(", ")),
           h("td", { class: "num" }, r.premiumBps === null ? "" : `${r.premiumBps} bps`),
@@ -294,7 +364,7 @@ function renderReplay(rows: ReplayRow[], count: number, drifted: number): void {
   if (sets[0]) show(sets[0]);
 }
 
-// ——— standing order ———
+// --- standing order ---
 async function loadStanding(): Promise<void> {
   const body = $("standing-body");
   let data: { orders: StandingOrder[]; filledTodayUsd: string };
@@ -315,7 +385,7 @@ async function loadStanding(): Promise<void> {
         { class: "facts" },
         fact("state", h("span", { class: `pill ${shown.state}` }, shown.state.replace("_", " "))),
         fact("order", shown.intent),
-        fact("last check", lastEvent ? `${new Date(lastEvent.at).toUTCString().slice(5, 22)} UTC · ${lastEvent.note}` : "—"),
+        fact("last check", lastEvent ? `${new Date(lastEvent.at).toUTCString().slice(5, 22)} UTC · ${lastEvent.note}` : "-"),
         fact("filled today", `$${data.filledTodayUsd} of $50`),
       ),
     );
@@ -329,22 +399,45 @@ async function loadStanding(): Promise<void> {
           }
           void loadStanding();
         } }, label);
-      parts.push(h("div", { class: "ticket-actions" }, act("recheck", "recheck now"), active.state === "READY" ? act("review", "review & sign →", true) : null, act("cancel", "cancel")));
+      parts.push(h("div", { class: "ticket-actions" }, act("recheck", "recheck now"), active.state === "READY" ? act("review", "review →", true) : null, act("cancel", "cancel")));
+      if (active.state === "AWAITING_SIGNATURE" && active.executionHash) {
+        const area = h("div", null);
+        const go = h("button", { class: "btn small", type: "button" }, "finish in Binance Wallet →");
+        go.addEventListener("click", async () => {
+          const w = await connectOrExplain(area);
+          if (!w) return;
+          if (w.user.toLowerCase() !== active.user.toLowerCase()) return mount(area, h("p", { class: "notice error" }, `Connect the wallet that owns this order (${active.user.slice(0, 8)}…).`));
+          try {
+            const view = await api.execution(active.executionHash!);
+            await carryOut(view, w, area, async () => {
+              await api.standingAction(active.id, "review");
+              void loadStanding();
+            }, async (txHash) => {
+              await api.standingSent(active.id, txHash);
+            });
+          } catch (err) {
+            mount(area, h("p", { class: "notice error" }, (err as Error).message));
+          }
+        });
+        parts.push(h("div", { class: "ticket-actions" }, go), area);
+      }
     }
   }
   if (!active) {
     const field = h("input", { class: "order-input", value: "Buy $20 of NVIDIA", maxlength: 200, "aria-label": "Standing order" }) as HTMLInputElement;
-    const start = h("button", { class: "btn", type: "button" }, "connect wallet & park it →");
+    const start = h("button", { class: "btn", type: "button" }, "connect Binance Wallet & park it →");
+    const note = h("div", null);
     start.addEventListener("click", async () => {
+      const w = await connectOrExplain(note);
+      if (!w) return;
       try {
-        const user = await connect();
-        await api.createStanding(field.value.trim(), user);
+        await api.createStanding(field.value.trim(), w.user);
         void loadStanding();
       } catch (err) {
-        alert((err as Error).message);
+        mount(note, h("p", { class: "notice error" }, (err as Error).message));
       }
     });
-    parts.push(h("div", { class: "order-form" }, field, start));
+    parts.push(h("div", { class: "order-form" }, field, start), note);
     if (!shown) parts.unshift(h("p", { class: "placeholder" }, "No standing order yet. Park one: it is re-checked every ten minutes and waits for your signature when the verdict is ALLOW."));
   }
   mount(body, ...parts);

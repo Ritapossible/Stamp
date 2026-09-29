@@ -163,6 +163,6 @@
     ],
     "notes": [],
     "hash": "44e3c9e95bbd606b0889017e607044758f7dd250fa8490cbe7142692461b45ba",
-    "narration": "WARN. During market hours, AMDx is 200 bps above the stock price ($630.88) — about $0.39 of overpay on this order. Parked. $20.00 buys 0.03108114 AMDx tokens = 0.03108114 shares (multiplier 1). Not the same instrument: AMDon (Ondo), AMDB (bStock). Hash 44e3c9e95bbd…"
+    "narration": "WARN. During market hours, AMDx is 200 bps above the stock price ($630.88) - about $0.39 of overpay on this order. Parked. $20.00 buys 0.03108114 AMDx tokens = 0.03108114 shares (multiplier 1). Not the same instrument: AMDon (Ondo), AMDB (bStock). Hash 44e3c9e95bbd…"
   }
 }

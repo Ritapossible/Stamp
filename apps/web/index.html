@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Stamp — pre-trade gate for tokenized stocks</title>
+    <title>Stamp - pre-trade gate for tokenized stocks</title>
     <meta
       name="description"
       content="Stamp checks a tokenized-stock order on BSC before anything is signed: the right issuer, the real share count, halts, and what you'd overpay while the market is shut."
@@ -67,7 +67,7 @@
           </h1>
           <p class="lede">
             One tokenized Netflix is ten shares. One NVIDIA is three different products. Stamp checks the order before
-            anything is signed — and proves every answer with a hash.
+            anything is signed - and proves every answer with a hash.
           </p>
           <div class="btn-row">
             <a class="btn" href="#check">check an order →</a>
@@ -78,7 +78,7 @@
 
       <section class="wrap" id="checks" aria-labelledby="checks-title">
         <div class="panel">
-          <div class="panel-bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span id="checks-title">stamp — the four checks</span></div>
+          <div class="panel-bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span id="checks-title">stamp - the four checks</span></div>
           <div class="stack-row">
             <span class="stack-label">Issuer</span>
             <span class="stack-value">never switched<small>NVDAon, NVDAx and NVDAB are different legal products. A cheaper sibling is shown, never bought.</small></span>
@@ -130,7 +130,7 @@
           </div>
 
           <div class="panel">
-            <div class="panel-bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span>stamp — check an order</span></div>
+            <div class="panel-bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span>stamp - check an order</span></div>
             <div class="policy-line" id="policy-line">
               <b>Ondo only.</b> Never switch issuer. Never guess what "1" means. Park if the market is shut and the price is more than 0.80% above the last close. <b>$20 an order, $50 a day.</b>
             </div>
@@ -148,7 +148,7 @@
             </form>
             <div class="chips" id="chips" aria-label="Examples"></div>
             <div class="result" id="result" aria-live="polite">
-              <p class="placeholder">No order yet. Try one of the examples — "Buy 1 NFLX" is the interesting one.</p>
+              <p class="placeholder">No order yet. Try one of the examples - "Buy 1 NFLX" is the interesting one.</p>
             </div>
           </div>
         </div>
@@ -162,7 +162,7 @@
             <p>Real captures of Binance's responses, including the 20:00 close pause, re-decided on this server right now. A single changed hash would show here as drift.</p>
           </div>
           <div class="panel">
-            <div class="panel-bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span id="replay-title-bar">stamp — replay</span></div>
+            <div class="panel-bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span id="replay-title-bar">stamp - replay</span></div>
             <div class="tabs" id="replay-tabs" role="tablist" aria-label="Recorded sets"></div>
             <div class="table-wrap" id="replay-table"><p class="placeholder"><span class="spinner"></span>recomputing recorded tickets…</p></div>
             <div class="cmd"><code>npm run replay</code><span>same check, on your machine, no key</span></div>
@@ -175,10 +175,10 @@
           <div class="section-head">
             <p class="eyebrow">standing order</p>
             <h2 class="headline h2" id="standing-title"><span class="dim">Buy when it's fair.</span><br />Park when it isn't.</h2>
-            <p>One order, re-checked every ten minutes. When the verdict is ALLOW it waits for you to sign — Stamp never holds a key, and never says "bought" without a fill.</p>
+            <p>One order, re-checked every ten minutes. When the verdict is ALLOW it waits for you to sign - Stamp never holds a key, and never says "bought" without a fill.</p>
           </div>
           <div class="panel" id="standing-panel">
-            <div class="panel-bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span>stamp — standing order</span></div>
+            <div class="panel-bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span>stamp - standing order</span></div>
             <div id="standing-body"><p class="placeholder"><span class="spinner"></span>loading…</p></div>
           </div>
         </div>
@@ -191,10 +191,10 @@
             <h2 class="headline h2" id="limits-title"><span class="dim">What Stamp</span><br />doesn't claim.</h2>
           </div>
           <ol class="limits">
-            <li>Binance's wallet and Trading API don't know about Stamp tickets. A caller that skips Stamp can still trade — the guarantee covers orders that go through it.</li>
+            <li>Binance's wallet and Trading API don't know about Stamp tickets. A caller that skips Stamp can still trade - the guarantee covers orders that go through it.</li>
             <li>bStocks report no market session and no stock price. Stamp uses the venue session and a sibling's price or its own recorded close, and says so on the ticket.</li>
             <li>xStock data disagrees with itself: one endpoint said NFLXx holds 10 shares, the other said 1. Stamp blocks that instead of choosing.</li>
-            <li>The recorded close is the print at Binance's 20:00 session pause, taken every ten minutes — close to the official close, not the auction tape.</li>
+            <li>The recorded close is the print at Binance's 20:00 session pause, taken every ten minutes - close to the official close, not the auction tape.</li>
             <li>Buy only, spot only, BSC only, $20 an order, and a person signs every fill.</li>
           </ol>
         </div>

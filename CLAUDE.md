@@ -1,4 +1,4 @@
-# CLAUDE.md — Stamp project memory
+# CLAUDE.md - Stamp project memory
 
 Read this file at the start of every session. It is short on purpose. The full design is in
 `docs/ARCHITECTURE.md`, the schedule is in `docs/PLAN.md`, and the reasons behind each choice
@@ -20,7 +20,7 @@ The one-sentence pitch: **"Your agent can't buy the wrong Netflix."** One `NFLXo
 This is for the BNB Hack: Tokenized Stocks Edition. Submissions are due
 **Sun 11 Oct 2026, 12:00 UTC** and judging runs 12–23 Oct. See `docs/HACKATHON.md`.
 
-## Invariants — do not break these
+## Invariants - do not break these
 
 1. **Only BSC mainnet (chainId `56`), spot, buy side.** No perps, leverage, sells or second
    chain. Symbols are not unique across chains (`NFLXon` exists on 56, 1 and Solana), so the
@@ -105,8 +105,11 @@ fake, or none, in which case execution returns 501. **Never make the fake wallet
 submit and b402 calls must run from a non-US host; decisions and replay are unaffected.
 `scripts/quote-probe.ts` makes one quote-only call and records it to `fixtures/trading/`.
 
-**Next:** the user deploys via the Render Blueprint, then we run the first live quote from
-Frankfurt and record it to `fixtures/trading/`.
+**Live:** https://stamp-iizn.onrender.com (Render, Frankfurt, key set in the Render dashboard).
+Quotes from there work and come back in **SWAP** mode (D21): approve exactly → simulate with
+`evmParams` → balance-change check → the human's wallet sends. The page connects **Binance
+Wallet first** (D22). `STAMP_FAKE_WALLET=swap` runs the same flow locally with a labelled fake.
+No em dashes anywhere in the repo: the user asked for a plain "-" instead.
 
 **Snapshotter:** GitHub cron never fired on this repo. `.github/workflows/snapshot.yml` is a
 ~5.5 h loop that dispatches its own successor, with the hourly cron as a watchdog. To stop
@@ -142,7 +145,7 @@ raw facts** (the call, what was expected, what came back, the latency) under "Ra
 **Claude must not write the prose sections or polish the user's wording.** When something
 breaks or surprises us, add a raw-log line the same day.
 
-## Out of scope — delete these if they appear
+## Out of scope - delete these if they appear
 
 Tax lots, PDFs, baskets, DCA across names, news or earnings trading, charts, cross-issuer
 arbitrage, sells, perps, a second chain, an LLM that picks the verdict, unattended signing,

@@ -1,4 +1,4 @@
-# Render Blueprint — one web service serving the API and the web page.
+# Render Blueprint - one web service serving the API and the web page.
 # Region is Frankfurt on purpose: Binance's Trading API refuses US origins (40304, see docs/DECISIONS.md D20).
 services:
   - type: web

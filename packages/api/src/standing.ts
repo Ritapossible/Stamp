@@ -140,7 +140,8 @@ export class StandingService {
   /** Human pressed Review: re-decide (the last decision may be 10 min old), then quote. */
   async review(id: string): Promise<StandingOrder> {
     const o = this.require(id);
-    if (o.state !== "READY") throw new ExecError(`order is ${o.state}, not READY`, 409);
+    // AWAITING_SIGNATURE is allowed so a fresh review can follow a USDT approval.
+    if (o.state !== "READY" && o.state !== "AWAITING_SIGNATURE") throw new ExecError(`order is ${o.state}, not READY`, 409);
     if (!this.deps.execution) throw new ExecError("execution unavailable: no wallet configured", 409);
     const hash = await this.decideNow(o);
     const t = this.deps.store.get(hash)!.ticket;
@@ -149,6 +150,12 @@ export class StandingService {
       return o;
     }
     const rec = await this.deps.execution.review(hash, o.user);
+    if (rec.ticket.reasons.includes("APPROVAL_REQUIRED")) {
+      o.executionHash = rec.ticket.hash;
+      o.expiresAt = null;
+      await this.transition(o, "AWAITING_SIGNATURE", "approve USDT in the wallet, then review again", rec.ticket.hash);
+      return o;
+    }
     if (rec.ticket.verdict !== "ALLOW") {
       await this.transition(o, "PARKED", `execution BLOCK ${rec.ticket.reasons.join(",")}`, rec.ticket.hash);
       return o;
@@ -168,6 +175,15 @@ export class StandingService {
     }
     const rec = await this.deps.execution.submit(o.executionHash, signature);
     await this.transition(o, "SUBMITTED", `submitted ${rec.submittedOrderId}`, o.executionHash);
+    return o;
+  }
+
+  /** SWAP: the human's wallet sent the checked transaction. */
+  async sent(id: string, txHash: string): Promise<StandingOrder> {
+    const o = this.require(id);
+    if (o.state !== "AWAITING_SIGNATURE" || !o.executionHash || !this.deps.execution) throw new ExecError(`order is ${o.state}`, 409);
+    await this.deps.execution.sent(o.executionHash, txHash);
+    await this.transition(o, "SUBMITTED", `sent ${txHash}`, o.executionHash);
     return o;
   }
 

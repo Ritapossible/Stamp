@@ -12,6 +12,7 @@
  */
 import { createHmac, randomUUID } from "node:crypto";
 import type { QuoteView, SimulationResult } from "@stamp/engine";
+import { approveCalldata, erc20Allowance } from "./bsc.js";
 import type { OrderStatus, PreparedOrder, QuoteRequest, StockWallet } from "./wallet.js";
 
 export const TRADING_BASE = "https://web3.binance.com/build";
@@ -123,9 +124,12 @@ function requireString(v: unknown, what: string, res: unknown): string {
 export class TradingApiWallet implements StockWallet {
   readonly name = "binance-trading-api";
 
+  private readonly rawQuotes = new Map<string, unknown>();
+
   constructor(
     private readonly client: TradingApiClient,
     private readonly now: () => string = () => new Date().toISOString(),
+    private readonly allowance: (token: string, owner: string, spender: string) => Promise<bigint> = erc20Allowance,
   ) {}
 
   async quote(req: QuoteRequest): Promise<QuoteView> {
@@ -140,6 +144,7 @@ export class TradingApiWallet implements StockWallet {
     const mode = d.executionMode === "RFQ" ? "RFQ" : d.executionMode === "SWAP" ? "SWAP" : null;
     if (!mode) throw new TradingApiError(`unknown executionMode ${String(d.executionMode)}`, null, res);
     const out = d.toTokenAmount ?? pick(d, "toToken", "amount") ?? d.amountOut;
+    if (typeof d.quoteId === "string") this.rawQuotes.set(d.quoteId, res);
     return {
       quoteId: requireString(d.quoteId, "quoteId", res),
       quotedAt: this.now(),
@@ -165,20 +170,55 @@ export class TradingApiWallet implements StockWallet {
       slippagePercent: String(slippageBps / 100),
     });
     const d = firstData(res);
+    const raw: Record<string, unknown> = { quote: this.rawQuotes.get(quote.quoteId) ?? null, swap: res };
     if (quote.executionMode === "RFQ") {
       const typedData = pick(d, "rfq", "typedDataToSign");
       if (!typedData) throw new TradingApiError("RFQ response has no rfq.typedDataToSign", null, res);
-      return { mode: "RFQ", typedData, tx: null, orderId: requireString(pick(d, "rfq", "orderId"), "rfq.orderId", res), approvalTx: null };
+      return { mode: "RFQ", typedData, tx: null, orderId: requireString(pick(d, "rfq", "orderId"), "rfq.orderId", res), approvalTx: null, approvalRequired: false, raw };
     }
-    return { mode: "SWAP", typedData: null, tx: d.tx ?? null, orderId: null, approvalTx: null };
+    const tx = (d.tx ?? null) as { to?: string } | null;
+    if (!tx || typeof tx.to !== "string") throw new TradingApiError("SWAP response has no tx", null, res);
+
+    // Who pulls the USDT: Binance's approve-transaction endpoint names it (dexContractAddress);
+    // fall back to the router the swap calls. Approve exactly this order's amount, never unlimited.
+    let spender = tx.to;
+    try {
+      const ap = await this.client.get("/api/v1/dex/aggregator/approve-transaction", {
+        binanceChainId: BSC,
+        tokenContractAddress: quote.fromToken,
+        approveAmount: quote.amountInRaw,
+      });
+      raw.approve = ap;
+      const named = pick(firstData(ap), "dexContractAddress");
+      if (typeof named === "string" && /^0x[0-9a-fA-F]{40}$/.test(named)) spender = named;
+    } catch (err) {
+      raw.approveError = err instanceof Error ? err.message : String(err);
+    }
+    const allowance = await this.allowance(quote.fromToken, user, spender);
+    const approvalRequired = allowance < BigInt(quote.amountInRaw);
+    const approvalTx = approvalRequired ? { from: user, to: quote.fromToken, value: "0", data: approveCalldata(spender, quote.amountInRaw) } : null;
+    return { mode: "SWAP", typedData: null, tx, orderId: null, approvalTx, approvalRequired, raw };
   }
 
+  /**
+   * The docs page names the body field `evmTx`; the live API answers "evmParams is required for
+   * EVM chains" (2026-09-29). Both are sent. Only an explicit SUCCESS counts as a pass.
+   */
   async simulate(tx: unknown, user: string): Promise<SimulationResult> {
+    const t = (tx ?? {}) as { from?: string; to?: string; value?: string | number; data?: string };
+    const evm = { from: t.from ?? user, to: t.to, value: String(t.value ?? "0"), data: t.data ?? "0x" };
     try {
-      const res = await this.client.post("/api/v1/dex/pre-transaction/simulate", { binanceChainId: BSC, address: user, tx });
+      const res = await this.client.post("/api/v1/dex/pre-transaction/simulate", { binanceChainId: BSC, evmParams: evm, evmTx: evm });
       const d = pick(res, "data");
-      const failed = pick(d, "success") === false || typeof pick(d, "error") === "string";
-      return failed ? { ok: false, error: String(pick(d, "error") ?? "simulation failed") } : { ok: true, error: null };
+      const status = String(pick(d, "status") ?? "").toUpperCase();
+      const changes = pick(d, "balanceChanges");
+      const balanceChanges = Array.isArray(changes)
+        ? changes
+            .filter((c) => c && typeof c === "object")
+            .map((c) => ({ contractAddress: String((c as Json).contractAddress ?? ""), owner: String((c as Json).owner ?? ""), change: String((c as Json).change ?? "") }))
+        : null;
+      if (status === "SUCCESS" || status === "SUCCEED" || status === "SUCCEEDED") return { ok: true, error: null, balanceChanges };
+      return { ok: false, error: String(pick(d, "failReason") ?? (status ? `status ${status}` : "no status in simulate response")), balanceChanges };
     } catch (err) {
       return { ok: false, error: err instanceof Error ? err.message : String(err) };
     }
@@ -193,6 +233,14 @@ export class TradingApiWallet implements StockWallet {
     });
     const d = pick(res, "data");
     return { orderId: typeof pick(d, "orderId") === "string" ? (pick(d, "orderId") as string) : i.orderId };
+  }
+
+  async txStatus(txHash: string): Promise<OrderStatus> {
+    const res = await this.client.get("/api/v1/dex/post-transaction/transaction-detail-by-txhash", { binanceChainId: BSC, txHash });
+    const d = pick(res, "data");
+    const item = Array.isArray(d) ? d[0] : d;
+    const s = String(pick(item, "txStatus") ?? "").toLowerCase();
+    return s === "success" ? "FILLED" : s === "fail" || s === "failed" ? "FAILED" : "PENDING";
   }
 
   async status(orderId: string): Promise<OrderStatus> {

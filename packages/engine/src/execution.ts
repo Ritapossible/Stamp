@@ -41,6 +41,8 @@ export function prepareExecution(input: ExecuteInput): ExecutionTicket {
     slippageBps: null,
     typedDataHash: null,
     typedDataChecks: null,
+    swapTxHash: null,
+    approvalRequired: input.approvalRequired === true,
     swapSimulation: input.swapSimulation,
     approvalSimulation: input.approvalSimulation,
   };
@@ -53,22 +55,22 @@ export function prepareExecution(input: ExecuteInput): ExecutionTicket {
     return body;
   };
 
-  // E1 — the decision is genuine and was made under this policy
+  // E1 - the decision is genuine and was made under this policy
   if (ticketHash(decision as unknown as Record<string, unknown>) !== decision.hash || policyHash(policy) !== decision.policyHash) {
     return finish("TICKET_TAMPERED");
   }
-  // E1b — only an ALLOW decision can lead to a signature
+  // E1b - only an ALLOW decision can lead to a signature
   if (decision.verdict !== "ALLOW" || !decision.chosen || !decision.notionalUsd || !decision.tokenPriceUsd || !decision.multiplier) {
     return finish("DECISION_NOT_ALLOWED");
   }
-  // E2 — fresh decision
+  // E2 - fresh decision
   const decisionAge = (Date.parse(input.asOf) - Date.parse(decision.asOf)) / 1000;
   if (!(decisionAge >= 0 && decisionAge <= DECISION_MAX_AGE_SEC)) return finish("DECISION_STALE");
 
-  // E4 — fresh quote (E3, the mode, is recorded above)
+  // E4 - fresh quote (E3, the mode, is recorded above)
   if (!(draft.quoteAgeSec >= 0 && draft.quoteAgeSec <= policy.quoteTtlSec)) return finish("QUOTE_STALE");
 
-  // E5 — same instrument, paid with the expected stablecoin
+  // E5 - same instrument, paid with the expected stablecoin
   if (draft.toToken !== decision.chosen.contractAddress || draft.fromToken !== input.quoteAsset.toLowerCase()) {
     return finish("ISSUER_MISMATCH");
   }
@@ -82,14 +84,14 @@ export function prepareExecution(input: ExecuteInput): ExecutionTicket {
   draft.economicShares = fixed(amountOut.mul(new Dec(decision.multiplier)), 8);
   if (amountIn.minus(new Dec(decision.notionalUsd)).abs().gt(AMOUNT_TOLERANCE_USD)) return finish("AMOUNT_MISMATCH");
 
-  // E6 — price moved or the route is worse than the decision saw
+  // E6 - price moved or the route is worse than the decision saw
   const effective = amountIn.div(amountOut);
   draft.effectivePriceUsd = fixed(effective, 6);
   const decided = new Dec(decision.tokenPriceUsd);
   draft.slippageBps = toInt(effective.minus(decided).div(decided).mul(BPS));
   if (draft.slippageBps > policy.maxSlippageBps) return finish("SLIPPAGE");
 
-  // E7 — what will be signed matches the ticket
+  // E7 - what will be signed matches the ticket
   if (quote.executionMode === "RFQ") {
     const checks = inspectTypedData(input.typedData, {
       token: decision.chosen.contractAddress,
@@ -102,11 +104,27 @@ export function prepareExecution(input: ExecuteInput): ExecutionTicket {
     if (!checks.hashable || !checks.chainId56 || !checks.tokenFound || !checks.userFound || !checks.amountFound || checks.otherIssuerFound) {
       return finish("TYPED_DATA_MISMATCH");
     }
-  } else if (!input.swapSimulation?.ok) {
-    return finish("SIMULATION_FAILED");
+  } else {
+    // SWAP: the wallet sends a normal transaction. It must come from the user, carry no BNB
+    // (USDT pays), simulate cleanly, and the simulated balances must show the user receiving
+    // the ticket's token and no sibling issuer's.
+    const tx = input.swapTx;
+    if (!tx || typeof tx.to !== "string" || typeof tx.data !== "string") return finish("TX_MISMATCH");
+    draft.swapTxHash = sha256Hex(canonicalJson({ from: tx.from ?? null, to: tx.to, value: tx.value, data: tx.data }));
+    if ((tx.from && tx.from.toLowerCase() !== user) || !/^(0|0x0*)$/.test(String(tx.value ?? "0"))) return finish("TX_MISMATCH");
+    if (input.approvalRequired) return finish("APPROVAL_REQUIRED");
+    if (!input.swapSimulation?.ok) return finish("SIMULATION_FAILED");
+    const changes = input.swapSimulation.balanceChanges;
+    if (changes && changes.length > 0) {
+      const mine = changes.filter((c) => c.owner.toLowerCase() === user);
+      const gotToken = mine.some((c) => c.contractAddress.toLowerCase() === decision.chosen!.contractAddress && /^\+?[1-9]\d*$/.test(c.change));
+      const sibling = new Set(decision.rejected.map((r) => r.contractAddress));
+      const gotSibling = mine.some((c) => sibling.has(c.contractAddress.toLowerCase()));
+      if (!gotToken || gotSibling) return finish("SIMULATION_MISMATCH");
+    }
   }
 
-  // E8 — the approval, if one is needed, simulates cleanly
+  // E8 - the approval, if one is needed, simulates cleanly
   if (input.approvalSimulation && !input.approvalSimulation.ok) return finish("SIMULATION_FAILED");
 
   return finish(null);
@@ -160,7 +178,7 @@ function narrateExecution(t: Omit<ExecutionTicket, "narration">): string {
   const tail = `Hash ${t.hash.slice(0, 12)}…`;
   switch (r) {
     case "OK":
-      return `${head} Ready to sign: $${t.amountInUsd} for ${trim(t.amountOutTokens)} ${t.symbol} tokens = ${trim(t.economicShares)} shares at $${t.effectivePriceUsd} per token (${t.slippageBps} bps from the decision). The quote is ${t.quoteAgeSec} s old. ${tail}`;
+      return `${head} Ready to ${t.executionMode === "SWAP" ? "send" : "sign"}: $${t.amountInUsd} for ${trim(t.amountOutTokens)} ${t.symbol} tokens = ${trim(t.economicShares)} shares at $${t.effectivePriceUsd} per token (${t.slippageBps} bps from the decision). The quote is ${t.quoteAgeSec} s old. ${tail}`;
     case "TICKET_TAMPERED":
       return `${head} The decision ticket does not match its hash or its policy. Nothing will be signed. ${tail}`;
     case "DECISION_NOT_ALLOWED":
@@ -177,6 +195,12 @@ function narrateExecution(t: Omit<ExecutionTicket, "narration">): string {
       return `${head} The quote pays $${t.effectivePriceUsd} per token, ${t.slippageBps} bps worse than the decision saw. ${tail}`;
     case "TYPED_DATA_MISMATCH":
       return `${head} The order you would sign does not match the ticket (${describeChecks(t.typedDataChecks)}). ${tail}`;
+    case "APPROVAL_REQUIRED":
+      return `${head} Approve USDT for the swap router first (one transaction in your wallet), then review again. ${tail}`;
+    case "TX_MISMATCH":
+      return `${head} The swap transaction is not from your address or tries to send BNB. Nothing will be sent. ${tail}`;
+    case "SIMULATION_MISMATCH":
+      return `${head} In simulation you would not receive ${t.symbol}. Nothing will be sent. ${tail}`;
     case "SIMULATION_FAILED":
       return `${head} The transaction fails in simulation: ${t.approvalSimulation?.error ?? t.swapSimulation?.error ?? "no simulation"}. ${tail}`;
     default:

@@ -111,13 +111,29 @@ describe("prepareExecution", () => {
   block("typed data on Ethereum", { typedData: typedData({ chainId: 1 }) }, "TYPED_DATA_MISMATCH");
   block("typed data with a float", { typedData: typedData({ extra: 1.5 }) }, "TYPED_DATA_MISMATCH");
   block("no typed data", { typedData: null }, "TYPED_DATA_MISMATCH");
-  block("SWAP without a simulation", { quote: { ...input().quote, executionMode: "SWAP" }, typedData: null }, "SIMULATION_FAILED");
+  const ROUTER = "0x5555555555555555555555555555555555555555";
+  const swap = (over: Partial<ExecuteInput> = {}): Partial<ExecuteInput> => ({
+    quote: { ...input().quote, executionMode: "SWAP" },
+    typedData: null,
+    swapTx: { from: USER, to: ROUTER, value: "0", data: "0xabcdef" },
+    swapSimulation: { ok: true, error: null, balanceChanges: [{ contractAddress: NVDAON, owner: USER, change: "88000000000000000" }, { contractAddress: USDT, owner: USER, change: "-20000000000000000000" }] },
+    ...over,
+  });
+  block("SWAP with no transaction", swap({ swapTx: null }), "TX_MISMATCH");
+  block("SWAP from someone else", swap({ swapTx: { from: "0x4444444444444444444444444444444444444444", to: ROUTER, value: "0", data: "0x" } }), "TX_MISMATCH");
+  block("SWAP that sends BNB", swap({ swapTx: { from: USER, to: ROUTER, value: "1000", data: "0x" } }), "TX_MISMATCH");
+  block("SWAP before USDT is approved", swap({ approvalRequired: true }), "APPROVAL_REQUIRED");
+  block("SWAP that fails in simulation", swap({ swapSimulation: { ok: false, error: "TRANSFER_FROM_FAILED" } }), "SIMULATION_FAILED");
+  block("SWAP that delivers NVDAB", swap({ swapSimulation: { ok: true, error: null, balanceChanges: [{ contractAddress: NVDAB, owner: USER, change: "88000000000000000" }] } }), "SIMULATION_MISMATCH");
+  block("SWAP that delivers nothing to the user", swap({ swapSimulation: { ok: true, error: null, balanceChanges: [{ contractAddress: USDT, owner: USER, change: "-20000000000000000000" }] } }), "SIMULATION_MISMATCH");
   block("approval reverts", { approvalSimulation: { ok: false, error: "execution reverted" } }, "SIMULATION_FAILED");
 
-  it("ALLOWs SWAP mode when the swap simulates", () => {
-    const t = prepareExecution(input({ quote: { ...input().quote, executionMode: "SWAP" }, typedData: null, swapSimulation: { ok: true, error: null } }));
+  it("ALLOWs SWAP mode when the swap simulates and delivers the ticket's token", () => {
+    const t = prepareExecution(input(swap()));
     expect(t.verdict).toBe("ALLOW");
     expect(t.typedDataHash).toBeNull();
+    expect(t.swapTxHash).toMatch(/^[0-9a-f]{64}$/);
+    expect(t.approvalRequired).toBe(false);
   });
 
   it("allows a better-than-decided price (negative slippage)", () => {

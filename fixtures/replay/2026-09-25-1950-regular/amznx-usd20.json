@@ -163,6 +163,6 @@
     ],
     "notes": [],
     "hash": "b08d1137a1ecdf2320f88faccbb7bb001470b5f6233f4a1c27bbf9a307cb6a2d",
-    "narration": "WARN. During market hours, AMZNx is 231 bps above the stock price ($250.59) — about $0.45 of overpay on this order. Parked. $20.00 buys 0.07800936 AMZNx tokens = 0.07800936 shares (multiplier 1). Not the same instrument: AMZNon (Ondo), AMZNB (bStock). Hash b08d1137a1ec…"
+    "narration": "WARN. During market hours, AMZNx is 231 bps above the stock price ($250.59) - about $0.45 of overpay on this order. Parked. $20.00 buys 0.07800936 AMZNx tokens = 0.07800936 shares (multiplier 1). Not the same instrument: AMZNon (Ondo), AMZNB (bStock). Hash b08d1137a1ec…"
   }
 }

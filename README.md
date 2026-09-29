@@ -37,7 +37,7 @@ over x402, settled through Binance b402.
 > [`docs/API-NOTES.md`](docs/API-NOTES.md). Built for the
 > [BNB Hack: Tokenized Stocks Edition](https://www.bnbchain.org/en/hackathons/tokenized-stocks).
 
-## Try it live — no key needed
+## Try it live - no key needed
 
 ```bash
 npm ci
@@ -46,7 +46,7 @@ npm run stamp -- "Buy \$20 of NVIDIA"         # ALLOW NVDAon; NVDAx and NVDAB ar
 npm run stamp -- "Buy \$20 of Micron" --issuer xstock   # BLOCK when MUx is far from the stock
 ```
 
-## Run it (judges) — no key needed
+## Run it (judges) - no key needed
 
 ```bash
 git clone https://github.com/Ritapossible/Stamp && cd Stamp

@@ -333,6 +333,6 @@
     ],
     "notes": [],
     "hash": "08e5504531822fec523d76f5bee576fc211b476186ad7b7b4805e6e43b2e3626",
-    "narration": "WARN. While the US market is closed, NVDAon is 190 bps above the last official close ($226.00) — about $0.37 of overpay on this order. Parked. $20.00 buys 0.0866968 NVDAon tokens = 0.08684551 shares (multiplier 1.0017152487959898). Not the same instrument: NVDAx (xStock), NVDAB (bStock). Hash 08e550453182…"
+    "narration": "WARN. While the US market is closed, NVDAon is 190 bps above the last official close ($226.00) - about $0.37 of overpay on this order. Parked. $20.00 buys 0.0866968 NVDAon tokens = 0.08684551 shares (multiplier 1.0017152487959898). Not the same instrument: NVDAx (xStock), NVDAB (bStock). Hash 08e550453182…"
   }
 }

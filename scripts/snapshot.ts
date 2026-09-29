@@ -1,5 +1,5 @@
 /**
- * Snapshotter — records reference prices and raw off-hours payloads.
+ * Snapshotter - records reference prices and raw off-hours payloads.
  *
  * One tick:
  *   1. GET the RWA universe list and the venue market status.
@@ -76,7 +76,7 @@ export async function tick(outDir: string, rawMode: string, now = new Date(), cl
   for (const ticker of WATCHLIST) {
     const mine = dynamics.filter((d) => d.row.ticker === ticker);
     if (mine.length === 0) continue;
-    // Order: ondo, xstock, bstock — the first non-null stockInfo.price is the ticker's print.
+    // Order: ondo, xstock, bstock - the first non-null stockInfo.price is the ticker's print.
     mine.sort((a, b) => a.row.type - b.row.type);
     const tokens = mine.map(({ row, res }) => {
       if (!res.ok) failures++;

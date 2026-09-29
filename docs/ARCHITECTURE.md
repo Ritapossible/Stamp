@@ -1,4 +1,4 @@
-# Stamp — Architecture
+# Stamp - Architecture
 
 Status: design frozen for v1 on 2026-09-25. Changes go through `docs/DECISIONS.md`.
 
@@ -42,9 +42,9 @@ flowchart LR
   agent2[Other agent] -->|x402 via b402| face[apps/agent: MCP + /x402]
   web --> api[packages/api]
   face --> api
-  api --> engine[packages/engine — pure]
+  api --> engine[packages/engine - pure]
   api --> sources[packages/sources]
-  sources --> rwa[Binance RWA public GETs — no key]
+  sources --> rwa[Binance RWA public GETs - no key]
   sources --> snap[(snapshots + tickets, JSONL)]
   api -->|execution ticket ALLOW only| trade[Trading API RFQ quote → typed data]
   trade --> signer[Human wallet signs EIP-712]
@@ -91,7 +91,7 @@ The engine is pure: data in, ticket out. Everything that does I/O lives in `sour
 | `adapters.ts` | Raw dynamic → `MarketView` (§5.2). One adapter for all three issuers, because Binance returns one shape and only which fields are filled differs. It copies values through and never fills a gap. Non-string prices are rejected (JSON numbers have lost precision). |
 | `capture.ts` | Raw capture file → the exact `MarketInputs` the engine saw (used by replay). |
 | `market.ts` | `LiveMarket.forIntent`: cached universe (5 min), venue status, and the dynamic payload of every same-ticker instrument, all fetched in parallel. |
-| `snapshots.ts` | Reads the snapshot JSONL written by `scripts/snapshot.ts`. `lastOfficialClose(ticker, asOf)` is the last stock price recorded while the venue said `regular` — the final ~10 minutes of the session, not the closing auction, and labelled as such. |
+| `snapshots.ts` | Reads the snapshot JSONL written by `scripts/snapshot.ts`. `lastOfficialClose(ticker, asOf)` is the last stock price recorded while the venue said `regular` - the final ~10 minutes of the session, not the closing auction, and labelled as such. |
 | `wallet.ts` | The `StockWallet` interface (§7) plus `FakeWallet` for tests. |
 | `wallet-trading-api.ts` | Live RFQ path via the Binance Trading API (HMAC auth). |
 | `wallet-baw.ts` | Optional adapter over the Agentic Wallet `baw` CLI, used if Day-9 testing shows it can quote tokenized stocks (see PLAN). |
@@ -244,7 +244,7 @@ This step runs only after a decision `ALLOW`, and only when the human presses **
 | E1 | The decision ticket re-hashes to the same value it was stored under, and the policy supplied hashes to its `policyHash`. | else BLOCK `TICKET_TAMPERED` |
 | E1b | The decision is `ALLOW` (never `WARN`). | else BLOCK `DECISION_NOT_ALLOWED` |
 | E2 | The decision was made ≤ 120 s ago. Otherwise re-run the decision. | else BLOCK `DECISION_STALE` |
-| E3 | Quote `executionMode` is `RFQ` or `SWAP`. Record which. | — |
+| E3 | Quote `executionMode` is `RFQ` or `SWAP`. Record which. | - |
 | E4 | Quote age ≤ `policy.quoteTtlSec` (25 s, which leaves room for the ~30 s API expiry). | else BLOCK `QUOTE_STALE` |
 | E5 | Quoted `toTokenAddress` equals the decision's `chosen.contractAddress`, paid with BSC USDT. | else BLOCK `ISSUER_MISMATCH` |
 | E5b | The quote spends the decision's notional (±$0.01), and the raw amounts are plain integers. | else BLOCK `AMOUNT_MISMATCH` |

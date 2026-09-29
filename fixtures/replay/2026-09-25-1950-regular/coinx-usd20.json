@@ -163,6 +163,6 @@
     ],
     "notes": [],
     "hash": "620163e57787284d8d546d8d2e125b61de5c17a1fb9ecb2d512b95ed75c1e9e1",
-    "narration": "WARN. During market hours, COINx is 187 bps above the stock price ($195.235) — about $0.37 of overpay on this order. Parked. $20.00 buys 0.10055946 COINx tokens = 0.10055946 shares (multiplier 1). Not the same instrument: COINon (Ondo), COINB (bStock). Hash 620163e57787…"
+    "narration": "WARN. During market hours, COINx is 187 bps above the stock price ($195.235) - about $0.37 of overpay on this order. Parked. $20.00 buys 0.10055946 COINx tokens = 0.10055946 shares (multiplier 1). Not the same instrument: COINon (Ondo), COINB (bStock). Hash 620163e57787…"
   }
 }

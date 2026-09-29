@@ -1,4 +1,4 @@
-# Stamp — Build Plan
+# Stamp - Build Plan
 
 Today is **Fri 2026-09-25**. Submissions close **Sun 2026-10-11 12:00 UTC**. The target is
 to **submit on Sat 10 Oct**, leaving a day of margin. US cash hours are 13:30–20:00 UTC while
@@ -11,7 +11,7 @@ else got built.
 
 | When (UTC) | Why it matters |
 |---|---|
-| **Fri 25 Sep before 20:00 — today** | The snapshotter must be recording, so a real Friday close exists for the first weekend. |
+| **Fri 25 Sep before 20:00 - today** | The snapshotter must be recording, so a real Friday close exists for the first weekend. |
 | Sat 26 – Sun 27 Sep | First weekend capture → `fixtures/last-weekend/` (v1). |
 | Fri 2 Oct before 20:00 | Check the snapshotter is still alive before the second weekend. |
 | Sat 3 – Sun 4 Oct | Second weekend capture. This becomes the demo's "last weekend" if it's better. |
@@ -31,7 +31,7 @@ else got built.
 
 ## Schedule
 
-### Fri 25 Sep — Day 0: docs, skeleton, **snapshotter live by 20:00 UTC**
+### Fri 25 Sep - Day 0: docs, skeleton, **snapshotter live by 20:00 UTC**
 - [x] Probe the live endpoints and record `fixtures/probe-2026-09-25/`
 - [x] Write CLAUDE.md, ARCHITECTURE, PLAN, DECISIONS, API-NOTES and HACKATHON
 - [x] npm workspaces skeleton, tsconfig, vitest, and CI (`.github/workflows/ci.yml`)
@@ -51,8 +51,8 @@ else got built.
 - **Done when:** `snapshots` has rows from today's regular session and keeps growing with
   your laptop closed.
 
-### Sat 26 – Sun 27 Sep — Days 1–2: the engine
-- [x] `decimal.ts`, `types.ts`, `policy.ts`, `hash.ts` (with tests first) — done Fri 25 Sep
+### Sat 26 – Sun 27 Sep - Days 1–2: the engine
+- [x] `decimal.ts`, `types.ts`, `policy.ts`, `hash.ts` (with tests first) - done Fri 25 Sep
 - [x] `intent.ts` grammar: `$N of X`, `N shares of X`, `N X tokens`, bare `N X` → ambiguous
 - [x] `unit.ts`, `issuer.ts`, `session.ts` (DST tests), `reference.ts`, `premium.ts`
 - [x] `verdict.ts` covering the whole §6 table: 29 golden cases (15 unmodified live data,
@@ -62,16 +62,16 @@ else got built.
 - **Done when:** every §6 row has a passing golden test, same inputs give the same hash, and
   there's no network in tests.
 
-### Mon 28 Sep — Day 3: sources
-- [x] `packages/sources/rwa.ts` with typed responses, retry-once on `data:null`, and latency logging — done Fri 25 Sep
+### Mon 28 Sep - Day 3: sources
+- [x] `packages/sources/rwa.ts` with typed responses, retry-once on `data:null`, and latency logging - done Fri 25 Sep
 - [x] `classify.ts` (keyed by `(chainId, address)`), and `adapters.ts` → `MarketView`
 - [x] `snapshots.ts`, `capture.ts`, `market.ts`; the snapshot script now uses the shared client
-- [x] `npm run stamp -- "Buy 1 NFLX"` — a live decision from the command line, no key
+- [x] `npm run stamp -- "Buy 1 NFLX"` - a live decision from the command line, no key
 - [ ] Turn the weekend captures into `fixtures/last-weekend/` MarketView sets
 - **Done when:** adapters produce `MarketView`s from every captured payload, with tests.
 
-### Tue 29 Sep — Day 4: API and replay
-- [x] Hono server with `POST /v1/tickets`, `GET /v1/tickets/:hash`, `POST /v1/verify` — done Fri 25 Sep
+### Tue 29 Sep - Day 4: API and replay
+- [x] Hono server with `POST /v1/tickets`, `GET /v1/tickets/:hash`, `POST /v1/verify` - done Fri 25 Sep
 - [x] `tickets.ts` JSONL store with re-hash on read
 - [x] `scripts/replay.ts` and `GET /v1/replay` (golden + every `fixtures/replay/<set>`);
       `scripts/build-replay.ts` turns a capture into a set (first set: `2026-09-25-premarket`, 74 tickets)
@@ -79,48 +79,49 @@ else got built.
 - **Done when:** `git clone && npm ci && npm run replay` prints a table and exits 0 on a
   clean machine with no key.
 
-### Wed 30 Sep — Day 5: web screen
-- [x] One page (apps/web, Vite + plain TS, self-hosted fonts, light + dark): hero, four checks, live figures, checker with example chips and ticket card, review & sign, replay table, standing order, honest limits — done 29 Sep
-- [x] Render blueprint (`render.yaml`, Frankfurt) + `docs/DEPLOY.md`
+### Wed 30 Sep - Day 5: web screen
+- [x] One page (apps/web, Vite + plain TS, self-hosted fonts, light + dark): hero, four checks, live figures, checker with example chips and ticket card, review & sign, replay table, standing order, honest limits - done 29 Sep
+- [x] Render blueprint (`render.yaml`, Frankfurt) + `docs/DEPLOY.md` - live at https://stamp-iizn.onrender.com (29 Sep)
+- [x] First live quote from Frankfurt (SWAP via LiquidMesh); SWAP path with exact approval, simulation and balance check; Binance Wallet first on the page
 - [ ] ~~One page, three example chips, the ticket card, the last-weekend table, a JSON toggle~~
 - [ ] Copy pass: nothing a non-crypto person wouldn't understand on the first line
 - [ ] Deploy the API and web, and put a public URL in the README
 - **Done when:** a friend who doesn't do crypto can explain the NFLX `BLOCK` back to you.
 
-### Thu 1 Oct — Day 6: Trading API, quote only
+### Thu 1 Oct - Day 6: Trading API, quote only
 - [ ] HMAC client (include `/build` in the signed path), with a test against the doc's example
-- [x] Key works (signature accepted) — 2026-09-29. From the US build container every quote returns `40304 compliance restriction` (D20)
+- [x] Key works (signature accepted) - 2026-09-29. From the US build container every quote returns `40304 compliance restriction` (D20)
 - [ ] `quote` for USDT→NVDAon $20 on BSC **from a non-US origin** (deployed API in a non-US region, or `npx tsx scripts/quote-probe.ts` on your own machine). Record the raw response and confirm `executionMode: RFQ`
 - [ ] Log: time to the first 200, and each error code with its message → DEVEX raw log
 - **Done when:** a real quote payload is recorded in `fixtures/trading/`.
 
-### Fri 2 Oct — Day 7: execution ticket
+### Fri 2 Oct - Day 7: execution ticket
 - [ ] `prepare` → `rfq.typedDataToSign`, and decode it. Record which fields hold token, amount and recipient
-- [x] `execution.ts` checks E1–E8, 25 tests; `FakeWallet`; `TradingApiClient` HMAC signing verified against independently computed signatures — done Fri 25 Sep
+- [x] `execution.ts` checks E1–E8, 25 tests; `FakeWallet`; `TradingApiClient` HMAC signing verified against independently computed signatures - done Fri 25 Sep
 - [ ] Approve-tx simulate via `pre-transaction/simulate`
 - [ ] Snapshotter check before 20:00 UTC
 - **Done when:** an execution ticket is produced from a live quote, and **nothing is submitted**.
 
-### Sat 3 – Sun 4 Oct — Days 8–9: confirm flow, Agentic Wallet, standing order
+### Sat 3 – Sun 4 Oct - Days 8–9: confirm flow, Agentic Wallet, standing order
 - [ ] Review button → execution ticket → wallet connect (injected/WalletConnect) →
       `eth_signTypedData_v4` → `POST submit` → poll. Re-quote on `QUOTE_STALE`.
 - [ ] Install `binance-agentic-wallet`. Test whether `baw` can quote and buy a **tokenized stock**
       on BSC (the docs list swaps but don't mention stocks). Record the result in DEVEX either way.
   - If yes: add `wallet-baw.ts` behind `StockWallet`, and show it in the video as the agent path.
   - If no: note it in DEVEX, and keep the Trading API RFQ path as the executor.
-- [x] `standing.ts` state machine, 10-min recheck, daily cap from `FILLED` (tested through two fills and a blocked third) — done Fri 25 Sep
+- [x] `standing.ts` state machine, 10-min recheck, daily cap from `FILLED` (tested through two fills and a blocked third) - done Fri 25 Sep
 - [x] execution routes (`/v1/execution`, submit, status) with the fake wallet end to end
 - [ ] pill in the web app
 - **Done when:** the confirm flow works against `FakeWallet` in the browser, and a standing
   order sat `PARKED` through the weekend with tickets appended.
 
-### Mon 5 Oct — Day 10: live fill (cash hours)
+### Mon 5 Oct - Day 10: live fill (cash hours)
 - [ ] Run the NVDAon $20 decision. If it's `ALLOW`, review, sign and submit, then record the
       order id, tx hash and ticket hashes.
 - [ ] If it isn't `ALLOW`, don't force it. Try again Tue or Wed.
 - **Done when:** one `FILLED` ticket exists with a BscScan link. Otherwise, record the attempt honestly.
 
-### Tue 6 – Wed 7 Oct — Days 11–12: Agent Studio
+### Tue 6 – Wed 7 Oct - Days 11–12: Agent Studio
 - [ ] `npm i -g @bnbagent/studio-cli`, `bag skills install`, `bag init` in `apps/agent`
 - [ ] MCP tool `stamp.ticket` (the same zod schema as the HTTP body)
 - [ ] `POST /x402` settled via b402 verify/settle at a fixed `0.02` USDT
@@ -128,22 +129,22 @@ else got built.
 - [ ] A second client pays once (`bag x402 buy` or a script). Record the settlement tx.
 - **Done when:** a paid call returns a ticket whose hash verifies on the free `/v1/verify`.
 
-### Thu 8 Oct — Day 13: harden and README
+### Thu 8 Oct - Day 13: harden and README
 - [ ] README judge path: three commands, expected output pasted in
 - [ ] README prior-art paragraph. Verify each named repo exists first, and drop any that don't.
 - [ ] Error states on the web app (API down, no reference, quote stale)
 - [ ] Freeze the fixtures and tag `v1.0.0-rc`
 - **Done when:** a fresh clone on another machine passes `npm ci && npm test && npm run replay`.
 
-### Fri 9 Oct — Day 14: video
+### Fri 9 Oct - Day 14: video
 - [ ] Record the video (script below), ≤ 4:00. Do the retakes today, not tomorrow.
 
-### Sat 10 Oct — Day 15: DEVEX and submit
+### Sat 10 Oct - Day 15: DEVEX and submit
 - [ ] **You** write DEVEX.md from the raw log. Claude doesn't write the prose.
 - [ ] Submit the project form (https://forms.gle/yToDUzaDMwWnq6R6A) and the DevEx form. Tag `v1.0.0`.
 - **Done when:** both forms are submitted and the confirmation emails are saved.
 
-### Sun 11 Oct — buffer only. The deadline is 12:00 UTC.
+### Sun 11 Oct - buffer only. The deadline is 12:00 UTC.
 
 ## Cut order if behind
 

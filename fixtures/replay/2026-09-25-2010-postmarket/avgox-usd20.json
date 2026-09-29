@@ -165,6 +165,6 @@
       "MULTIPLIER_DRIFT"
     ],
     "hash": "980551ab47478c3b669274c691ff111b440d05f819dfb4f33ed84b8f8cce7fd7",
-    "narration": "WARN. Outside regular hours, AVGOx is 197 bps above the stock price ($352.79) — about $0.39 of overpay on this order. Parked. $20.00 buys 0.05532543 AVGOx tokens = 0.05559562 shares (multiplier 1.0048837684862768). Not the same instrument: AVGOon (Ondo), AVGOB (bStock). Hash 980551ab4747…"
+    "narration": "WARN. Outside regular hours, AVGOx is 197 bps above the stock price ($352.79) - about $0.39 of overpay on this order. Parked. $20.00 buys 0.05532543 AVGOx tokens = 0.05559562 shares (multiplier 1.0048837684862768). Not the same instrument: AVGOon (Ondo), AVGOB (bStock). Hash 980551ab4747…"
   }
 }

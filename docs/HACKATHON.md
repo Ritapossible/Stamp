@@ -1,4 +1,4 @@
-# BNB Hack: Tokenized Stocks Edition — rules we build against
+# BNB Hack: Tokenized Stocks Edition - rules we build against
 
 Sources (read 2026-09-25):
 - https://www.bnbchain.org/en/blog/bnb-hack-tokenized-stocks-edition-with-binance-web3-wallet

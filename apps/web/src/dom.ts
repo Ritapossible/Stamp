@@ -32,7 +32,7 @@ export function mount(parent: HTMLElement, ...children: Child[]): void {
 
 /** "0.08835968" → "0.08835968", "20.00000000" → "20" (display only; the ticket keeps full strings). */
 export function trimNum(s: string | null | undefined): string {
-  if (!s) return "—";
+  if (!s) return "-";
   return s.includes(".") ? s.replace(/0+$/, "").replace(/\.$/, "") : s;
 }
 
@@ -42,7 +42,7 @@ export function shortHash(h: string): string {
 
 /** Display rounding only (the ticket and its hash keep Binance's full strings). */
 export function roundNum(s: string | null | undefined, dp: number): string {
-  if (!s) return "—";
+  if (!s) return "-";
   const n = Number.parseFloat(s);
   if (!Number.isFinite(n)) return s;
   return trimNum(n.toFixed(dp));

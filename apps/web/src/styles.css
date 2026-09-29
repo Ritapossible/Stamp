@@ -1,4 +1,4 @@
-/* Stamp — one page. Monochrome, grid, heavy mono headlines. Light and dark share one set of tokens. */
+/* Stamp - one page. Monochrome, grid, heavy mono headlines. Light and dark share one set of tokens. */
 
 :root {
   --bg: #fafafa;
@@ -133,7 +133,7 @@ a {
   font-family: var(--mono);
 }
 
-/* ——— header ——— */
+/* --- header --- */
 .site-header {
   position: sticky;
   top: 0;
@@ -244,7 +244,7 @@ a {
   text-underline-offset: 5px;
 }
 
-/* ——— shared ——— */
+/* --- shared --- */
 .eyebrow {
   font: 500 13px/1 var(--mono);
   letter-spacing: 0.24em;
@@ -372,7 +372,7 @@ a {
   cursor: not-allowed;
 }
 
-/* ——— hero ——— */
+/* --- hero --- */
 .hero {
   padding: clamp(72px, 12vw, 150px) 0 clamp(56px, 8vw, 96px);
 }
@@ -381,7 +381,7 @@ a {
   margin-top: 40px;
 }
 
-/* ——— terminal panel ——— */
+/* --- terminal panel --- */
 .panel {
   border: 1px solid var(--line-strong);
   background: var(--bg-raised);
@@ -456,7 +456,7 @@ a {
   color: var(--muted);
 }
 
-/* ——— marquee ——— */
+/* --- marquee --- */
 .marquee {
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
@@ -498,7 +498,7 @@ a {
   }
 }
 
-/* ——— stats ——— */
+/* --- stats --- */
 .stats {
   padding: clamp(56px, 8vw, 88px) 0;
 }
@@ -549,7 +549,7 @@ a.stat:hover span {
   max-width: 70ch;
 }
 
-/* ——— checker ——— */
+/* --- checker --- */
 .policy-line {
   padding: 20px 24px;
   border-bottom: 1px solid var(--line-strong);
@@ -784,7 +784,7 @@ select.order-input {
   }
 }
 
-/* ——— replay ——— */
+/* --- replay --- */
 .tabs {
   display: flex;
   flex-wrap: wrap;
@@ -884,7 +884,7 @@ td.hash {
   color: var(--faint);
 }
 
-/* ——— standing ——— */
+/* --- standing --- */
 .pill {
   display: inline-flex;
   align-items: center;
@@ -917,7 +917,7 @@ td.hash {
   background: var(--muted);
 }
 
-/* ——— limits ——— */
+/* --- limits --- */
 .limits {
   list-style: none;
   margin: 0;
@@ -947,7 +947,7 @@ td.hash {
   counter-reset: limit;
 }
 
-/* ——— footer ——— */
+/* --- footer --- */
 .site-footer {
   border-top: 1px solid var(--line);
   padding: 64px 0 0;
@@ -1000,7 +1000,7 @@ td.hash {
   white-space: nowrap;
 }
 
-/* ——— small screens ——— */
+/* --- small screens --- */
 @media (max-width: 640px) {
   body {
     font-size: 16px;
