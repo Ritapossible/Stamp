@@ -40,7 +40,7 @@ function nflxTicket(): string {
   const others = t.rejected.map((r: { symbol: string; issuer: string }) => `${r.symbol} (${names[r.issuer]})`).join(" · ");
   const fact = (dt: string, dd: string) => `<div class="fact"><dt>${esc(dt)}</dt><dd>${dd}</dd></div>`;
   return `<div class="panel ticket-static">
-  <div class="panel-bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span>stamp - ${esc(t.intent.raw)}</span></div>
+  <div class="panel-bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span><span class="bar-prefix">stamp - </span>${esc(t.intent.raw)}</span><span class="bar-note">recorded ${esc(new Date(t.asOf).toUTCString().slice(5, 16))}</span></div>
   <div class="ticket">
     <div class="ticket-head"><span class="verdict ${t.verdict}">${t.verdict}</span><div class="codes">${t.reasons.map((r: string) => `<span class="code ${t.verdict}">${esc(r)}</span>`).join("")}</div></div>
     <p class="narration">"1 NFLX" has two honest readings. Stamp will not pick one for you.</p>
@@ -51,9 +51,16 @@ function nflxTicket(): string {
       ${fact("not the same instrument", esc(others))}
       ${fact("ticket hash", `<span class="hash-row"><code class="hash-short" title="${t.hash}">${t.hash.slice(0, 16)}…</code><a class="chip" href="/proof/?set=golden">recomputed on /proof ↗</a></span>`)}
     </dl>
-    <p class="ticket-foot">recorded ${esc(when)} UTC from Binance's live data · <a href="/check/?q=${encodeURIComponent(t.intent.raw)}">run it live ↗</a></p>
+    <p class="ticket-foot">an example, not a quote: Binance's live data at ${esc(when)} UTC · <a href="/check/?q=${encodeURIComponent(t.intent.raw)}">run it live ↗</a></p>
   </div>
 </div>`;
+}
+
+/** The hero sentence, rounded from the same fixture as the ticket card, so the two never disagree. */
+function nflxLede(): string {
+  const t = JSON.parse(readFileSync(resolve(here, "../../fixtures/golden/nflx-bare-one.json"), "utf8")).ticket;
+  const usd = (s: string) => `$${Math.round(Number(s))}`;
+  return `One reading is ${usd(t.unitReadings.asTokens.usd)}. The other is ${usd(t.unitReadings.asShares.usd)}.`;
 }
 
 function layout(): Plugin {
@@ -74,7 +81,8 @@ function layout(): Plugin {
           .replace("<!-- @header -->", mark(partial("header.html"), false))
           .replace("<!-- @footer -->", partial("footer.html"))
           .replace("<!-- @docs-nav -->", () => mark(partial("docs-nav.html"), true))
-          .replace("<!-- @nflx-ticket -->", () => nflxTicket());
+          .replace("<!-- @nflx-ticket -->", () => nflxTicket())
+          .replace("<!-- @nflx-lede -->", () => nflxLede());
       },
     },
   };

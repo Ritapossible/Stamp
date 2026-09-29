@@ -1780,3 +1780,92 @@ pre code,
     grid-template-columns: repeat(4, 1fr);
   }
 }
+
+.panel-bar .bar-note {
+  margin-left: auto;
+  font-size: 13px;
+  color: var(--faint);
+  white-space: nowrap;
+}
+
+/* phones: both readings of the NFLX ticket fit on the first screen */
+@media (max-width: 640px) {
+  .hero {
+    padding-top: 22px;
+    padding-bottom: 40px;
+  }
+  .hero .hero-copy .h1 {
+    font-size: 40px;
+  }
+  .hero-copy .lede {
+    margin-top: 14px;
+    font-size: 17px;
+  }
+  .hero-grid {
+    gap: 20px;
+  }
+  .hero-ticket .narration {
+    display: none;
+  }
+  .hero-ticket .ticket-head {
+    padding-top: 14px;
+    padding-bottom: 10px;
+  }
+  .hero-ticket .verdict {
+    font-size: 36px;
+  }
+  .hero-ticket .panel-bar {
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero-ticket .fact {
+    padding-top: 9px;
+    padding-bottom: 9px;
+  }
+  .hero-ticket .fact dt {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 380px) {
+  .hero .hero-copy .h1 {
+    font-size: 34px;
+  }
+  .hero {
+    padding-top: 16px;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero-ticket .panel-bar .dots {
+    display: none;
+  }
+  .hero-ticket .panel-bar {
+    gap: 12px;
+  }
+  .hero-ticket .panel-bar span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+  }
+  .hero-ticket .panel-bar .bar-note {
+    flex-shrink: 0;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 1039px) {
+  .hero-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .hero-ticket .bar-prefix {
+    display: none;
+  }
+}
