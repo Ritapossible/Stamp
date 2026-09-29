@@ -1,0 +1,31 @@
+{
+  "at": "2026-09-29T09:58:56.568Z",
+  "symbol": "NVDAon",
+  "query": {
+    "binanceChainId": "56",
+    "fromTokenAddress": "0x55d398326f99059ff775485246999027b3197955",
+    "toTokenAddress": "0xa9ee28c80f960b889dfbd1902055218cba016f75",
+    "amount": "20000000000000000000",
+    "userWalletAddress": "0x000000000000000000000000000000000000dEaD"
+  },
+  "calls": [
+    {
+      "method": "GET",
+      "path": "/api/v1/dex/aggregator/quote?binanceChainId=56&fromTokenAddress=0x55d398326f99059ff775485246999027b3197955&toTokenAddress=0xa9ee28c80f960b889dfbd1902055218cba016f75&amount=20000000000000000000&userWalletAddress=0x000000000000000000000000000000000000dEaD",
+      "status": 200,
+      "latencyMs": 468,
+      "error": "Service not available due to compliance restriction"
+    }
+  ],
+  "response": null,
+  "error": {
+    "message": "GET /api/v1/dex/aggregator/quote?binanceChainId=56&fromTokenAddress=0x55d398326f99059ff775485246999027b3197955&toTokenAddress=0xa9ee28c80f960b889dfbd1902055218cba016f75&amount=20000000000000000000&userWalletAddress=0x000000000000000000000000000000000000dEaD: Service not available due to compliance restriction (code 40304)",
+    "status": 200,
+    "body": {
+      "code": 40304,
+      "msg": "Service not available due to compliance restriction",
+      "success": false,
+      "timestamp": 1790675937030
+    }
+  }
+}

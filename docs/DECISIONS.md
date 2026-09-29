@@ -122,3 +122,12 @@ it. Both spellings now block. The stock print taken during that pause was 41 bps
 19:50 regular print, so `lastOfficialClose` accepts a `paused` row that directly follows a
 `regular` one. Evidence: `fixtures/captures/2026-09-25/{195006,200006,201005}.json` and the
 replay sets built from them.
+
+### D20 — Live trading calls must run from outside the US (2026-09-29)
+**Why:** The first Trading API quote from the build container (US egress) returned
+`40304 compliance restriction` for both USDT→NVDAon and USDT→WBNB, with HTTP 200. Signing was
+accepted. The public RWA data endpoints still work from the US, so decisions, replay and the
+free API are unaffected. Only quote, submit and b402 need a non-US origin: the deployed API
+goes to a non-US region (e.g. Frankfurt or Singapore), or `scripts/quote-probe.ts` runs on
+the builder's own machine. `TradingApiClient` already treats a non-zero `code` under HTTP 200
+as an error. Evidence: `fixtures/trading/2026-09-29-quote-NVDAon.json`.

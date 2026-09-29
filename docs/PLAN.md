@@ -87,7 +87,8 @@ else got built.
 
 ### Thu 1 Oct — Day 6: Trading API, quote only
 - [ ] HMAC client (include `/build` in the signed path), with a test against the doc's example
-- [ ] `quote` for USDT→NVDAon $20 on BSC. Record the raw response and confirm `executionMode: RFQ`
+- [x] Key works (signature accepted) — 2026-09-29. From the US build container every quote returns `40304 compliance restriction` (D20)
+- [ ] `quote` for USDT→NVDAon $20 on BSC **from a non-US origin** (deployed API in a non-US region, or `npx tsx scripts/quote-probe.ts` on your own machine). Record the raw response and confirm `executionMode: RFQ`
 - [ ] Log: time to the first 200, and each error code with its message → DEVEX raw log
 - **Done when:** a real quote payload is recorded in `fixtures/trading/`.
 

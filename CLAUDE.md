@@ -93,6 +93,10 @@ FILLED). `npm run serve` picks its wallet from env: `STAMP_TRADING_API_KEY` +
 `STAMP_TRADING_API_SECRET` for the live Trading API, `STAMP_FAKE_WALLET=1` for the labelled
 fake, or none, in which case execution returns 501. **Never make the fake wallet the default.**
 
+**Trading API from this container is region-blocked** (`40304`, US egress; see D20). Quote,
+submit and b402 calls must run from a non-US host; decisions and replay are unaffected.
+`scripts/quote-probe.ts` makes one quote-only call and records it to `fixtures/trading/`.
+
 **Next: the web screen. The user will provide a UI sample; ask for it before writing any
 front-end code.**
 
