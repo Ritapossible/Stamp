@@ -105,6 +105,16 @@ Ondo 10, bStock 1, and xStock "10" or "1" depending on which endpoint you ask.
   `evmTx` with the same fields `{from,to,value,data}`. Response: `status`, `failReason`,
   `balanceChanges[]` (`contractAddress, owner, change`), `allowanceChanges[]`.
 
+- 10:39Z through the deployed Stamp (placeholder address 0x…dEaD, never sent): quote → swap →
+  approve-transaction → allowance 0 → `APPROVAL_REQUIRED`. Recorded in
+  `fixtures/trading/2026-09-29-frankfurt-swap-NVDAon.json` (checked: no key or secret inside).
+  Binance's approve calldata for spender `0xB44446b0c8E56988c34f7Ff73Ae904982b5FdDA5` and
+  exactly 20 USDT is byte-identical to Stamp's own `approveCalldata`.
+  Quote fields: `actualSwapAmount, approveTarget, dexRouterList, estimateGasFee, executionMode,
+  feeAmount, feeToken, fromTokenAmount, priceImpactPercent, quoteId, router, toTokenAmount,
+  tradeFee, vendorName`. Swap `tx` fields: `from, to, data, value, gas, gasPrice,
+  maxPriorityFeePerGas, minReceiveAmount, slippagePercent, signatureData, computeUnit*`.
+
 ## Official docs read 2026-09-25 (not yet exercised)
 
 - Trading API: base `https://web3.binance.com/build`, HMAC-SHA256. The pre-hash is
