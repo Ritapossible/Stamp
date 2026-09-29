@@ -11,13 +11,16 @@
   ],
   "scripts": {
     "test": "vitest run",
-    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p apps/web/tsconfig.json --noEmit",
     "snapshot": "tsx scripts/snapshot.ts",
     "golden:update": "UPDATE_GOLDEN=1 vitest run packages/engine/test/golden.test.ts",
     "stamp": "tsx scripts/stamp.ts",
     "probe": "tsx scripts/probe.ts",
     "replay": "tsx scripts/replay.ts",
-    "serve": "tsx packages/api/src/server.ts"
+    "serve": "tsx packages/api/src/server.ts",
+    "build": "npm run build -w @stamp/web",
+    "start": "tsx packages/api/src/server.ts",
+    "dev:web": "npm run dev -w @stamp/web"
   },
   "devDependencies": {
     "@types/node": "^26.6.2",

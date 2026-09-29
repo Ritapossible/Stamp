@@ -50,3 +50,39 @@ export function buildUniverse(raw: RawListRow[]): Universe {
 export function familyRows(universe: UniverseRow[], ticker: string): UniverseRow[] {
   return universe.filter((r) => r.chainId === "56" && r.ticker === ticker && ISSUER_BY_TYPE[r.type] !== undefined);
 }
+
+export interface UniverseSummary {
+  /** BSC instruments Stamp can price (Ondo, xStock, bStock) */
+  instruments: number;
+  byIssuer: { ondo: number; xstock: number; bstock: number };
+  tickers: number;
+  /** tickers that exist from more than one issuer: "buy NVIDIA" is ambiguous for these */
+  multiIssuerTickers: number;
+  /** largest list multipliers: one token holds this many shares */
+  largestMultipliers: Array<{ symbol: string; ticker: string; multiplier: string }>;
+}
+
+/** Live figures for the web page, computed from the list endpoint. */
+export function summarizeUniverse(rows: UniverseRow[]): UniverseSummary {
+  const priced = rows.filter((r) => r.chainId === "56" && ISSUER_BY_TYPE[r.type] !== undefined);
+  const byIssuer = { ondo: 0, xstock: 0, bstock: 0 };
+  const issuersByTicker = new Map<string, Set<number>>();
+  for (const r of priced) {
+    byIssuer[ISSUER_BY_TYPE[r.type]!]++;
+    const set = issuersByTicker.get(r.ticker) ?? new Set<number>();
+    set.add(r.type);
+    issuersByTicker.set(r.ticker, set);
+  }
+  const largestMultipliers = priced
+    .filter((r) => typeof r.multiplier === "string" && /^\d+(\.\d+)?$/.test(r.multiplier))
+    .sort((a, b) => Number.parseFloat(b.multiplier!) - Number.parseFloat(a.multiplier!)) // display ordering only
+    .slice(0, 5)
+    .map((r) => ({ symbol: r.symbol, ticker: r.ticker, multiplier: r.multiplier! }));
+  return {
+    instruments: priced.length,
+    byIssuer,
+    tickers: issuersByTicker.size,
+    multiIssuerTickers: [...issuersByTicker.values()].filter((s) => s.size > 1).length,
+    largestMultipliers,
+  };
+}

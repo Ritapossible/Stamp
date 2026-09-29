@@ -4,7 +4,7 @@ import { decide, DEFAULT_POLICY, type DecisionTicket } from "@stamp/engine";
 import { describe, expect, it } from "vitest";
 import { toMarketView } from "./adapters.js";
 import { fromCapture, type CaptureFile } from "./capture.js";
-import { buildUniverse, familyRows } from "./classify.js";
+import { buildUniverse, familyRows, summarizeUniverse } from "./classify.js";
 import { LiveMarket } from "./market.js";
 import { RwaClient } from "./rwa.js";
 import { parseSnapshotLines, SnapshotStore } from "./snapshots.js";
@@ -32,6 +32,12 @@ describe("buildUniverse", () => {
     ]);
     expect(u.malformed).toBe(2);
     expect(u.rows[0]!.contractAddress).toBe("0x" + "b".repeat(40));
+  });
+
+  it("summarizes the universe for the web page", () => {
+    const s = summarizeUniverse(list.rows);
+    expect(s).toMatchObject({ instruments: 666, byIssuer: { ondo: 458, xstock: 128, bstock: 80 }, multiIssuerTickers: 117 });
+    expect(s.largestMultipliers[0]).toMatchObject({ multiplier: expect.stringMatching(/^10/) });
   });
 
   it("finds the priceable family of a ticker (excludes pre-IPO type 4)", () => {

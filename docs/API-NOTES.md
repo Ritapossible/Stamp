@@ -20,7 +20,7 @@ ourselves. It feeds the DEVEX raw log.
 - The type→issuer mapping was confirmed via meta `name`: 1 = "(Ondo)", 2 = "xStock", 3 = "(bStocks)".
 - Type 4 is pre-IPO names (`xOPAI`/OPENAI, `xSPCX`/SPCX, `xKLSH`, `pPOLY`/POLYMARKET).
   Type 9 is `BNC4`. Both are unsupported in v1.
-- 515 BSC tickers, **118 with more than one issuer** (e.g. NVDA, AAPL, TSLA, MU, GOOGL, AVGO, ORCL).
+- 515 BSC tickers across all types; 512 with an Ondo, xStock or bStock version, of which **117 have more than one of those issuers** (e.g. NVDA, AAPL, TSLA, MU, GOOGL, AVGO, ORCL). (An earlier count of 118 wrongly included pre-IPO type 4.)
 - Some rows lack `assetType`, so it's an optional field.
 - `lastUpdateTime` appears only on some rows.
 - `d` (decimals) is 18 on all rows seen.

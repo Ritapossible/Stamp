@@ -1,0 +1,27 @@
+# Render Blueprint — one web service serving the API and the web page.
+# Region is Frankfurt on purpose: Binance's Trading API refuses US origins (40304, see docs/DECISIONS.md D20).
+services:
+  - type: web
+    name: stamp
+    runtime: node
+    region: frankfurt
+    plan: free
+    branch: claude/stamp-pretrade-gate-94h6me
+    autoDeploy: true
+    buildCommand: npm ci --include=dev && npm run build
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      # Render's free plan has no disk: tickets live for the life of the instance; the
+      # recorded closes are read from the `snapshots` branch that the GitHub workflow writes.
+      - key: DATA_DIR
+        value: /tmp/stamp-data
+      - key: SNAPSHOTS_REMOTE
+        value: https://raw.githubusercontent.com/Ritapossible/Stamp/snapshots
+      # Set these two in the Render dashboard. They are never committed.
+      - key: STAMP_TRADING_API_KEY
+        sync: false
+      - key: STAMP_TRADING_API_SECRET
+        sync: false

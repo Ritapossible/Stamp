@@ -80,7 +80,9 @@ else got built.
   clean machine with no key.
 
 ### Wed 30 Sep — Day 5: web screen
-- [ ] One page, three example chips, the ticket card, the last-weekend table, a JSON toggle
+- [x] One page (apps/web, Vite + plain TS, self-hosted fonts, light + dark): hero, four checks, live figures, checker with example chips and ticket card, review & sign, replay table, standing order, honest limits — done 29 Sep
+- [x] Render blueprint (`render.yaml`, Frankfurt) + `docs/DEPLOY.md`
+- [ ] ~~One page, three example chips, the ticket card, the last-weekend table, a JSON toggle~~
 - [ ] Copy pass: nothing a non-crypto person wouldn't understand on the first line
 - [ ] Deploy the API and web, and put a public URL in the README
 - **Done when:** a friend who doesn't do crypto can explain the NFLX `BLOCK` back to you.

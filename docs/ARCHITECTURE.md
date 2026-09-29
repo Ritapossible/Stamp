@@ -7,7 +7,7 @@ Status: design frozen for v1 on 2026-09-25. Changes go through `docs/DECISIONS.m
 A tokenized stock on BSC is not a share. There are three reasons.
 
 1. **Issuer.** One US ticker exists as up to three separate legal products on BSC: Ondo
-   (`NVDAon`), xStock (`NVDAx`) and bStock (`NVDAB`). On 2026-09-25, **118 BSC tickers** had
+   (`NVDAon`), xStock (`NVDAx`) and bStock (`NVDAB`). On 2026-09-25, **117 BSC tickers** had
    more than one issuer. An agent asked to "buy NVIDIA" has to pick one, and a cheaper quote
    on another issuer is not the same instrument.
 2. **Share count.** Each token represents `sharesMultiplier` shares. Dividends and splits

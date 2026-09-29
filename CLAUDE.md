@@ -81,7 +81,15 @@ npx tsx scripts/snapshot.ts --out data     one snapshot tick (the workflow loops
 npm run replay                             judge command: recompute every recorded ticket, exit 1 on drift
 npx tsx scripts/build-replay.ts --capture <file> --set <name> [--snapshots <dir>]
 npm run serve                              free HTTP API on :8787 (packages/api)
+npm run build && npm start                 build apps/web, then serve API + page on :8787 (as Render does)
+npm run dev:web                            Vite dev server for the page (proxies /v1 to :8787)
 ```
+
+`apps/web` is a single page in plain TypeScript + CSS (no framework, no component library),
+styled after the user's gitlawb-like sample: monochrome, grid background, heavy JetBrains Mono
+headlines (self-hosted via @fontsource), and light and dark themes through tokens on `:root`.
+All text goes through `textContent` (`dom.ts` → `h()`), never innerHTML. Deploy is
+`render.yaml` (Frankfurt, because US origins get 40304). See `docs/DEPLOY.md`.
 
 `packages/api` is built: `createApp` (Hono), the `TicketStore` (JSONL, re-hash on read) and
 `replayAll`. Stored tickets keep trimmed inputs, but only after checking that the trimmed
@@ -97,8 +105,8 @@ fake, or none, in which case execution returns 501. **Never make the fake wallet
 submit and b402 calls must run from a non-US host; decisions and replay are unaffected.
 `scripts/quote-probe.ts` makes one quote-only call and records it to `fixtures/trading/`.
 
-**Next: the web screen. The user will provide a UI sample; ask for it before writing any
-front-end code.**
+**Next:** the user deploys via the Render Blueprint, then we run the first live quote from
+Frankfurt and record it to `fixtures/trading/`.
 
 **Snapshotter:** GitHub cron never fired on this repo. `.github/workflows/snapshot.yml` is a
 ~5.5 h loop that dispatches its own successor, with the hourly cron as a watchdog. To stop

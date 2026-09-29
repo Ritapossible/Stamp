@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Stamp — pre-trade gate for tokenized stocks</title>
+    <meta
+      name="description"
+      content="Stamp checks a tokenized-stock order on BSC before anything is signed: the right issuer, the real share count, halts, and what you'd overpay while the market is shut."
+    />
+    <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#fafafa" media="(prefers-color-scheme: light)" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <script>
+      try {
+        const t = localStorage.getItem("stamp-theme");
+        if (t === "light" || t === "dark") document.documentElement.dataset.theme = t;
+      } catch {}
+    </script>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="wrap">
+        <a class="brand" href="#top" aria-label="Stamp home">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="square">
+              <path d="M9 3h6v5l3 3v2H6v-2l3-3z" />
+              <path d="M4 17h16v3H4z" />
+            </svg>
+          </span>
+          stamp
+        </a>
+        <div class="header-actions">
+          <button class="text-btn" id="theme-toggle" type="button" aria-label="Switch colour theme">[dark]</button>
+          <button class="text-btn" id="menu-toggle" type="button" aria-expanded="false" aria-controls="menu">[menu]</button>
+        </div>
+      </div>
+    </header>
+
+    <nav class="menu" id="menu" aria-label="Site">
+      <div class="wrap">
+        <a class="btn ghost small" href="#check" data-close>check an order</a>
+        <div class="menu-group">
+          <p class="menu-label">product</p>
+          <a href="#checks" data-close>the four checks</a>
+          <a href="#check" data-close>check an order</a>
+          <a href="#replay" data-close>replay &amp; verify</a>
+          <a href="#standing" data-close>standing order</a>
+          <a href="#limits" data-close>honest limits</a>
+        </div>
+        <div class="menu-group">
+          <p class="menu-label">build</p>
+          <a href="https://github.com/Ritapossible/Stamp" target="_blank" rel="noopener">source on github ↗</a>
+          <a href="/v1/replay" target="_blank" rel="noopener">replay api ↗</a>
+          <a href="/v1/summary" target="_blank" rel="noopener">live figures api ↗</a>
+          <a href="https://www.bnbchain.org/en/hackathons/tokenized-stocks" target="_blank" rel="noopener">bnb hack: tokenized stocks ↗</a>
+        </div>
+      </div>
+    </nav>
+
+    <main id="top">
+      <section class="hero">
+        <div class="wrap">
+          <span class="tag">stamp · pre-trade gate · bsc</span>
+          <h1 class="headline h1">
+            <span class="dim">Never buy</span><br />the wrong Netflix.
+          </h1>
+          <p class="lede">
+            One tokenized Netflix is ten shares. One NVIDIA is three different products. Stamp checks the order before
+            anything is signed — and proves every answer with a hash.
+          </p>
+          <div class="btn-row">
+            <a class="btn" href="#check">check an order →</a>
+            <a class="btn ghost" href="#replay">run the replay ↗</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="wrap" id="checks" aria-labelledby="checks-title">
+        <div class="panel">
+          <div class="panel-bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span id="checks-title">stamp — the four checks</span></div>
+          <div class="stack-row">
+            <span class="stack-label">Issuer</span>
+            <span class="stack-value">never switched<small>NVDAon, NVDAx and NVDAB are different legal products. A cheaper sibling is shown, never bought.</small></span>
+            <span class="live-dot" aria-hidden="true"></span>
+          </div>
+          <div class="stack-row">
+            <span class="stack-label">Shares</span>
+            <span class="stack-value">never assumed to be 1<small>Tokens carry a multiplier. "Buy 1 NFLX" is blocked until you say $ or shares.</small></span>
+            <span class="live-dot" aria-hidden="true"></span>
+          </div>
+          <div class="stack-row">
+            <span class="stack-label">Halt</span>
+            <span class="stack-value">corporate actions block<small>Splits, dividends, mergers and session pauses stop the order. Missing data is never "trading".</small></span>
+            <span class="live-dot" aria-hidden="true"></span>
+          </div>
+          <div class="stack-row">
+            <span class="stack-label">Price</span>
+            <span class="stack-value">no overpaying off-hours<small>Price per share vs the real stock. Rich while the market is shut: parked, with the overpay in dollars.</small></span>
+            <span class="live-dot" aria-hidden="true"></span>
+          </div>
+          <div class="panel-foot">● verdict is code · no LLM decides · every ticket is hashed and recomputable</div>
+        </div>
+      </section>
+
+      <div class="marquee" aria-hidden="true">
+        <div class="marquee-track">
+          <span>same ticker, different product</span><span>one token ≠ one share</span><span>halts block</span><span>no llm in the verdict</span><span>you sign, never us</span>
+          <span>same ticker, different product</span><span>one token ≠ one share</span><span>halts block</span><span>no llm in the verdict</span><span>you sign, never us</span>
+        </div>
+      </div>
+
+      <section class="stats" aria-label="Live figures">
+        <div class="wrap">
+          <div class="live-line"><span class="live-dot" id="live-dot" aria-hidden="true"></span><span id="live-text">reading Binance…</span></div>
+          <div class="stat-grid" id="stats"></div>
+          <p class="stat-note">
+            universe counts are live from Binance's public RWA API · replay is recomputed on this server from recorded
+            captures · click a figure for its source
+          </p>
+        </div>
+      </section>
+
+      <section class="section" id="check" aria-labelledby="check-title">
+        <div class="wrap">
+          <div class="section-head">
+            <p class="eyebrow">check</p>
+            <h2 class="headline h2" id="check-title"><span class="dim">Say it plainly.</span><br />Get a verdict.</h2>
+            <p>Type an order the way you'd say it. Stamp reads live Binance data, runs the four checks in order, and hands back a ticket you can verify.</p>
+          </div>
+
+          <div class="panel">
+            <div class="panel-bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span>stamp — check an order</span></div>
+            <div class="policy-line" id="policy-line">
+              <b>Ondo only.</b> Never switch issuer. Never guess what "1" means. Park if the market is shut and the price is more than 0.80% above the last close. <b>$20 an order, $50 a day.</b>
+            </div>
+            <form class="order-form" id="order-form">
+              <label class="sr-only" for="order-input">Order</label>
+              <input class="order-input" id="order-input" name="intent" autocomplete="off" spellcheck="false" maxlength="200" placeholder="Buy $20 of NVIDIA" required />
+              <label class="sr-only" for="issuer-select">Issuer</label>
+              <select class="order-input" id="issuer-select" name="issuer">
+                <option value="ondo">issuer: Ondo</option>
+                <option value="bstock">issuer: bStock</option>
+                <option value="xstock">issuer: xStock</option>
+                <option value="any">issuer: name it</option>
+              </select>
+              <button class="btn" type="submit" id="order-submit">check →</button>
+            </form>
+            <div class="chips" id="chips" aria-label="Examples"></div>
+            <div class="result" id="result" aria-live="polite">
+              <p class="placeholder">No order yet. Try one of the examples — "Buy 1 NFLX" is the interesting one.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="replay" aria-labelledby="replay-title">
+        <div class="wrap">
+          <div class="section-head">
+            <p class="eyebrow">proof</p>
+            <h2 class="headline h2" id="replay-title"><span class="dim">Every ticket recomputes.</span><br />Anyone can check.</h2>
+            <p>Real captures of Binance's responses, including the 20:00 close pause, re-decided on this server right now. A single changed hash would show here as drift.</p>
+          </div>
+          <div class="panel">
+            <div class="panel-bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span id="replay-title-bar">stamp — replay</span></div>
+            <div class="tabs" id="replay-tabs" role="tablist" aria-label="Recorded sets"></div>
+            <div class="table-wrap" id="replay-table"><p class="placeholder"><span class="spinner"></span>recomputing recorded tickets…</p></div>
+            <div class="cmd"><code>npm run replay</code><span>same check, on your machine, no key</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="standing" aria-labelledby="standing-title">
+        <div class="wrap">
+          <div class="section-head">
+            <p class="eyebrow">standing order</p>
+            <h2 class="headline h2" id="standing-title"><span class="dim">Buy when it's fair.</span><br />Park when it isn't.</h2>
+            <p>One order, re-checked every ten minutes. When the verdict is ALLOW it waits for you to sign — Stamp never holds a key, and never says "bought" without a fill.</p>
+          </div>
+          <div class="panel" id="standing-panel">
+            <div class="panel-bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span>stamp — standing order</span></div>
+            <div id="standing-body"><p class="placeholder"><span class="spinner"></span>loading…</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="limits" aria-labelledby="limits-title">
+        <div class="wrap">
+          <div class="section-head">
+            <p class="eyebrow">honest limits</p>
+            <h2 class="headline h2" id="limits-title"><span class="dim">What Stamp</span><br />doesn't claim.</h2>
+          </div>
+          <ol class="limits">
+            <li>Binance's wallet and Trading API don't know about Stamp tickets. A caller that skips Stamp can still trade — the guarantee covers orders that go through it.</li>
+            <li>bStocks report no market session and no stock price. Stamp uses the venue session and a sibling's price or its own recorded close, and says so on the ticket.</li>
+            <li>xStock data disagrees with itself: one endpoint said NFLXx holds 10 shares, the other said 1. Stamp blocks that instead of choosing.</li>
+            <li>The recorded close is the print at Binance's 20:00 session pause, taken every ten minutes — close to the official close, not the auction tape.</li>
+            <li>Buy only, spot only, BSC only, $20 an order, and a person signs every fill.</li>
+          </ol>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap">
+        <div class="foot-links">
+          <a href="https://github.com/Ritapossible/Stamp" target="_blank" rel="noopener">github ↗</a>
+          <a href="#check">check</a>
+          <a href="#replay">replay</a>
+          <a href="#limits">limits</a>
+          <a href="https://www.bnbchain.org/en/hackathons/tokenized-stocks" target="_blank" rel="noopener">bnb hack ↗</a>
+        </div>
+        <p class="foot-meta">built for the bnb hack: tokenized stocks edition · not financial advice · not affiliated with Binance, Ondo, Backed or xStocks</p>
+        <p class="status"><span class="live-dot" id="foot-dot" aria-hidden="true"></span><span id="foot-status">checking Binance…</span></p>
+        <div class="wordmark" aria-hidden="true">STAMP</div>
+      </div>
+    </footer>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

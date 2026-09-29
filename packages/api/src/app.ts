@@ -24,6 +24,8 @@ export interface AppDeps {
   /** null when no wallet is configured: execution routes answer 501 instead of pretending */
   execution?: ExecutionService | null;
   standing?: StandingService | null;
+  /** live figures for the web page (universe counts); omitted in tests that do not need it */
+  summary?: () => Promise<unknown>;
 }
 
 const NO_WALLET =
@@ -73,7 +75,16 @@ export function createApp(deps: AppDeps): Hono {
     await next();
   });
 
-  app.get("/health", (c) => c.json({ ok: true, tickets: deps.store.size }));
+  app.get("/health", (c) => c.json({ ok: true, tickets: deps.store.size, wallet: deps.execution?.walletName ?? null }));
+
+  app.get("/v1/summary", async (c) => {
+    if (!deps.summary) return c.json({ error: "summary unavailable" }, 501);
+    try {
+      return c.json(await deps.summary());
+    } catch (err) {
+      return c.json({ error: "Binance data unavailable", detail: String(err) }, 503);
+    }
+  });
 
   app.post("/v1/tickets", async (c) => {
     const body = TicketRequest.safeParse(await c.req.json().catch(() => null));
@@ -131,9 +142,14 @@ export function createApp(deps: AppDeps): Hono {
     });
   });
 
+  // Replay recomputes every recorded ticket; the fixtures only change on deploy, so cache a minute.
+  let replayCache: { at: number; body: unknown } | null = null;
   app.get("/v1/replay", async (c) => {
-    const rows = await replayAll(deps.fixturesDir);
-    return c.json({ ok: rows.every((r) => r.ok), count: rows.length, rows });
+    if (!replayCache || Date.now() - replayCache.at > 60_000) {
+      const rows = await replayAll(deps.fixturesDir);
+      replayCache = { at: Date.now(), body: { ok: rows.every((r) => r.ok), count: rows.length, drifted: rows.filter((r) => !r.ok).length, rows } };
+    }
+    return c.json(replayCache.body);
   });
 
   // — execution: Review → sign in your own wallet → submit → fill —

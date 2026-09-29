@@ -23,9 +23,15 @@ Signing is only prepared from an `ALLOW` execution ticket tied to a fresh quote,
 exact typed data you sign checked against the ticket. Other agents can buy the same ticket
 over x402, settled through Binance b402.
 
+<p>
+  <img src="docs/screenshots/hero-dark.png" alt="Stamp home page, dark theme" width="49%" />
+  <img src="docs/screenshots/ticket-block-light.png" alt="A BLOCK ticket for Buy 1 NFLX, light theme" width="49%" />
+</p>
+
 > Status: **in progress**. Built and tested (`npm test`): the verdict engine, the Binance data
-> client, the free API with replay and verify, execution tickets and the standing order.
-> Next: the web screen, then a live Trading API quote. The design is in [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md), the
+> client, the free API with replay and verify, execution tickets, the standing order and the
+> web page (light and dark). Deploys to Render in Frankfurt ([`docs/DEPLOY.md`](docs/DEPLOY.md)).
+> Next: a live Trading API quote from the deployed server. The design is in [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md), the
 > schedule in [`docs/PLAN.md`](docs/PLAN.md), and the reasoning in
 > [`docs/DECISIONS.md`](docs/DECISIONS.md). Live API findings are in
 > [`docs/API-NOTES.md`](docs/API-NOTES.md). Built for the
