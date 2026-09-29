@@ -1,5 +1,5 @@
 export { ENGINE_VERSION, decide } from "./verdict.js";
-export { DECISION_MAX_AGE_SEC, inspectTypedData, prepareExecution, rawToDec } from "./execution.js";
+export { DECISION_MAX_AGE_SEC, inspectTypedData, prepareAgenticExecution, prepareExecution, rawToDec, verifyFill } from "./execution.js";
 export { canonicalJson, sha256Hex, ticketHash } from "./hash.js";
 export { DEFAULT_POLICY, policyHash, validatePolicy } from "./policy.js";
 export { parseIntent } from "./intent.js";

@@ -183,3 +183,10 @@ as `buildRunWork()`. Never reimplement a check there. Wallet steps (`bag wallet`
 values in `agent/.studio/.env.local`, deploy, `bag erc8004 register`) are the user's to run; never
 ask for or handle those secrets. Tests: `agent/app/agent/test/stamp.test.ts` runs in the root vitest.
 
+## Agentic Wallet (D25)
+`npm run agentic -- "<order>" [--issuer x] [--dry-run] [--yes]` (`scripts/agentic.ts`) runs
+decision → `baw` quote → `prepareAgenticExecution` → confirm → re-check → `baw market-order swap`
+→ poll → BSC receipt → `verifyFill`. `packages/sources/src/agentic.ts` wraps `baw` (execFile, no
+shell, errors passed through verbatim). The person signs `baw` in on their own machine (not
+this container: US egress, and it is their wallet). `skills/stamp-gate/SKILL.md` is the agent
+skill.

@@ -46,7 +46,12 @@ export type ReasonCode =
   | "SIMULATION_FAILED"
   | "APPROVAL_REQUIRED"
   | "TX_MISMATCH"
-  | "SIMULATION_MISMATCH";
+  | "SIMULATION_MISMATCH"
+  // agentic wallet: after the swap, checked against the BSC receipt
+  | "FILL_FAILED"
+  | "FILL_NOT_RECEIVED"
+  | "FILL_WRONG_TOKEN"
+  | "FILL_SLIPPAGE";
 
 /** One row of the RWA list endpoint, as returned. */
 export interface UniverseRow {
@@ -262,7 +267,7 @@ export interface ExecutionTicket {
   quoteId: string;
   quotedAt: string;
   quoteAgeSec: number;
-  executionMode: "RFQ" | "SWAP";
+  executionMode: "RFQ" | "SWAP" | "AGENTIC";
   vendor: string | null;
   fromToken: string;
   toToken: string;
@@ -282,3 +287,71 @@ export interface ExecutionTicket {
   hash: string;
   narration: string;
 }
+
+/**
+ * A Binance Agentic Wallet quote (`baw market-order quote --json`, data field). It names
+ * symbols and human amounts, not addresses or raw integers, and it does not bind the swap:
+ * `market-order swap` executes at market within its own slippage.
+ */
+export interface AgenticQuoteView {
+  quotedAt: string;
+  fromCoinSymbol: string;
+  fromCoinAmount: string;
+  toCoinSymbol: string;
+  toCoinAmount: string;
+}
+
+export interface AgenticExecuteInput {
+  decision: DecisionTicket;
+  policy: Policy;
+  asOf: string;
+  /** The Agentic Wallet's BSC address. */
+  user: string;
+  quote: AgenticQuoteView;
+}
+
+/** One ERC-20-style log from a BSC transaction receipt. */
+export interface ReceiptLog {
+  address: string;
+  topics: string[];
+  data: string;
+}
+
+export interface FillInput {
+  decision: DecisionTicket;
+  policy: Policy;
+  asOf: string;
+  user: string;
+  /** The Agentic Wallet order's terminal status. */
+  orderStatus: "FINISHED" | "FAILED";
+  txHash: string | null;
+  /** null when there is no receipt (failed order, or the node had none). */
+  receiptStatus: "success" | "reverted" | null;
+  logs: ReceiptLog[];
+  /** Decimals of the ticket's token and of the stablecoin, read on chain. */
+  tokenDecimals: number;
+  quoteAsset: string;
+  quoteDecimals: number;
+}
+
+/** The third ticket: what actually landed in the wallet, checked against the decision. */
+export interface FillTicket {
+  kind: "fill";
+  engineVersion: string;
+  asOf: string;
+  decisionHash: string;
+  user: string;
+  symbol: string | null;
+  txHash: string | null;
+  receivedTokens: string | null;
+  economicShares: string | null;
+  spentUsd: string | null;
+  effectivePriceUsd: string | null;
+  slippageBps: number | null;
+  siblingReceived: string | null;
+  verified: boolean;
+  reasons: ReasonCode[];
+  hash: string;
+  narration: string;
+}
+

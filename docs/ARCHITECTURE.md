@@ -15,7 +15,10 @@ Status: design frozen for v1 on 2026-09-25. Changes go through `docs/DECISIONS.m
 > - **The agent is at `agent/`**, not `apps/agent`. Its MCP tools work locally. The paid `/x402`
 >   route is **dormant (503)** until Binance approves a B402 merchant for the agent wallet, so no
 >   agent has paid yet (D24).
-> - **Binance Wallet first** for signing (D22). The Agentic Wallet (`baw`) adapter was not built.
+> - **Binance Wallet first** for signing in the browser (D22). **Agents** go through the Agentic
+>   Wallet (`baw`): `scripts/agentic.ts` stops before `baw` unless the decision is ALLOW, checks
+>   the `baw` quote (`prepareAgenticExecution`, mode `AGENTIC`), swaps, then checks the BSC
+>   receipt (`verifyFill`, a third hashed ticket) (D25).
 
 ## 1. Problem
 

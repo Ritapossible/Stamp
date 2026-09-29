@@ -47,6 +47,21 @@ bag erc8004 register --protocol MCP --name stamp \
   --description "Pre-trade gate for tokenized stocks on BSC"</code></pre>
           <p>For something that outlives 48 hours, <code>bag deploy --provider aws | azure | nodeops</code> deploys to your own cloud.</p>
 
+          <h2 id="agentic-wallet">In front of the Binance Agentic Wallet</h2>
+          <p>Agents that trade through Binance's Agentic Wallet (<code>baw</code>, skill <code>binance-agentic-wallet</code>) can put Stamp in front of every tokenized-stock buy. The wallet builds and signs the swap itself, under the limits you set in the Binance App, so Stamp checks what it can see: the quote before and the chain after.</p>
+          <pre data-copy><code>npm i -g @binance/agentic-wallet
+baw auth signin                     # confirm in the Binance App
+npm run agentic -- "Buy $20 of NVIDIA" --dry-run
+npm run agentic -- "Buy $20 of NVIDIA"</code></pre>
+          <ol>
+            <li>Stamp decides. Anything but ALLOW stops here, and <code>baw</code> is never called.</li>
+            <li><code>baw market-order quote</code> for the ticket's contract address and dollars. The execution ticket checks the quoted token symbol, the dollars, the price (0.50%) and the age.</li>
+            <li>You type <code>yes</code>. Stamp quotes and checks again, because the decision is only good for 120 s.</li>
+            <li><code>baw market-order swap</code> with <code>--slippage 0.5</code>, then polls until <code>FINISHED</code> or <code>FAILED</code>. An order id is not a fill.</li>
+            <li>The fill ticket reads the BSC receipt: the ticket's token must arrive, no sibling issuer's token may arrive, and the price paid must be within policy.</li>
+          </ol>
+          <p>The quote does not bind the swap - that is how <code>baw</code> works - which is why the fill is checked. Agents that can't run the script follow the same rule by hand from <a href="https://github.com/Ritapossible/Stamp/blob/claude/stamp-pretrade-gate-94h6me/skills/stamp-gate/SKILL.md" target="_blank" rel="noopener">skills/stamp-gate/SKILL.md ↗</a>.</p>
+
           <h2>Pay it from another agent</h2>
           <pre data-copy><code>bag x402 buy https://&lt;agent-host&gt;/x402 --method POST \
   --json '{"prompt":"Buy $20 of NVIDIA"}' --max-usd 0.05 --asset USDT</code></pre>

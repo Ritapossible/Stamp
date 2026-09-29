@@ -167,3 +167,15 @@ free answer for the same order are the same ticket with the same hash. MCP tools
 caller can try an order before paying, because B402 settles before the work runs. MCP tool
 names use `stamp_ticket` / `stamp_verify` (underscores), which every MCP client accepts.
 
+### D25 - The Agentic Wallet path: check the quote before, the receipt after (2026-09-29)
+**Why:** Agents trade through the Binance Agentic Wallet (`baw` CLI, skill
+`binance-agentic-wallet` 1.12.0), which trades tokenized stocks (its skill ran a bStock
+campaign). The wallet builds and signs the transaction server-side under the person's in-app
+limits, so there is no typed data or tx for Stamp to inspect, and `market-order swap` is not
+bound to `market-order quote`. So: (1) no `baw` call at all unless the decision is ALLOW;
+(2) `prepareAgenticExecution` checks the `baw` quote's symbols, dollars, price and age against
+the ticket; it runs again right before the swap; (3) the swap uses the ticket's contract
+address and `--slippage` = policy (0.5%); (4) `verifyFill` reads the BSC receipt and checks
+that the wallet received the ticket's token, no sibling issuer's token, at a price within
+policy. The fill cannot be undone, so its job is to tell the truth about it with a hash. The
+session stays in `baw` on the person's machine. Stamp never holds it.

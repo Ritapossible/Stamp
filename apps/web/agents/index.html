@@ -17,9 +17,10 @@
       </section>
 
       <section class="wrap page-body">
-        <div class="cards three">
+        <div class="cards four">
           <div class="card static"><span class="card-k">http · free</span><b>POST /v1/tickets</b><span>The API this page runs on. JSON in, ticket out. No key, no account.</span></div>
           <div class="card static"><span class="card-k">mcp · free</span><b>stamp_ticket · stamp_verify</b><span>Two read-only tools on a BNB Agent Studio agent. Decide an order; recompute a hash.</span></div>
+          <div class="card static"><span class="card-k">agentic wallet</span><b>npm run agentic</b><span>Stamp in front of Binance's <code>baw</code>: no swap unless ALLOW, and the fill checked on BSC.</span></div>
           <div class="card static"><span class="card-k">x402 · $0.02</span><b>POST /x402</b><span>The same ticket behind a payment challenge. B402 verifies and settles before the work runs.</span></div>
         </div>
 
@@ -44,6 +45,25 @@
 
         <div class="split">
           <div>
+            <h2 class="h3">In front of the Agentic Wallet</h2>
+            <pre data-copy><code>baw auth signin        # confirm in the Binance App
+npm run agentic -- "Buy $20 of NVIDIA" --dry-run
+npm run agentic -- "Buy $20 of NVIDIA"</code></pre>
+            <p class="aside">An agent trading through Binance's Agentic Wallet asks Stamp first. Anything but ALLOW stops before <code>baw</code> is called. Then the <code>baw</code> quote is checked against the ticket, the swap uses the ticket's contract address and 0.50% slippage, and the BSC receipt is checked afterwards. <a href="/docs/agent/#agentic-wallet">How it works</a>.</p>
+          </div>
+          <div>
+            <h2 class="h3">Three tickets, all hashed</h2>
+            <ul class="plain">
+              <li><b>Decision</b> - the right issuer, the share count, no halt, a fair off-hours price.</li>
+              <li><b>Execution</b> - the Agentic Wallet quote buys that token, for those dollars, within 0.50%, while both are fresh.</li>
+              <li><b>Fill</b> - on BSC, the wallet received that token and no sibling issuer's, at a price within policy.</li>
+            </ul>
+            <p class="aside">The skill file for agents: <a href="https://github.com/Ritapossible/Stamp/blob/claude/stamp-pretrade-gate-94h6me/skills/stamp-gate/SKILL.md" target="_blank" rel="noopener">skills/stamp-gate ↗</a></p>
+          </div>
+        </div>
+
+        <div class="split">
+          <div>
             <h2 class="h3">Paying over x402</h2>
             <pre data-copy><code>bag x402 buy https://&lt;agent-host&gt;/x402 --method POST \
   --json '{"prompt":"Buy $20 of NVIDIA"}' \
@@ -62,7 +82,7 @@
         </div>
 
         <div class="notice">
-          <b>Status, honestly:</b> the MCP tools and the x402 work path run locally today. The paid route stays dormant (<code>503</code>) until Binance approves a B402 merchant for the agent's wallet, and the managed Agent Studio host is a 48-hour BSC testnet trial. The ticket's data is always BSC mainnet.
+          <b>Status, honestly:</b> the MCP tools and the x402 work path run locally today. The paid route stays dormant (<code>503</code>) until Binance approves a B402 merchant for the agent's wallet, and the managed Agent Studio host is a 48-hour BSC testnet trial. The Agentic Wallet path is built and tested against a scripted <code>baw</code>; its first live swap has to run on your own machine, signed in to your own wallet, outside the US. The ticket's data is always BSC mainnet.
         </div>
       </section>
     </main>

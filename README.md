@@ -50,6 +50,24 @@ It runs on a free host, so the first request after a quiet spell takes ~30 s.
 > live API findings: [`docs/API-NOTES.md`](docs/API-NOTES.md) · deploy: [`docs/DEPLOY.md`](docs/DEPLOY.md).
 > Built for the [BNB Hack: Tokenized Stocks Edition](https://www.bnbchain.org/en/hackathons/tokenized-stocks).
 
+## With the Binance Agentic Wallet
+
+An agent that trades through the [Agentic Wallet](https://developers.binance.com/en/docs/products/agentic-wallet/welcome)
+(`baw`) can put Stamp in front of every tokenized-stock buy:
+
+```bash
+npm i -g @binance/agentic-wallet && baw auth signin      # confirm in the Binance App
+npm run agentic -- "Buy \$20 of NVIDIA" --dry-run          # decision + checked quote, no swap
+npm run agentic -- "Buy \$20 of NVIDIA"                    # type "yes" → swap → fill verified on BSC
+```
+
+Anything but ALLOW stops before `baw` is called. The Agentic Wallet builds and signs the swap
+itself, so Stamp checks what it can see: the quote before (token, dollars, price, age) and the
+BSC receipt after. The receipt must show the ticket's token arriving, no sibling issuer's
+token, and a price within 0.50% of the decision. That gives three hashed tickets: decision,
+execution and fill. [`skills/stamp-gate/SKILL.md`](skills/stamp-gate/SKILL.md) is the same rule
+as a skill that sits next to Binance's `binance-agentic-wallet` skill.
+
 ## Try it live - no key needed
 
 ```bash

@@ -1,7 +1,7 @@
 import { BPS, Dec, fixed, parseDec, toInt } from "./decimal.js";
 import { canonicalJson, sha256Hex, ticketHash } from "./hash.js";
 import { policyHash } from "./policy.js";
-import type { ExecuteInput, ExecutionTicket, ReasonCode, TypedDataChecks, Verdict } from "./types.js";
+import type { AgenticExecuteInput, ExecuteInput, ExecutionTicket, FillInput, FillTicket, ReasonCode, TypedDataChecks, Verdict } from "./types.js";
 import { ENGINE_VERSION } from "./verdict.js";
 
 /** A decision older than this must be re-made before anything is quoted against it. */
@@ -130,6 +130,166 @@ export function prepareExecution(input: ExecuteInput): ExecutionTicket {
   return finish(null);
 }
 
+/**
+ * The execution ticket for a Binance Agentic Wallet swap (`baw market-order swap`). The wallet
+ * builds and signs the transaction itself, under the limits the person set in the Binance App,
+ * so there is no typed data or transaction for Stamp to inspect. What Stamp can check before
+ * the swap is the quote; what it checks after is the fill (`verifyFill`). The quote does not
+ * bind the swap, which is why the fill check exists.
+ */
+export function prepareAgenticExecution(input: AgenticExecuteInput & { quoteAsset: string }): ExecutionTicket {
+  const { decision, quote, policy } = input;
+  const user = input.user.toLowerCase();
+  const draft: Draft = {
+    kind: "execution",
+    engineVersion: ENGINE_VERSION,
+    asOf: input.asOf,
+    decisionHash: decision.hash,
+    policyHash: decision.policyHash,
+    user,
+    symbol: decision.chosen?.symbol ?? null,
+    quoteId: "",
+    quotedAt: quote.quotedAt,
+    quoteAgeSec: Math.floor((Date.parse(input.asOf) - Date.parse(quote.quotedAt)) / 1000),
+    executionMode: "AGENTIC",
+    vendor: "binance-agentic-wallet",
+    fromToken: input.quoteAsset.toLowerCase(),
+    toToken: decision.chosen?.contractAddress ?? "",
+    amountInUsd: null,
+    amountOutTokens: null,
+    economicShares: null,
+    effectivePriceUsd: null,
+    slippageBps: null,
+    typedDataHash: null,
+    typedDataChecks: null,
+    swapTxHash: null,
+    approvalRequired: false,
+    swapSimulation: null,
+    approvalSimulation: null,
+  };
+  const finish = (block: ReasonCode | null): ExecutionTicket => {
+    const verdict: Verdict = block ? "BLOCK" : "ALLOW";
+    const body = { ...draft, verdict, reasons: [block ?? "OK"] as ReasonCode[], hash: "", narration: "" };
+    body.hash = ticketHash(body as unknown as Record<string, unknown>);
+    body.narration = narrateExecution(body);
+    return body;
+  };
+
+  // E1, E1b, E2 - as for any execution
+  if (ticketHash(decision as unknown as Record<string, unknown>) !== decision.hash || policyHash(policy) !== decision.policyHash) {
+    return finish("TICKET_TAMPERED");
+  }
+  if (decision.verdict !== "ALLOW" || !decision.chosen || !decision.notionalUsd || !decision.tokenPriceUsd || !decision.multiplier) {
+    return finish("DECISION_NOT_ALLOWED");
+  }
+  const decisionAge = (Date.parse(input.asOf) - Date.parse(decision.asOf)) / 1000;
+  if (!(decisionAge >= 0 && decisionAge <= DECISION_MAX_AGE_SEC)) return finish("DECISION_STALE");
+  // E4
+  if (!(draft.quoteAgeSec >= 0 && draft.quoteAgeSec <= policy.quoteTtlSec)) return finish("QUOTE_STALE");
+  // E5 - the quote only names symbols; they must be the ticket's token and USDT
+  if (quote.toCoinSymbol !== decision.chosen.symbol || quote.fromCoinSymbol.toUpperCase() !== "USDT") return finish("ISSUER_MISMATCH");
+  // E5b, E6
+  const amountIn = parseDec(quote.fromCoinAmount);
+  const amountOut = parseDec(quote.toCoinAmount);
+  if (!amountIn || !amountOut || amountOut.lte(0)) return finish("AMOUNT_MISMATCH");
+  draft.amountInUsd = fixed(amountIn, 2);
+  draft.amountOutTokens = fixed(amountOut, 8);
+  draft.economicShares = fixed(amountOut.mul(new Dec(decision.multiplier)), 8);
+  if (amountIn.minus(new Dec(decision.notionalUsd)).abs().gt(AMOUNT_TOLERANCE_USD)) return finish("AMOUNT_MISMATCH");
+  const effective = amountIn.div(amountOut);
+  draft.effectivePriceUsd = fixed(effective, 6);
+  const decided = new Dec(decision.tokenPriceUsd);
+  draft.slippageBps = toInt(effective.minus(decided).div(decided).mul(BPS));
+  if (draft.slippageBps > policy.maxSlippageBps) return finish("SLIPPAGE");
+  return finish(null);
+}
+
+const TRANSFER_TOPIC = "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef";
+const topicAddress = (t: string | undefined) => (t && /^0x[0-9a-fA-F]{64}$/.test(t) ? `0x${t.slice(26).toLowerCase()}` : null);
+
+/**
+ * The fill ticket: read the swap's BSC receipt and check that the wallet received the ticket's
+ * token, received no sibling issuer's token, spent about the ticket's dollars, and paid a price
+ * within the policy's slippage of the decision. It cannot undo a trade; it tells the truth
+ * about one, with a hash.
+ */
+export function verifyFill(input: FillInput): FillTicket {
+  const { decision, policy } = input;
+  const user = input.user.toLowerCase();
+  const draft: Omit<FillTicket, "verified" | "reasons" | "hash" | "narration"> = {
+    kind: "fill",
+    engineVersion: ENGINE_VERSION,
+    asOf: input.asOf,
+    decisionHash: decision.hash,
+    user,
+    symbol: decision.chosen?.symbol ?? null,
+    txHash: input.txHash ? input.txHash.toLowerCase() : null,
+    receivedTokens: null,
+    economicShares: null,
+    spentUsd: null,
+    effectivePriceUsd: null,
+    slippageBps: null,
+    siblingReceived: null,
+  };
+  const finish = (bad: ReasonCode | null): FillTicket => {
+    const body = { ...draft, verified: bad === null, reasons: [bad ?? "OK"] as ReasonCode[], hash: "", narration: "" };
+    body.hash = ticketHash(body as unknown as Record<string, unknown>);
+    body.narration = narrateFill(body);
+    return body;
+  };
+
+  if (input.orderStatus !== "FINISHED" || !input.txHash || input.receiptStatus !== "success") return finish("FILL_FAILED");
+  if (!decision.chosen || !decision.tokenPriceUsd || !decision.multiplier) return finish("FILL_NOT_RECEIVED");
+
+  const token = decision.chosen.contractAddress.toLowerCase();
+  const usdt = input.quoteAsset.toLowerCase();
+  const siblings = new Set(decision.rejected.map((r) => r.contractAddress.toLowerCase()));
+  let receivedRaw = 0n;
+  let spentRaw = 0n;
+  for (const log of input.logs) {
+    if (log.topics[0]?.toLowerCase() !== TRANSFER_TOPIC || !/^0x[0-9a-fA-F]+$/.test(log.data)) continue;
+    const from = topicAddress(log.topics[1]);
+    const to = topicAddress(log.topics[2]);
+    const address = log.address.toLowerCase();
+    const amount = BigInt(log.data);
+    if (to === user && siblings.has(address)) draft.siblingReceived = address;
+    if (to === user && address === token) receivedRaw += amount;
+    if (from === user && address === usdt) spentRaw += amount;
+  }
+  if (draft.siblingReceived) return finish("FILL_WRONG_TOKEN");
+  const received = rawToDec(receivedRaw.toString(), input.tokenDecimals);
+  const spent = rawToDec(spentRaw.toString(), input.quoteDecimals);
+  if (!received || received.lte(0)) return finish("FILL_NOT_RECEIVED");
+  draft.receivedTokens = fixed(received, 8);
+  draft.economicShares = fixed(received.mul(new Dec(decision.multiplier)), 8);
+  if (!spent || spent.lte(0)) return finish("FILL_NOT_RECEIVED");
+  draft.spentUsd = fixed(spent, 2);
+  const effective = spent.div(received);
+  draft.effectivePriceUsd = fixed(effective, 6);
+  const decided = new Dec(decision.tokenPriceUsd);
+  draft.slippageBps = toInt(effective.minus(decided).div(decided).mul(BPS));
+  if (draft.slippageBps > policy.maxSlippageBps) return finish("FILL_SLIPPAGE");
+  return finish(null);
+}
+
+function narrateFill(t: Omit<FillTicket, "narration">): string {
+  const tail = `Hash ${t.hash.slice(0, 12)}…`;
+  switch (t.reasons[0]) {
+    case "OK":
+      return `FILLED and verified on BSC: $${t.spentUsd} bought ${trim(t.receivedTokens)} ${t.symbol} tokens = ${trim(t.economicShares)} shares at $${t.effectivePriceUsd} per token (${t.slippageBps} bps from the decision). ${tail}`;
+    case "FILL_FAILED":
+      return `NOT FILLED. The order did not finish on chain; nothing was bought. ${tail}`;
+    case "FILL_WRONG_TOKEN":
+      return `MISMATCH. The wallet received ${t.siblingReceived}, another issuer's token, not ${t.symbol}. ${tail}`;
+    case "FILL_NOT_RECEIVED":
+      return `MISMATCH. The transaction succeeded but no ${t.symbol} (or no USDT spend) reached or left the wallet as expected. ${tail}`;
+    case "FILL_SLIPPAGE":
+      return `FILLED, but at $${t.effectivePriceUsd} per token, ${t.slippageBps} bps worse than the decision allowed. ${tail}`;
+    default:
+      return tail;
+  }
+}
+
 /** Integer string with `decimals` places → Dec. Rejects anything but a plain non-negative integer. */
 export function rawToDec(raw: string, decimals: number): Dec | null {
   if (!/^\d+$/.test(raw) || !Number.isSafeInteger(decimals) || decimals < 0 || decimals > 36) return null;
@@ -178,6 +338,9 @@ function narrateExecution(t: Omit<ExecutionTicket, "narration">): string {
   const tail = `Hash ${t.hash.slice(0, 12)}…`;
   switch (r) {
     case "OK":
+      if (t.executionMode === "AGENTIC") {
+        return `${head} Ready to swap in the Agentic Wallet: $${t.amountInUsd} for about ${trim(t.amountOutTokens)} ${t.symbol} tokens = ${trim(t.economicShares)} shares at $${t.effectivePriceUsd} per token (${t.slippageBps} bps from the decision). The swap is not bound to this quote; Stamp checks the fill on BSC afterwards. ${tail}`;
+      }
       return `${head} Ready to ${t.executionMode === "SWAP" ? "send" : "sign"}: $${t.amountInUsd} for ${trim(t.amountOutTokens)} ${t.symbol} tokens = ${trim(t.economicShares)} shares at $${t.effectivePriceUsd} per token (${t.slippageBps} bps from the decision). The quote is ${t.quoteAgeSec} s old. ${tail}`;
     case "TICKET_TAMPERED":
       return `${head} The decision ticket does not match its hash or its policy. Nothing will be signed. ${tail}`;

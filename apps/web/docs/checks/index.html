@@ -60,6 +60,18 @@ premium (bps) = round((price per share - reference) / reference × 10000)</code>
               <tr><td>E8</td><td>USDT allowance short: an exact-amount approval comes first, then a fresh review.</td><td><code>APPROVAL_REQUIRED</code></td></tr>
             </tbody>
           </table></div>
+          <h2>Agentic Wallet: the fill</h2>
+          <p>With the Agentic Wallet, Binance builds and signs the swap, so E7 has nothing to inspect. Stamp checks the quote (E1-E6) and then the BSC receipt:</p>
+          <div class="table-scroll"><table>
+            <thead><tr><th>check</th><th>flags</th></tr></thead>
+            <tbody>
+              <tr><td>The order finished and the transaction succeeded.</td><td><code>FILL_FAILED</code></td></tr>
+              <tr><td>No sibling issuer's token reached the wallet.</td><td><code>FILL_WRONG_TOKEN</code></td></tr>
+              <tr><td>The ticket's token arrived and USDT left.</td><td><code>FILL_NOT_RECEIVED</code></td></tr>
+              <tr><td>The price paid is within 0.50% of the decision.</td><td><code>FILL_SLIPPAGE</code></td></tr>
+            </tbody>
+          </table></div>
+          <p>A fill can't be undone; the fill ticket tells the truth about it, with a hash.</p>
           <p>Binance returned SWAP mode (a normal transaction) for tokenized stocks from Frankfurt, not the RFQ typed-data flow its docs describe. Stamp handles both.</p>
           <a class="docs-next" href="/docs/policy/">next: policy →</a>
         </article>

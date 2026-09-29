@@ -1774,3 +1774,9 @@ pre code,
     align-self: start;
   }
 }
+
+@media (min-width: 1040px) {
+  .cards.four {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
