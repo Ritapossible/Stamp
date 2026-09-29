@@ -1,0 +1,23 @@
+{
+  "$schema": "https://schema.agentcore.aws.dev/v1/agentcore.json",
+  "name": "stampagent",
+  "version": 1,
+  "managedBy": "CDK",
+  "runtimes": [
+    {
+      "name": "stampagent",
+      "build": "CodeZip",
+      "entrypoint": "dist/mcpMain.js",
+      "codeLocation": "app/agent/",
+      "networkMode": "PUBLIC",
+      "protocol": "MCP",
+      "envVars": [
+        {
+          "name": "OTEL_TRACES_EXPORTER",
+          "value": "none"
+        }
+      ],
+      "runtimeVersion": "NODE_22"
+    }
+  ]
+}

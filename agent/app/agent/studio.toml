@@ -1,0 +1,78 @@
+[project]
+name = "stampagent-agent"
+
+[stack]
+# Project-lifetime facts: which runtime adapter recipe this Agent was
+# scaffolded against. doctor / dev / deploy read these to know what to
+# check, load, and route. runtime: agentcore | azure-foundry.
+runtime = "agentcore"
+# Public faces exposed by this one runtime and signer (canonical order):
+#   A2A - serveA2a: agent card + negotiate/notify_funded skills.
+#   MCP - streamable-HTTP /mcp: negotiate (signed quote) + notify_funded
+#         (verify → deliver → submit, synchronously within the tool call) +
+#         read-only chain tools.
+#   X402 or MPP - publish exactly one sibling B402 seller route (/x402 or
+#          /mpp). Payment-only still uses A2A as the cloud carrier but hides
+#          that native face at the public gateway.
+protocols = ["MCP","X402"]
+
+[network]
+default = "bsc-testnet"
+
+[wallet]
+# Local keystore signer. The Agent is the SOLE key-holder/signer.
+# The keystore lives at the WORKSPACE root - outside app/agent (the deploy
+# codeLocation) - so no packaging path can bundle it into a deploy artifact.
+kind = "evm-local"
+signer = "local"
+keystore_dir = "../../.studio/wallets"
+# address = "0x..."   # filled by `bag wallet new`
+
+[llm]
+provider = "none"
+model = ""
+
+[payments]
+# Buyer spending allow-list for `bag erc8183 buy --asset`. Match a UI
+# symbol or canonical AssetId. Narrow this to lock spending to specific stables.
+allowed_payment_tokens = ["U","USDC","USDT"]
+
+[payments.seller]
+# One USD price for every seller rail and asset; "0" means free.
+# Stamp: $0.02 per decision ticket on the paid /x402 route. The MCP tools stay free.
+price_usd = "0.02"
+# Canonical AssetIds for the current network, in order of preference.
+assets = ["TEST_U","TEST_USDC","TEST_USDT"]
+
+[storage]
+# Deliverables written to local disk (file://). Offline-dev only -
+# does NOT survive deploy. Path from STORAGE_LOCAL_PATH.
+kind = "local"
+
+
+[payments.b402_seller]
+# Public X402 seller rail mounted at /x402. Credentials stay in
+# <workspace>/.studio/.env.local and are issued per B402 environment.
+# Until the four B402_* merchant values exist the route stays dormant (503) and
+# nobody can pay; nothing else breaks.
+enabled = true
+# Empty means the agent wallet receives payment.
+pay_to = ""
+# Payment settles before work; this bounds only the post-settlement work.
+# The Stamp API on a free host can take ~30 s to wake.
+work_timeout_seconds = 60
+# Optional Bazaar metadata can be added later as scalar JSON fields under
+# [payments.b402_seller.bazaar]: info_json, schema_json, description,
+# and route_template.
+
+[budget]
+# auto-topup consent - `acknowledged_at` is the ISO-8601 UTC
+# timestamp marking when the user explicitly accepted the auto-topup terms.
+# Both `enabled = true` AND a valid `acknowledged_at` are required for the
+# in-process auto-topup hook to fire (defends against hand-edits).
+enabled = false
+acknowledged_at = "2026-09-29T10:48:23Z"
+# Caps - tighten/loosen via `bag budget enable --max-per-topup-usd N ...`
+max_per_topup_usd = 1.0
+max_per_day_usd = 3.0
+max_per_month_usd = 15.0
