@@ -39,7 +39,7 @@
           <p>Notes (<code>THIN_BOOK</code>, xStock <code>MULTIPLIER_DRIFT</code>) never change the verdict. Rejected siblings carry <code>NEVER_SWITCH</code>.</p>
 
           <h2>The unit math, on every ticket</h2>
-          <pre data-copy><code>token units   = dollars / token price
+          <pre data-copy="formulas"><code>token units   = dollars / token price
 shares        = token units × multiplier
 price / share = token price / multiplier     (Binance's formula, cited on the ticket)
 premium (bps) = round((price per share - reference) / reference × 10000)</code></pre>

@@ -42,9 +42,12 @@
           <h2>Run it yourself (no key)</h2>
           <pre data-copy><code>git clone https://github.com/Ritapossible/Stamp && cd Stamp
 npm ci
-npm test          # engine, sources, API and agent tests
-npm run replay    # "325 tickets recomputed · all hashes match"
-npm run build && npm start   # this site on http://localhost:8787</code></pre>
+# engine, sources, API and agent tests
+npm test
+# expect: 325 tickets recomputed · all hashes match
+npm run replay
+# this site on http://localhost:8787
+npm run build && npm start</code></pre>
           <p>Decisions use Binance's public RWA endpoints and need no key. Execution needs a Binance Trading API key on the server (<code>STAMP_TRADING_API_KEY</code>, <code>STAMP_TRADING_API_SECRET</code>) and does not work from US IP addresses - see <a href="/docs/limits/">honest limits</a>.</p>
 
           <h2>What Stamp promises, and what it doesn't</h2>

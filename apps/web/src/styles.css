@@ -138,7 +138,7 @@ a {
   position: sticky;
   top: 0;
   z-index: 20;
-  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  background: color-mix(in srgb, var(--bg) 96%, transparent);
   backdrop-filter: saturate(140%) blur(10px);
   -webkit-backdrop-filter: saturate(140%) blur(10px);
   border-bottom: 1px solid var(--line);
@@ -1534,10 +1534,6 @@ ul.plain li {
   overflow-x: auto;
 }
 
-pre[data-copy] {
-  position: relative;
-}
-
 pre {
   margin: 8px 0 20px;
   padding: 18px 20px;
@@ -1557,10 +1553,51 @@ pre code,
   white-space: pre;
 }
 
-pre .copy {
-  position: absolute;
-  top: 10px;
-  right: 10px;
+/* code block with a copy bar on top (added by copyButtons) */
+.code-block {
+  margin: 8px 0 20px;
+  border: 1px solid var(--line-strong);
+  background: var(--bg-sunk);
+  min-width: 0;
+}
+
+.code-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 6px 8px 6px 16px;
+  border-bottom: 1px solid var(--line);
+  font: 500 12px/1 var(--mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.code-bar .copy {
+  letter-spacing: normal;
+  text-transform: none;
+  padding: 6px 12px;
+}
+
+.code-block pre {
+  margin: 0;
+  border: 0;
+}
+
+/* phones: wrap long commands instead of hiding them off the edge */
+@media (max-width: 640px) {
+  pre {
+    padding: 14px 16px;
+    font-size: 13px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+  pre code,
+  .prose pre code {
+    white-space: inherit;
+  }
 }
 
 .endpoint {
@@ -1671,8 +1708,4 @@ pre .copy {
 
 .legend .verdict {
   font-size: 28px;
-}
-
-pre[data-copy] {
-  padding-right: 84px;
 }

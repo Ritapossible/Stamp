@@ -67,22 +67,34 @@ void api
     $("foot-status").textContent = "server unreachable - the page still works offline for docs";
   });
 
-/** Adds a copy button to every <pre data-copy> on the page (docs, agents). */
+/**
+ * Wraps every <pre data-copy> in a block with a small bar on top holding the copy button, so the
+ * button never sits over the code or scrolls with it (docs, agents).
+ */
 export function copyButtons(): void {
   document.querySelectorAll<HTMLElement>("pre[data-copy]").forEach((pre) => {
+    const text = () => pre.querySelector("code")?.textContent ?? pre.textContent ?? "";
+    const block = document.createElement("div");
+    block.className = "code-block";
+    const bar = document.createElement("div");
+    bar.className = "code-bar";
+    const label = document.createElement("span");
+    label.textContent = pre.dataset.copy || (text().trimStart().startsWith("{") ? "json" : "shell");
     const btn = document.createElement("button");
     btn.type = "button";
     btn.className = "chip copy";
     btn.textContent = "copy";
     btn.addEventListener("click", async () => {
       try {
-        await navigator.clipboard.writeText(pre.querySelector("code")?.textContent ?? pre.textContent ?? "");
+        await navigator.clipboard.writeText(text());
         btn.textContent = "copied";
       } catch {
         btn.textContent = "select & copy";
       }
       setTimeout(() => (btn.textContent = "copy"), 1600);
     });
-    pre.append(btn);
+    bar.append(label, btn);
+    pre.replaceWith(block);
+    block.append(bar, pre);
   });
 }
