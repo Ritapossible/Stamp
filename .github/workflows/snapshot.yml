@@ -1,6 +1,7 @@
 name: snapshot
 # Records reference prices every 10 min and raw off-hours payloads, committing each tick
-# to the `snapshots` branch (never the code branch).
+# to the `snapshots` branch (never the code branch). Each tick also pings the live site's
+# /health so the free Render instance never sleeps.
 #
 # GitHub's cron did not fire at all for this new repo (only the manual run landed on
 # 2026-09-25), so this workflow does not depend on it: each run loops for ~5.5 h and then
@@ -46,9 +47,14 @@ jobs:
           git -C store config user.name "stamp-snapshot"
           git -C store config user.email "stamp-snapshot@users.noreply.github.com"
       - name: Tick every 10 minutes for ~5.5 hours
+        env:
+          STAMP_URL: https://stamp-iizn.onrender.com
         run: |
           end=$(( $(date +%s) + 330*60 ))
           while [ "$(date +%s)" -lt "$end" ]; do
+            # Keep the free Render instance awake (it sleeps after 15 idle minutes), so a
+            # judge's first click doesn't wait ~30 s. /health only: no Binance call from here.
+            curl -s -o /dev/null --max-time 90 -w "keep-awake /health %{http_code} %{time_total}s\n" "$STAMP_URL/health" || echo "keep-awake ping failed"
             (cd code && npx tsx scripts/snapshot.ts --out ../store/data) || echo "tick failed"
             (
               cd store

@@ -63,6 +63,31 @@ function nflxLede(): string {
   return `One reading is ${usd(t.unitReadings.asTokens.usd)}. The other is ${usd(t.unitReadings.asShares.usd)}.`;
 }
 
+const SITE = "https://stamp-iizn.onrender.com";
+
+/** Link-preview tags for chat apps, forms and social sites, from the page's own title and description. */
+function previewTags(html: string, route: string): string {
+  const title = /<title>([^<]*)<\/title>/.exec(html)?.[1] ?? "Stamp";
+  const desc = /<meta\s+name="description"\s+content="([^"]*)"/.exec(html)?.[1] ?? "";
+  const url = `${SITE}${route === "/404.html" ? "/" : route}`;
+  return [
+    `<meta property="og:type" content="website" />`,
+    `<meta property="og:site_name" content="Stamp" />`,
+    `<meta property="og:title" content="${title}" />`,
+    `<meta property="og:description" content="${desc}" />`,
+    `<meta property="og:url" content="${url}" />`,
+    `<meta property="og:image" content="${SITE}/og.png" />`,
+    `<meta property="og:image:width" content="1200" />`,
+    `<meta property="og:image:height" content="630" />`,
+    `<meta property="og:image:alt" content="Stamp blocks 'Buy 1 NFLX': 1 token is 10 shares at $716.15, 1 share is $71.62." />`,
+    `<meta name="twitter:card" content="summary_large_image" />`,
+    `<meta name="twitter:title" content="${title}" />`,
+    `<meta name="twitter:description" content="${desc}" />`,
+    `<meta name="twitter:image" content="${SITE}/og.png" />`,
+    `<link rel="canonical" href="${url}" />`,
+  ].join("\n    ");
+}
+
 function layout(): Plugin {
   return {
     name: "stamp-layout",
@@ -77,6 +102,7 @@ function layout(): Plugin {
             return on ? `<a${pre} href="${href}" aria-current="page"` : m;
           });
         return html
+          .replace("</head>", () => `    ${previewTags(html, route)}\n  </head>`)
           .replace("<!-- @head -->", partial("head.html"))
           .replace("<!-- @header -->", mark(partial("header.html"), false))
           .replace("<!-- @footer -->", partial("footer.html"))
