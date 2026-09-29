@@ -21,7 +21,8 @@ It checks four things in fixed code, in order: **issuer** (never switched), **sh
 The guarantee covers **orders that ask Stamp first**: Stamp does not sit inside Binance's
 wallet or signer. For those orders, a quote is only requested after an `ALLOW`, the quote and
 transaction are checked against that ticket, and you sign in your own Binance Wallet. Other
-agents get the same ticket over MCP or a paid x402 route ([`agent/`](agent/README.md)).
+agents get the same ticket over MCP ([`agent/`](agent/README.md)); a paid x402 route is wired
+and waits on Binance's B402 merchant approval.
 
 **Live:** https://stamp-iizn.onrender.com ([check](https://stamp-iizn.onrender.com/check/) ·
 [proof](https://stamp-iizn.onrender.com/proof/) · [docs](https://stamp-iizn.onrender.com/docs/)).
@@ -32,6 +33,10 @@ It runs on a free host, so the first request after a quiet spell takes ~30 s.
   <img src="docs/screenshots/ticket-block-light.png" alt="A BLOCK ticket for Buy 1 NFLX, light theme" width="49%" />
 </p>
 
+> **Demo video:** _not recorded yet - the link goes here._
+> **Live mainnet fill:** _not yet. The Frankfurt review reached `APPROVAL_REQUIRED` with matching
+> approve calldata; the first ≤ $20 fill and its BscScan link go here._
+>
 > **Status (2026-09-29).** Working and deployed: the verdict engine, the Binance data client,
 > the free API with replay and verify, execution tickets (SWAP and RFQ), the standing order, the
 > multi-page site with docs (light and dark), and the Agent Studio agent (MCP tools work
@@ -119,3 +124,7 @@ apps/web          the site: one HTML page per route, plus /docs
 agent/            BNB Agent Studio project (bag init): MCP tools, paid /x402 via B402, ERC-8004
 fixtures/         recorded API payloads and golden cases
 ```
+
+## License
+
+MIT. See [`LICENSE`](LICENSE).

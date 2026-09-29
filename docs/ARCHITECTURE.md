@@ -2,6 +2,21 @@
 
 Status: design frozen for v1 on 2026-09-25. Changes go through `docs/DECISIONS.md`.
 
+> **What changed since the freeze (as of 2026-09-29). The code wins where this doc disagrees.**
+> - **Execution is SWAP, not RFQ.** From Frankfurt the Trading API returned
+>   `executionMode: "SWAP"` (vendor LiquidMesh) for tokenized stocks. The wallet sends a normal
+>   transaction after an exact-amount USDT approval. Stamp checks it by `pre-transaction/simulate`
+>   (field `evmParams`) and the simulated balance changes (D21). The RFQ path is built and
+>   tested but has not been seen live.
+> - **Region.** From US IPs the Trading API answers `40304` inside HTTP 200, so the live server
+>   runs on Render in Frankfurt. A live review reached `APPROVAL_REQUIRED`, and Binance's approve
+>   calldata matched Stamp's byte for byte. **No mainnet fill is recorded yet.**
+> - **The site is multi-page** (home, check, proof, standing, agents, docs), not one screen (D23).
+> - **The agent is at `agent/`**, not `apps/agent`. Its MCP tools work locally. The paid `/x402`
+>   route is **dormant (503)** until Binance approves a B402 merchant for the agent wallet, so no
+>   agent has paid yet (D24).
+> - **Binance Wallet first** for signing (D22). The Agentic Wallet (`baw`) adapter was not built.
+
 ## 1. Problem
 
 A tokenized stock on BSC is not a share. There are three reasons.
@@ -27,7 +42,7 @@ the check passed. Stamp turns those rules into code that returns a hashed verdic
 
 > Stamp will not prepare a signature unless the issuer, share count, halt state and session
 > premium all pass. It proves each decision with a hash anyone can recompute. Other agents
-> pay for that answer over x402.
+> can ask for that answer over MCP, and pay for it over x402 once the B402 merchant is approved.
 
 The honest limit, which goes in the README as well: the Agentic Wallet and Trading API do
 not verify Stamp tickets. A caller that skips Stamp can still trade. Stamp's guarantee
@@ -46,9 +61,9 @@ flowchart LR
   api --> sources[packages/sources]
   sources --> rwa[Binance RWA public GETs - no key]
   sources --> snap[(snapshots + tickets, JSONL)]
-  api -->|execution ticket ALLOW only| trade[Trading API RFQ quote → typed data]
-  trade --> signer[Human wallet signs EIP-712]
-  signer --> submit[order/submit → poll FILLED]
+  api -->|execution ticket ALLOW only| trade[Trading API quote → SWAP tx, checked by simulate]
+  trade --> signer[Human sends it from Binance Wallet - approve first if needed]
+  signer --> bsc[BSC receipt → FILLED]
 ```
 
 The engine is pure: data in, ticket out. Everything that does I/O lives in `sources` or
@@ -58,7 +73,7 @@ The engine is pure: data in, ticket out. Everything that does I/O lives in `sour
 
 | Unit | Runs where | Needs a key |
 |---|---|---|
-| `packages/api` + snapshot cron | one small Node host (Fly/Render/Railway) | Trading API key for the live execution path only |
+| `packages/api` + web | Render, Frankfurt (snapshots: a GitHub Actions loop) | Trading API key for the live execution path only |
 | `apps/web` | static host, or served by the API | no |
 | `agent/` | `bag dev` locally, or `bag deploy` (managed trial: testnet, 48 h; or aws/azure/nodeops) | agent wallet + B402 merchant values |
 
@@ -93,8 +108,8 @@ The engine is pure: data in, ticket out. Everything that does I/O lives in `sour
 | `market.ts` | `LiveMarket.forIntent`: cached universe (5 min), venue status, and the dynamic payload of every same-ticker instrument, all fetched in parallel. |
 | `snapshots.ts` | Reads the snapshot JSONL written by `scripts/snapshot.ts`. `lastOfficialClose(ticker, asOf)` is the last stock price recorded while the venue said `regular` - the final ~10 minutes of the session, not the closing auction, and labelled as such. |
 | `wallet.ts` | The `StockWallet` interface (§7) plus `FakeWallet` for tests. |
-| `wallet-trading-api.ts` | Live RFQ path via the Binance Trading API (HMAC auth). |
-| `wallet-baw.ts` | Optional adapter over the Agentic Wallet `baw` CLI, used if Day-9 testing shows it can quote tokenized stocks (see PLAN). |
+| `trading.ts` | Live path via the Binance Trading API (HMAC auth): quote, approve spender, swap, simulate, status. SWAP and RFQ. |
+| `bsc.ts` | Public BSC RPC: USDT allowance, exact-amount approve calldata. |
 
 ### 4.3 `packages/api` (Hono)
 
@@ -107,7 +122,7 @@ The engine is pure: data in, ticket out. Everything that does I/O lives in `sour
 
 ### 4.4 `apps/web`
 
-One screen, no charts, no component library. See §10.
+Multi-page Vite site, plain TypeScript, no component library (D23). See §11.
 
 ### 4.5 `agent/`
 
@@ -183,7 +198,10 @@ A sibling's *token* price is never used as a reference. Only `stockInfo.price` c
 Base `https://web3.binance.com/build`, HMAC-SHA256 auth (`X-OC-APIKEY`, `X-OC-TIMESTAMP`,
 `X-OC-SIGN`). The pre-hash is `timestamp + METHOD + path(including /build + query) + body`.
 
-Tokenized stocks come back as `executionMode: "RFQ"`:
+The docs say tokenized stocks come back as `executionMode: "RFQ"` (below). **Live, from
+Frankfurt, they came back as `SWAP`:** quote → `approve-transaction` (spender) → exact approve
+sent by the wallet → `swap` returns a tx → `pre-transaction/simulate` → the wallet sends it →
+BSC receipt. The RFQ steps, as documented:
 
 1. `GET /api/v1/dex/aggregator/quote` → `quoteId` (~30 s life), `vendorName`, amounts.
 2. `GET /api/v1/dex/aggregator/approve-transaction?vendor=…` if the USDT allowance is short.
@@ -375,7 +393,7 @@ Agent face: free MCP tools `stamp_ticket` (same body as `POST /v1/tickets`) and 
 `POST /x402` using the b402 verify/settle flow at a fixed price of `"0.02"` USDT. **Payment
 settles before the engine runs.**
 
-## 11. Web screen
+## 11. Web screen (the original one-screen spec; now split across /check, /proof and /standing)
 
 - Line 1: the policy in one sentence. "Ondo only. Never switch issuer. Park if the market is
   shut and the price is more than 0.80% above the last close. $20 per order, $50 per day."
