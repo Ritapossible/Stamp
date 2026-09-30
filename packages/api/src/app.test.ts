@@ -70,6 +70,17 @@ describe("POST /v1/tickets", () => {
   });
 });
 
+describe("POST /v1/intent", () => {
+  it("reads an order with the engine's grammar, without market data", async () => {
+    const market: MarketSource = { forIntent: async () => { throw new Error("must not be called"); } };
+    const ok = await (await post(app({ market }), "/v1/intent", { intent: "Buy $20 of NVIDIA" })).json();
+    expect(ok).toMatchObject({ ok: true, intent: { unit: "usd", amount: "20", query: "NVIDIA" } });
+    const bad = await (await post(app({ market }), "/v1/intent", { intent: "hello there" })).json();
+    expect(bad.ok).toBe(false);
+    expect((await post(app({ market }), "/v1/intent", { nope: 1 })).status).toBe(400);
+  });
+});
+
 describe("GET /v1/tickets/:hash and POST /v1/verify", () => {
   it("stores trimmed inputs that still reproduce the ticket, and verifies them", async () => {
     const a = app();

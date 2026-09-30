@@ -66,7 +66,7 @@ npm run agentic -- "Buy $20 of NVIDIA"</code></pre>
           <h2>Pay it from another agent</h2>
           <pre data-copy><code>bag x402 buy https://&lt;agent-host&gt;/x402 --method POST \
   --json '{"prompt":"Buy $20 of NVIDIA"}' --max-usd 0.05 --asset USDT</code></pre>
-          <p>Payment settles <b>before</b> the work runs, so a malformed order still costs $0.02 and comes back as <code>{"error": …}</code>. Try the order on MCP first.</p>
+          <p>Payment settles <b>before</b> the work runs, so the agent checks first: an empty or malformed prompt, an order Stamp's grammar can't read, or a Stamp server that's down gets a free <code>400</code> or <code>503</code> with <code>"charged": false</code>, and no payment is asked for. Paid replay records live in a file (<code>B402_REPLAY_FILE</code>, default <code>.stamp-data/b402-replay.json</code>), so a restart can't accept the same payment twice.</p>
           <a class="docs-next" href="/docs/verify/">next: verify a ticket →</a>
         </article>
       </div>

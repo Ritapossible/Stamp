@@ -14,7 +14,7 @@
           <p class="eyebrow">docs · build on it</p>
           <h1 class="headline">HTTP API</h1>
 
-          <p class="lead">JSON over HTTPS, no key, no account. The base is <code>https://stamp-iizn.onrender.com</code> (a free host: the first call after a quiet spell can take ~30 s).</p>
+          <p class="lead">JSON over HTTPS, no key, no account. The base is <code>https://stamp-iizn.onrender.com</code> (a free Render host, kept awake by a ping every ten minutes).</p>
 
           <h2>Decide</h2>
           <div class="endpoint"><span class="m">POST</span><code>/v1/tickets</code></div>
@@ -23,6 +23,9 @@
   -H 'content-type: application/json' \
   -d '{"intent":"Buy $20 of NVIDIA"}'</code></pre>
           <p>Fields you'll use most: <code>verdict</code>, <code>reasons</code>, <code>notes</code>, <code>narration</code>, <code>chosen</code>, <code>rejected</code>, <code>multiplier</code>, <code>economicPriceUsd</code>, <code>referenceUsd</code>, <code>premiumBps</code>, <code>overpayUsd</code>, <code>tokenUnits</code>, <code>economicShares</code>, <code>unitReadings</code>, <code>hash</code>. Money is always a decimal string, never a float.</p>
+
+          <div class="endpoint"><span class="m">POST</span><code>/v1/intent</code></div>
+          <p>Body <code>{ intent }</code>. Only reads the order with the engine's grammar - no Binance call, nothing stored - and returns <code>{ ok, intent }</code> or <code>{ ok: false, problem }</code>. The paid agent route uses it to refuse unreadable orders before any payment.</p>
 
           <h2>Verify</h2>
           <div class="endpoint"><span class="m get">GET</span><code>/v1/tickets/:hash</code></div>

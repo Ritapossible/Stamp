@@ -92,7 +92,8 @@ import {
   withTimeout,
 } from "./deliveryPolicy.js";
 import * as signing from "./signing.js";
-import { StampInputError, StampUnavailableError, stampTicket, stampVerify, stampWork } from "./stamp.js";
+import { precheckOrder, promptFromRequest, StampInputError, StampUnavailableError, stampTicket, stampVerify, stampWork } from "./stamp.js";
+import { FileReplayStore } from "./replayStore.js";
 import { READ_TOOL_CATALOG, type ReadToolName } from "./readToolCatalog.js";
 
 const APP_NAME = "agent";
@@ -700,7 +701,11 @@ async function main(): Promise<void> {
   const host = process.env.AGENT_BIND_HOST || "0.0.0.0";
   const port = Number(process.env.AGENT_PORT || "8000");
   const runWork = buildRunWork();
+  // Durable replay guard: a restart must not forget which payments were already used.
+  // B402_REPLAY_FILE lets a host put it on its persistent disk.
+  const replayStore = new FileReplayStore(process.env.B402_REPLAY_FILE ?? ".stamp-data/b402-replay.json");
   const seller = await B402Seller.create({
+    replayStore,
     cfg,
     runWork: ({ prompt }) => runWork(prompt, { sessionId: "b402" }),
     walletAddress: getWallet().address,
@@ -732,6 +737,12 @@ async function main(): Promise<void> {
         } catch (error) {
           res.status(isCommerceRateLimitError(error) ? 429 : 503)
             .json({ error: "seller request limit reached" });
+          return;
+        }
+        // Refuse, for free, anything the paid work couldn't answer: B402 settles before the work.
+        const check = await precheckOrder(promptFromRequest(request));
+        if (!check.ok) {
+          res.status(check.status).json({ error: check.error, charged: false });
           return;
         }
         const out = await seller.handle(request);

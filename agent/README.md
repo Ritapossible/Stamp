@@ -18,7 +18,8 @@ signs a trade. Its wallet only receives the $0.02 and signs its own identity.
 
 Files that differ from the scaffold:
 - `app/agent/src/stamp.ts` (new): the API client and prompt parser.
-- `app/agent/src/mcpMain.ts`: `buildRunWork()` returns Stamp's work, with the two `stamp_*` tools registered.
+- `app/agent/src/mcpMain.ts`: `buildRunWork()` returns Stamp's work, with the two `stamp_*` tools registered; `/x402` runs a free pre-check before any payment and uses the file replay store.
+- `app/agent/src/replayStore.ts` (new): durable B402 replay records.
 - `app/agent/studio.toml`: MCP + X402 faces, B402 rail only, `price_usd = "0.02"`, seller enabled.
 
 ## Run it locally (no funds, no keys)
@@ -68,9 +69,14 @@ The response body is `{"result": "<ticket JSON>"}`. Its `verifyUrl` opens the ti
 
 ## Limits (also in the web docs)
 
-- Payment settles before the work runs. A malformed order still costs $0.02 and comes back
-  as `{"error": …}`. Try it free on MCP first.
-- Paid replay protection is Studio's in-memory store (their advisory M01), so it is lost on
-  restart. That is fine for a demo at $0.02, not for production.
+- Payment settles before the work runs, so `/x402` checks first (`precheckOrder` in
+  `src/stamp.ts`): an empty or malformed prompt, an order Stamp's grammar can't read
+  (`POST /v1/intent`), or a Stamp API that is down is refused with `400`/`503` and
+  `"charged": false`, before any payment challenge. A readable order that comes back BLOCK is
+  still a paid answer.
+- Paid replay records (Studio advisory M01) are kept in a file, not in memory
+  (`src/replayStore.ts`, path `B402_REPLAY_FILE`, default `.stamp-data/b402-replay.json`), so a
+  restart can't accept one payment twice. It guards a single agent process with a persistent
+  disk; several instances would need a shared store.
 - The ticket's data is BSC mainnet (live Binance). The agent's payment rail runs on whatever
   `[network].default` says (testnet by default here).

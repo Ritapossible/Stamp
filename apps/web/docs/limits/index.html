@@ -43,9 +43,9 @@
 
           <h2>The agent</h2>
           <ul>
-            <li>x402 payment settles before the work runs; a malformed order still costs $0.02.</li>
+            <li>x402 payment settles before the work runs. The agent checks first and refuses, for free, an order Stamp can't read or a moment when Stamp's server is down. A readable order that comes back BLOCK is still a paid answer: a BLOCK is the answer.</li>
             <li>The paid route stays dormant until Binance approves a B402 merchant for the agent's wallet.</li>
-            <li>Paid replay protection is Studio's in-memory store, lost on restart.</li>
+            <li>Paid replay records are kept in a file on the agent's disk, so a restart can't accept the same payment twice. The file guards one agent process; the managed 48-hour trial doesn't keep its disk.</li>
             <li>The managed Agent Studio host is a 48-hour BSC testnet trial. Ticket data is always mainnet.</li>
           </ul>
 
@@ -57,7 +57,7 @@
           </ul>
 
           <h2>Hosting</h2>
-          <p>This site runs on a free Render instance: it sleeps when idle and has no disk, so tickets made here don't survive a restart. Every ticket still verifies offline with <code>npm run replay</code> or <code>POST /v1/verify</code> and its inputs.</p>
+          <p>This site runs on a free Render instance. A ping every ten minutes keeps it awake, but it has no disk, so tickets made here are lost when it restarts or redeploys. A ticket and its inputs still verify anywhere with <code>POST /v1/verify</code>, and the recorded fixtures verify offline with <code>npm run replay</code>.</p>
           
         </article>
       </div>

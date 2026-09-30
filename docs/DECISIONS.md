@@ -179,3 +179,12 @@ address and `--slippage` = policy (0.5%); (4) `verifyFill` reads the BSC receipt
 that the wallet received the ticket's token, no sibling issuer's token, at a price within
 policy. The fill cannot be undone, so its job is to tell the truth about it with a hash. The
 session stays in `baw` on the person's machine. Stamp never holds it.
+
+### D26 - Refuse unpayable work before payment; keep replay records on disk (2026-09-30)
+**Why:** B402 settles before the work runs and Studio gives no hook in between, so the check has
+to sit in front of `seller.handle`. `/x402` now parses the prompt exactly as the seller does and
+asks Stamp's new `POST /v1/intent` (grammar only, no Binance call, nothing stored). An
+unreadable order or an unreachable Stamp returns `400`/`503` with `"charged": false` and no
+payment challenge. A readable order that gets BLOCK stays a paid answer. The replay guard
+(Studio advisory M01) is a JSON file with serialised atomic writes instead of memory, so a
+restart cannot accept one payment twice; it covers one process with a persistent disk.

@@ -119,3 +119,49 @@ export async function stampVerify(hash: string): Promise<{ hash: string; matches
 export async function stampWork(prompt: string): Promise<string> {
   return JSON.stringify(await stampTicket(parseWorkPrompt(prompt)));
 }
+
+/**
+ * The order in an /x402 request, found the same way the B402 seller finds it: `?prompt=`,
+ * else a JSON body's `"prompt"`, else the raw body. Keeping this identical matters: the
+ * pre-check must look at exactly the text the paid work will run on.
+ */
+export function promptFromRequest(req: { query?: Record<string, string> | undefined; body?: string | undefined }): string {
+  if (req.query?.prompt !== undefined) return req.query.prompt;
+  if (!req.body) return "";
+  try {
+    const parsed: unknown = JSON.parse(req.body);
+    if (parsed && typeof parsed === "object" && !Array.isArray(parsed) && typeof (parsed as { prompt?: unknown }).prompt === "string") {
+      return (parsed as { prompt: string }).prompt;
+    }
+    return "";
+  } catch {
+    return req.body;
+  }
+}
+
+export type Precheck = { ok: true } | { ok: false; status: 400 | 503; error: string };
+
+/**
+ * Runs before any payment challenge or settlement. B402 settles before the work, so anything
+ * that would make the paid answer useless is refused here, for free: an empty or malformed
+ * prompt, an order Stamp's grammar can't read, or a Stamp API that is down.
+ */
+export async function precheckOrder(prompt: string): Promise<Precheck> {
+  let req: TicketRequest;
+  try {
+    req = parseWorkPrompt(prompt);
+  } catch (e) {
+    return { ok: false, status: 400, error: `${(e as Error).message}. You were not charged.` };
+  }
+  let out: Record<string, unknown>;
+  try {
+    out = await call("POST", "/v1/intent", { intent: req.intent });
+  } catch (e) {
+    if (e instanceof StampInputError) return { ok: false, status: 400, error: `${e.message}. You were not charged.` };
+    return { ok: false, status: 503, error: "Stamp's API is unavailable right now, so no payment was taken. Try again in a minute." };
+  }
+  if (out.ok !== true) {
+    return { ok: false, status: 400, error: `Stamp can't read "${req.intent}" as an order (${String(out.problem ?? "unreadable")}). Try "Buy $20 of NVIDIA". You were not charged.` };
+  }
+  return { ok: true };
+}

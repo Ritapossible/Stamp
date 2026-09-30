@@ -179,7 +179,9 @@ and orders above the policy cap.
 Scaffolded by `bag init stampagent --protocols MCP,X402 --rails b402 --llm-provider none`. It is its
 own pnpm workspace, outside the npm workspaces. `app/agent/src/stamp.ts` calls the Stamp API
 (`STAMP_API_URL`); `mcpMain.ts` registers `stamp_ticket` and `stamp_verify` and uses Stamp's work
-as `buildRunWork()`. Never reimplement a check there. Wallet steps (`bag wallet`, B402 merchant
+as `buildRunWork()`. Never reimplement a check there. `/x402` runs `precheckOrder` (prompt + `POST /v1/intent` +
+Stamp reachable) before `seller.handle`, and passes a `FileReplayStore` to `B402Seller.create`
+(D26). Wallet steps (`bag wallet`, B402 merchant
 values in `agent/.studio/.env.local`, deploy, `bag erc8004 register`) are the user's to run; never
 ask for or handle those secrets. Tests: `agent/app/agent/test/stamp.test.ts` runs in the root vitest.
 

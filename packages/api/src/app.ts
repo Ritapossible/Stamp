@@ -1,4 +1,4 @@
-import { type DecideInput, decide, type DecisionTicket, ticketHash } from "@stamp/engine";
+import { type DecideInput, decide, type DecisionTicket, parseIntent, ticketHash } from "@stamp/engine";
 import type { MarketInputs, SnapshotStore } from "@stamp/sources";
 import { Hono } from "hono";
 import { replayAll } from "./replay.js";
@@ -116,6 +116,16 @@ export function createApp(deps: AppDeps): Hono {
     const small = slim(input, ticket);
     await deps.store.put({ ticket, input: decide(small).hash === ticket.hash ? small : input });
     return c.json({ ticket, verify: `/v1/tickets/${ticket.hash}` });
+  });
+
+  // Reads an order with the engine's own grammar and nothing else: no Binance call, nothing
+  // stored. The paid agent route calls it before any payment, so an order Stamp can't read is
+  // refused for free instead of charged.
+  app.post("/v1/intent", async (c) => {
+    const body = z.object({ intent: z.string().max(200) }).strict().safeParse(await c.req.json().catch(() => null));
+    if (!body.success) return c.json({ error: "bad request", issues: body.error.issues }, 400);
+    const parsed = parseIntent(body.data.intent);
+    return c.json(parsed.ok ? { ok: true, intent: parsed.intent } : { ok: false, problem: parsed.problem });
   });
 
   app.get("/v1/tickets/:hash", (c) => {

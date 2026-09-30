@@ -8,3 +8,6 @@
 # Node (also caught by the workspace root gitignore; duplicated for clarity)
 node_modules/
 dist/
+
+# Stamp: durable B402 replay records (see src/replayStore.ts)
+.stamp-data/

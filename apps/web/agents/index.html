@@ -76,7 +76,7 @@ npm run agentic -- "Buy $20 of NVIDIA"</code></pre>
               <li>Run an LLM anywhere in the verdict. The provider is set to <code>none</code>.</li>
               <li>Re-implement a check. It calls the Stamp API; the engine decides.</li>
               <li>Sign a trade. Its wallet only receives the $0.02 and signs its own identity.</li>
-              <li>Pretend a paid call is free: payment settles before the work, so try the order on MCP first.</li>
+              <li>Charge for an order it can't read, or while Stamp's server is down: those are refused before any payment, with <code>"charged": false</code>.</li>
             </ul>
           </div>
         </div>
