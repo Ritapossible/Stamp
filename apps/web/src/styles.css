@@ -1888,3 +1888,20 @@ pre code,
     display: none;
   }
 }
+
+/* the menu's call to action: a real button, not a menu link */
+.menu a.menu-cta {
+  display: flex;
+  width: 100%;
+  min-height: 52px;
+  padding: 0 20px;
+  margin-bottom: 8px;
+  color: var(--btn-fg);
+  font: 700 16px/1 var(--mono);
+  text-decoration: none;
+}
+
+.menu a.menu-cta:hover {
+  color: var(--btn-fg);
+  text-decoration: none;
+}
