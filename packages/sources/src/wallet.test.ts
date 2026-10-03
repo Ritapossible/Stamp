@@ -170,6 +170,13 @@ describe("TradingApiWallet.balances (Wallet API)", () => {
     });
   });
 
+  it("reads the live answer: native BNB comes back as the 0xeee… placeholder (recorded 3 Oct 2026)", async () => {
+    const live = JSON.parse(readFileSync(new URL("../../../fixtures/trading/2026-10-03-wallet-balances.json", import.meta.url), "utf8"));
+    const w = new TradingApiWallet(new TradingApiClient({ apiKey: "k", secret: "s", fetchFn: fakeFetch(live).fn }));
+    const b = await w.balances("0x1234567890aBcDeF1234567890aBcDeF12345678", [BSC_USDT, ""]);
+    expect(b.balances).toEqual({ [BSC_USDT]: "30728.426486962838056547", "": "0.384704406469340838" });
+  });
+
   it("leaves out anything it can't read, so the check is skipped rather than guessed", async () => {
     const f = fakeFetch({ code: 0, data: [{ tokenAssets: [{ binanceChainId: "56", tokenContractAddress: "", balance: 3.1 }] }] });
     const w = new TradingApiWallet(new TradingApiClient({ apiKey: "k", secret: "s", fetchFn: f.fn }));

@@ -1,0 +1,32 @@
+{
+  "code": 0,
+  "msg": "success",
+  "data": [
+    {
+      "tokenAssets": [
+        {
+          "binanceChainId": "56",
+          "tokenContractAddress": "0x55d398326f99059ff775485246999027b3197955",
+          "address": "0x1234567890aBcDeF1234567890aBcDeF12345678",
+          "symbol": "USDT",
+          "balance": "30728.426486962838056547",
+          "rawBalance": "30728426486962838056547",
+          "tokenPrice": "0.9997862015162782",
+          "isRiskToken": false
+        },
+        {
+          "binanceChainId": "56",
+          "tokenContractAddress": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+          "address": "0x1234567890aBcDeF1234567890aBcDeF12345678",
+          "symbol": "BNB",
+          "balance": "0.384704406469340838",
+          "rawBalance": "384704406469340838",
+          "tokenPrice": "769.702909985176118678530724470847505277",
+          "isRiskToken": false
+        }
+      ]
+    }
+  ],
+  "timestamp": 1791021505090,
+  "success": true
+}

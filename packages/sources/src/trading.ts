@@ -17,6 +17,7 @@ import type { OrderStatus, PreparedOrder, QuoteRequest, StockWallet } from "./wa
 
 export const TRADING_BASE = "https://web3.binance.com/build";
 const BSC = "56";
+const NATIVE_PLACEHOLDER = "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee";
 
 export function signRequest(secret: string, timestamp: string, method: string, pathWithQuery: string, body: string): string {
   return createHmac("sha256", secret).update(`${timestamp}${method.toUpperCase()}${pathWithQuery}${body}`).digest("base64");
@@ -253,7 +254,8 @@ export class TradingApiWallet implements StockWallet {
         const token = pick(a, "tokenContractAddress");
         const balance = pick(a, "balance");
         if (chain === BSC && typeof token === "string" && typeof balance === "string" && /^\d+(\.\d+)?$/.test(balance)) {
-          out[token.toLowerCase()] = balance;
+          // Asked for native BNB with "" (as documented), the API answers with the 0xeee… placeholder.
+          out[token.toLowerCase() === NATIVE_PLACEHOLDER ? "" : token.toLowerCase()] = balance;
         }
       }
     }
