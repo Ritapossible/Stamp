@@ -82,12 +82,15 @@ export class ExecutionService {
     // Wallet API balances: an order the wallet can't pay for stops here, before any approval.
     // If the API gives no usable answer, the check is skipped; the chain would refuse anyway.
     let balances: { quoteAsset: string | null; native: string | null } | null = null;
+    let balancesRaw: unknown = null;
     if (this.deps.wallet.balances) {
       try {
         const b = await this.deps.wallet.balances(user, [quoteAsset, ""]);
-        balances = { quoteAsset: b[quoteAsset.toLowerCase()] ?? null, native: b[""] ?? null };
-      } catch {
+        balances = { quoteAsset: b.balances[quoteAsset.toLowerCase()] ?? null, native: b.balances[""] ?? null };
+        balancesRaw = b.raw ?? null;
+      } catch (err) {
         balances = null;
+        balancesRaw = { error: err instanceof Error ? err.message : String(err) };
       }
     }
 
@@ -115,7 +118,7 @@ export class ExecutionService {
       user: user.toLowerCase(),
       submittedOrderId: null,
       txHash: null,
-      raw: prepared.raw ?? null,
+      raw: { ...(prepared.raw ?? {}), balances: balancesRaw },
       status: null,
       settledAt: null,
     };

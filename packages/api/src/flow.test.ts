@@ -19,7 +19,7 @@ async function setup(withWallet = true, balances?: Record<string, string>) {
   const now = () => new Date(clock).toISOString();
   const store = TicketStore.memory();
   const wallet = new FakeWallet((t) => store.latestTokenPrice(t)!, now);
-  if (balances) wallet.balances = async () => balances;
+  if (balances) wallet.balances = async () => ({ balances });
   const execution = withWallet ? new ExecutionService({ wallet, store, now }) : null;
   const standing = await StandingService.open({ market, store, snapshots: () => new SnapshotStore([]), execution, path: null, now });
   const app = createApp({ market, store, snapshots: () => new SnapshotStore([]), fixturesDir: `${root}fixtures`, rateLimitPerMin: 0, execution, standing });

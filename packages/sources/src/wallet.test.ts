@@ -159,7 +159,7 @@ describe("TradingApiWallet.balances (Wallet API)", () => {
     });
     const w = new TradingApiWallet(new TradingApiClient({ apiKey: "k", secret: "s", fetchFn: f.fn }));
     const b = await w.balances("0x1111111111111111111111111111111111111111", [BSC_USDT, ""]);
-    expect(b).toEqual({ [BSC_USDT]: "12.5", "": "0.0031" });
+    expect(b.balances).toEqual({ [BSC_USDT]: "12.5", "": "0.0031" });
     expect(f.calls[0]!.url).toMatch(/\/build\/api\/v1\/dex\/balance\/token-balances-by-address$/);
     expect(JSON.parse(String(f.calls[0]!.init.body))).toEqual({
       address: "0x1111111111111111111111111111111111111111",
@@ -173,6 +173,6 @@ describe("TradingApiWallet.balances (Wallet API)", () => {
   it("leaves out anything it can't read, so the check is skipped rather than guessed", async () => {
     const f = fakeFetch({ code: 0, data: [{ tokenAssets: [{ binanceChainId: "56", tokenContractAddress: "", balance: 3.1 }] }] });
     const w = new TradingApiWallet(new TradingApiClient({ apiKey: "k", secret: "s", fetchFn: f.fn }));
-    expect(await w.balances("0x1111111111111111111111111111111111111111", [BSC_USDT, ""])).toEqual({});
+    expect((await w.balances("0x1111111111111111111111111111111111111111", [BSC_USDT, ""])).balances).toEqual({});
   });
 });

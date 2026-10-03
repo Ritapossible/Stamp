@@ -239,7 +239,7 @@ export class TradingApiWallet implements StockWallet {
    * Wallet API: POST /api/v1/dex/balance/token-balances-by-address, up to 20 (chain, token)
    * pairs; "" asks for native BNB. Reads data[].tokenAssets[].balance (a decimal string).
    */
-  async balances(user: string, tokens: string[]): Promise<Record<string, string>> {
+  async balances(user: string, tokens: string[]): Promise<{ balances: Record<string, string>; raw: unknown }> {
     const res = await this.client.post("/api/v1/dex/balance/token-balances-by-address", {
       address: user,
       tokenContractAddresses: tokens.map((t) => ({ binanceChainId: BSC, tokenContractAddress: t })),
@@ -257,7 +257,7 @@ export class TradingApiWallet implements StockWallet {
         }
       }
     }
-    return out;
+    return { balances: out, raw: res };
   }
 
   async txStatus(txHash: string): Promise<OrderStatus> {
