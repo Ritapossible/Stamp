@@ -111,34 +111,11 @@ const clean = (n: string) => n.replace(/^(ALLOW|WARN|BLOCK)\. /, "").replace(/ H
 /** Shown when no wallet is injected: reopen the page inside the Binance app, or install a wallet. */
 function noWalletHelp(): HTMLElement {
   const link = binanceAppLink();
-  const copy = h("button", { class: "chip", type: "button" }, "copy page link");
-  copy.addEventListener("click", async () => {
-    try {
-      await navigator.clipboard.writeText(location.href);
-      copy.textContent = "copied - paste it in the Wallet tab";
-    } catch {
-      copy.textContent = location.href;
-    }
-  });
   return h(
     "div",
     { class: "notice" },
-    h("p", { style: "margin:0 0 10px" }, "Sign with Binance Wallet. On a computer, install the Binance Wallet extension. On a phone, open this page inside the Binance app:"),
-    h(
-      "ol",
-      { class: "wallet-steps" },
-      h("li", null, "Log in to the Binance app (update it if it's old). Binance Wallet lives in your account."),
-      h("li", null, "Tap Wallet at the top, next to Exchange. First time: create your wallet."),
-      h("li", null, "Open its Discover / dApp browser, paste this page's link, and press review & sign again."),
-    ),
-    h(
-      "div",
-      { class: "hash-row" },
-      copy,
-      h("a", { class: "chip", href: link.http }, "try opening in the app ↗"),
-      h("a", { class: "chip", href: "https://www.binance.com/en/web3wallet", target: "_blank", rel: "noopener" }, "get Binance Wallet ↗"),
-    ),
-    h("p", { class: "sub", style: "margin:10px 0 0" }, "Any other BSC wallet works too."),
+    h("p", { style: "margin:0 0 12px" }, "Sign with Binance Wallet. On a phone, open this page inside the Binance app; on a computer, install the Binance Wallet extension. Any other BSC wallet works too."),
+    h("div", { class: "hash-row" }, h("a", { class: "btn small", href: link.http }, "open in Binance app →"), h("a", { class: "chip", href: "https://www.binance.com/en/web3wallet", target: "_blank", rel: "noopener" }, "get Binance Wallet ↗")),
   );
 }
 
