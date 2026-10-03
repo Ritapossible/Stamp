@@ -26,10 +26,10 @@
             <li><b>Offline:</b> clone the repo and run the replay. It recomputes every recorded ticket with no network and exits 1 if one hash drifts.</li>
           </ol>
           <pre data-copy><code>npm ci && npm run replay
-# 325 tickets recomputed · all hashes match</code></pre>
+# 621 tickets recomputed · all hashes match</code></pre>
 
           <h2>What's recorded</h2>
-          <p>Test cases in <code>fixtures/golden/</code> (one per rule), and real captures of Binance's responses in <code>fixtures/replay/</code>: pre-market, cash hours, the 20:00 close pause, and after-hours on 25 Sep 2026. A GitHub Action snapshots 20 tickers every ten minutes into the <code>snapshots</code> branch; that is where Stamp's recorded close comes from.</p>
+          <p>Test cases in <code>fixtures/golden/</code> (one per rule), and real captures of Binance's responses in <code>fixtures/replay/</code>: Friday 25 Sep (pre-market, cash hours, the 20:00 close pause, after-hours), Saturday 26 and Sunday 27 Sep (tokens trading while the stock market is shut), and Monday 28 Sep (pre-market and cash hours). A GitHub Action snapshots 20 tickers every ten minutes into the <code>snapshots</code> branch; that is where Stamp's recorded close comes from.</p>
 
           <h2>What a match doesn't prove</h2>
           <p>A match proves the verdict follows from the recorded inputs under the recorded policy. It doesn't prove Binance's data was right - that is why Stamp blocks on data that disagrees with itself instead of choosing.</p>

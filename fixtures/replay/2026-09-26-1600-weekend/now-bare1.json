@@ -1,0 +1,120 @@
+{
+  "name": "now-bare1",
+  "capture": "fixtures/captures/2026-09-26/160006.json",
+  "input": {
+    "asOf": "2026-09-26T16:00:06.130Z",
+    "universe": [
+      {
+        "chainId": "56",
+        "contractAddress": "0xeb19c13c54b1cd48afc62f6503375e92d5f1e856",
+        "symbol": "NOWon",
+        "ticker": "NOW",
+        "type": 1,
+        "multiplier": "5"
+      }
+    ],
+    "views": [
+      {
+        "contractAddress": "0xeb19c13c54b1cd48afc62f6503375e92d5f1e856",
+        "complete": true,
+        "tokenPriceUsd": "678.0375",
+        "multiplier": "5",
+        "listMultiplier": "5",
+        "assetStatus": {
+          "openState": false,
+          "marketStatus": "closed",
+          "reasonCode": "MARKET_CLOSED",
+          "reasonMsg": "Weekend or Holiday"
+        },
+        "stockPriceUsd": "135.6075",
+        "fetchedAt": "2026-09-26T16:00:06.130Z"
+      }
+    ],
+    "venue": {
+      "marketStatus": "closed",
+      "openState": false
+    },
+    "intent": "Buy 1 NOW",
+    "policy": {
+      "version": 1,
+      "issuer": "ondo",
+      "neverSwitchIssuer": true,
+      "noiseBandBps": 10,
+      "maxRegularPremiumBps": 30,
+      "maxClosedPremiumBps": 80,
+      "implausibleAbsBps": 500,
+      "maxSlippageBps": 50,
+      "quoteTtlSec": 25,
+      "maxOrderUsd": "20",
+      "maxDayUsd": "50",
+      "blockCorporateActions": true
+    },
+    "lastOfficialClose": {
+      "ticker": "NOW",
+      "priceUsd": "135.8875",
+      "asOf": "2026-09-25T20:00:06.276Z"
+    },
+    "filledTodayUsd": "0"
+  },
+  "ticket": {
+    "kind": "decision",
+    "engineVersion": "0.1.0",
+    "asOf": "2026-09-26T16:00:06.130Z",
+    "intentId": "9b5cea00c15a70e4",
+    "intent": {
+      "raw": "Buy 1 NOW",
+      "side": "buy",
+      "unit": "ambiguous",
+      "amount": "1",
+      "query": "NOW"
+    },
+    "chosen": {
+      "chainId": "56",
+      "contractAddress": "0xeb19c13c54b1cd48afc62f6503375e92d5f1e856",
+      "symbol": "NOWon",
+      "ticker": "NOW",
+      "issuer": "ondo"
+    },
+    "rejected": [],
+    "session": null,
+    "sessionSource": null,
+    "marketStatus": "closed",
+    "reasonCode": "MARKET_CLOSED",
+    "reasonMsg": "Weekend or Holiday",
+    "multiplier": "5",
+    "listMultiplier": "5",
+    "tokenPriceUsd": "678.0375",
+    "economicPriceUsd": null,
+    "referenceUsd": null,
+    "referenceSource": null,
+    "referenceAsOf": null,
+    "referenceSibling": null,
+    "premiumBps": null,
+    "overpayUsd": null,
+    "notionalUsd": null,
+    "tokenUnits": null,
+    "economicShares": null,
+    "unitReadings": {
+      "asTokens": {
+        "tokens": "1.00000000",
+        "shares": "5.00000000",
+        "usd": "678.04"
+      },
+      "asShares": {
+        "tokens": "0.20000000",
+        "shares": "1.00000000",
+        "usd": "135.61"
+      }
+    },
+    "formula": "economicPrice = tokenInfo.price / sharesMultiplier",
+    "inputsHash": "7e3853babaca338e5e168a6b46ad6658820cc1036feec627affcd01aa95c59bb",
+    "policyHash": "819a2bcaeeec65005a0d17f38a68e8fa26b165047ffec295b6f9d460a4a36043",
+    "verdict": "BLOCK",
+    "reasons": [
+      "UNIT_AMBIGUOUS"
+    ],
+    "notes": [],
+    "hash": "23f84e6a1fc04f6fd225d4aede7b60402b7bec1485f3d23376b56af9773c09cb",
+    "narration": "BLOCK. \"1 NOW\" could mean 1 token = 5 shares ≈ $678.04, or 1 share = 0.2 token ≈ $135.61. One NOWon token holds 5 shares. Say \"$… of\" or \"… shares of\". Hash 23f84e6a1fc0…"
+  }
+}

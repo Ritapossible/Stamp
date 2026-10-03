@@ -1,0 +1,109 @@
+{
+  "name": "klacon-usd20",
+  "capture": "fixtures/captures/2026-09-28/195005.json",
+  "input": {
+    "asOf": "2026-09-28T19:50:05.943Z",
+    "universe": [
+      {
+        "chainId": "56",
+        "contractAddress": "0xfc263946439b0d802bf4c5a6fcd34e2885259f91",
+        "symbol": "KLACon",
+        "ticker": "KLAC",
+        "type": 1,
+        "multiplier": "10.026064925604903975"
+      }
+    ],
+    "views": [
+      {
+        "contractAddress": "0xfc263946439b0d802bf4c5a6fcd34e2885259f91",
+        "complete": true,
+        "tokenPriceUsd": "1896.605636814365672691",
+        "multiplier": "10.026064925604903975",
+        "listMultiplier": "10.026064925604903975",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": "regular",
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": "189.278182",
+        "fetchedAt": "2026-09-28T19:50:05.943Z"
+      }
+    ],
+    "venue": {
+      "marketStatus": "regular",
+      "openState": true
+    },
+    "intent": "Buy $20 of KLACon",
+    "policy": {
+      "version": 1,
+      "issuer": "ondo",
+      "neverSwitchIssuer": true,
+      "noiseBandBps": 10,
+      "maxRegularPremiumBps": 30,
+      "maxClosedPremiumBps": 80,
+      "implausibleAbsBps": 500,
+      "maxSlippageBps": 50,
+      "quoteTtlSec": 25,
+      "maxOrderUsd": "20",
+      "maxDayUsd": "50",
+      "blockCorporateActions": true
+    },
+    "lastOfficialClose": {
+      "ticker": "KLAC",
+      "priceUsd": "189.278182",
+      "asOf": "2026-09-28T19:50:05.943Z"
+    },
+    "filledTodayUsd": "0"
+  },
+  "ticket": {
+    "kind": "decision",
+    "engineVersion": "0.1.0",
+    "asOf": "2026-09-28T19:50:05.943Z",
+    "intentId": "d4045fde4be81d6d",
+    "intent": {
+      "raw": "Buy $20 of KLACon",
+      "side": "buy",
+      "unit": "usd",
+      "amount": "20",
+      "query": "KLACon"
+    },
+    "chosen": {
+      "chainId": "56",
+      "contractAddress": "0xfc263946439b0d802bf4c5a6fcd34e2885259f91",
+      "symbol": "KLACon",
+      "ticker": "KLAC",
+      "issuer": "ondo"
+    },
+    "rejected": [],
+    "session": "regular",
+    "sessionSource": "asset",
+    "marketStatus": "regular",
+    "reasonCode": "TRADING",
+    "reasonMsg": null,
+    "multiplier": "10.026064925604903975",
+    "listMultiplier": "10.026064925604903975",
+    "tokenPriceUsd": "1896.605636814365672691",
+    "economicPriceUsd": "189.167500",
+    "referenceUsd": "189.278182",
+    "referenceSource": "stockInfo",
+    "referenceAsOf": "2026-09-28T19:50:05.943Z",
+    "referenceSibling": null,
+    "premiumBps": -6,
+    "overpayUsd": null,
+    "notionalUsd": "20.00",
+    "tokenUnits": "0.01054515",
+    "economicShares": "0.10572641",
+    "unitReadings": null,
+    "formula": "economicPrice = tokenInfo.price / sharesMultiplier",
+    "inputsHash": "d98547a2c73ab08cce47893618e7725e9e022e94aed4e8425296e3586afa2532",
+    "policyHash": "819a2bcaeeec65005a0d17f38a68e8fa26b165047ffec295b6f9d460a4a36043",
+    "verdict": "ALLOW",
+    "reasons": [
+      "OK"
+    ],
+    "notes": [],
+    "hash": "f898d20da1058078b34c507d41d87491a7a5de6d3d42ae00e30c996fad73f74c",
+    "narration": "ALLOW. KLACon (Ondo) passes every check. $20.00 buys 0.01054515 KLACon tokens = 0.10572641 shares (multiplier 10.026064925604903975). Hash f898d20da105…"
+  }
+}

@@ -188,3 +188,13 @@ unreadable order or an unreachable Stamp returns `400`/`503` with `"charged": fa
 payment challenge. A readable order that gets BLOCK stays a paid answer. The replay guard
 (Studio advisory M01) is a JSON file with serialised atomic writes instead of memory, so a
 restart cannot accept one payment twice; it covers one process with a persistent disk.
+
+### D27 - `offhours` means closed; four more replay sets (2026-10-03)
+**Why:** Building replay sets from the weekend captures showed Ondo's per-token
+`marketStatus: "offhours"` on Saturday and Sunday, a value missing from the documented list.
+Stamp treated it as unknown (WARN `SESSION_UNKNOWN`), so no Ondo weekend order could be
+compared with Friday's close. The token is trading (reasonCode TRADING), the venue says
+`closed` and the clock agrees, so `offhours` maps to `closed`. No earlier recorded ticket
+contained it, so every Friday and golden hash is unchanged. Four sets were added from the
+`snapshots` branch: Sat 26 Sep 16:00Z, Sun 27 Sep 23:30Z, Mon 28 Sep 12:00Z and 19:50Z
+(captures pause during Monday cash hours); the replay is now 621 tickets.

@@ -1,0 +1,168 @@
+{
+  "name": "aaplb-usd20",
+  "capture": "fixtures/captures/2026-09-28/120005.json",
+  "input": {
+    "asOf": "2026-09-28T12:00:05.972Z",
+    "universe": [
+      {
+        "chainId": "56",
+        "contractAddress": "0x390a684ef9cade28a7ad0dfa61ab1eb3842618c4",
+        "symbol": "AAPLon",
+        "ticker": "AAPL",
+        "type": 1,
+        "multiplier": "1.003376073740221058"
+      },
+      {
+        "chainId": "56",
+        "contractAddress": "0x9d275685dc284c8eb1c79f6aba7a63dc75ec890a",
+        "symbol": "AAPLx",
+        "ticker": "AAPL",
+        "type": 2,
+        "multiplier": "1"
+      },
+      {
+        "chainId": "56",
+        "contractAddress": "0x431a3bee82e2ca41e49895cbece5bb0f76a89b7a",
+        "symbol": "AAPLB",
+        "ticker": "AAPL",
+        "type": 3,
+        "multiplier": "1.000603906075632366"
+      }
+    ],
+    "views": [
+      {
+        "contractAddress": "0x390a684ef9cade28a7ad0dfa61ab1eb3842618c4",
+        "complete": true,
+        "tokenPriceUsd": "340.826784728078288981",
+        "multiplier": "1.003376073740221058",
+        "listMultiplier": "1.003376073740221058",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": "premarket",
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": "339.80125",
+        "fetchedAt": "2026-09-28T12:00:05.972Z"
+      },
+      {
+        "contractAddress": "0x431a3bee82e2ca41e49895cbece5bb0f76a89b7a",
+        "complete": true,
+        "tokenPriceUsd": "340.0552374798036595851",
+        "multiplier": "1.000603906075632366",
+        "listMultiplier": "1.000603906075632366",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": null,
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": null,
+        "fetchedAt": "2026-09-28T12:00:05.972Z"
+      },
+      {
+        "contractAddress": "0x9d275685dc284c8eb1c79f6aba7a63dc75ec890a",
+        "complete": true,
+        "tokenPriceUsd": "332.326802175769399860332597590395392242",
+        "multiplier": "1.0032690125398187",
+        "listMultiplier": "1",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": null,
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": "339.80125",
+        "fetchedAt": "2026-09-28T12:00:05.972Z"
+      }
+    ],
+    "venue": {
+      "marketStatus": "premarket",
+      "openState": true
+    },
+    "intent": "Buy $20 of AAPLB",
+    "policy": {
+      "version": 1,
+      "issuer": "bstock",
+      "neverSwitchIssuer": true,
+      "noiseBandBps": 10,
+      "maxRegularPremiumBps": 30,
+      "maxClosedPremiumBps": 80,
+      "implausibleAbsBps": 500,
+      "maxSlippageBps": 50,
+      "quoteTtlSec": 25,
+      "maxOrderUsd": "20",
+      "maxDayUsd": "50",
+      "blockCorporateActions": true
+    },
+    "lastOfficialClose": {
+      "ticker": "AAPL",
+      "priceUsd": "340.875",
+      "asOf": "2026-09-25T20:00:06.276Z"
+    },
+    "filledTodayUsd": "0"
+  },
+  "ticket": {
+    "kind": "decision",
+    "engineVersion": "0.1.0",
+    "asOf": "2026-09-28T12:00:05.972Z",
+    "intentId": "a6180663ab538f64",
+    "intent": {
+      "raw": "Buy $20 of AAPLB",
+      "side": "buy",
+      "unit": "usd",
+      "amount": "20",
+      "query": "AAPLB"
+    },
+    "chosen": {
+      "chainId": "56",
+      "contractAddress": "0x431a3bee82e2ca41e49895cbece5bb0f76a89b7a",
+      "symbol": "AAPLB",
+      "ticker": "AAPL",
+      "issuer": "bstock"
+    },
+    "rejected": [
+      {
+        "symbol": "AAPLon",
+        "issuer": "ondo",
+        "contractAddress": "0x390a684ef9cade28a7ad0dfa61ab1eb3842618c4",
+        "reason": "NEVER_SWITCH"
+      },
+      {
+        "symbol": "AAPLx",
+        "issuer": "xstock",
+        "contractAddress": "0x9d275685dc284c8eb1c79f6aba7a63dc75ec890a",
+        "reason": "NEVER_SWITCH"
+      }
+    ],
+    "session": "extended",
+    "sessionSource": "venue",
+    "marketStatus": "premarket",
+    "reasonCode": "TRADING",
+    "reasonMsg": null,
+    "multiplier": "1.000603906075632366",
+    "listMultiplier": "1.000603906075632366",
+    "tokenPriceUsd": "340.0552374798036595851",
+    "economicPriceUsd": "339.850000",
+    "referenceUsd": "339.80125",
+    "referenceSource": "stockInfo-sibling",
+    "referenceAsOf": "2026-09-28T12:00:05.972Z",
+    "referenceSibling": "AAPLon",
+    "premiumBps": 1,
+    "overpayUsd": "0.00",
+    "notionalUsd": "20.00",
+    "tokenUnits": "0.05881397",
+    "economicShares": "0.05884949",
+    "unitReadings": null,
+    "formula": "economicPrice = tokenInfo.price / sharesMultiplier",
+    "inputsHash": "e864566dd83259925e31cf4aed104b11ce3a888dc139fc7e0a2109359f4b81d3",
+    "policyHash": "9e8674455dead36b87beb162c96bd029487a38b531400b99e764e2df6662c0a3",
+    "verdict": "ALLOW",
+    "reasons": [
+      "OK"
+    ],
+    "notes": [],
+    "hash": "04bd81d1e705c95c5897a2ec63151e8012e8714f2de3b31f79799e432c6df2b3",
+    "narration": "ALLOW. AAPLB (bStock) passes every check. $20.00 buys 0.05881397 AAPLB tokens = 0.05884949 shares (multiplier 1.000603906075632366). Not the same instrument: AAPLon (Ondo), AAPLx (xStock). Hash 04bd81d1e705…"
+  }
+}

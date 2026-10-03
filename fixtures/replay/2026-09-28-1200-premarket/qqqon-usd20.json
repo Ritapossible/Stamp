@@ -1,0 +1,168 @@
+{
+  "name": "qqqon-usd20",
+  "capture": "fixtures/captures/2026-09-28/120005.json",
+  "input": {
+    "asOf": "2026-09-28T12:00:05.972Z",
+    "universe": [
+      {
+        "chainId": "56",
+        "contractAddress": "0x0cde6936d305d5b34667fc46425e852efd73559a",
+        "symbol": "QQQon",
+        "ticker": "QQQ",
+        "type": 1,
+        "multiplier": "1.004082430180208355"
+      },
+      {
+        "chainId": "56",
+        "contractAddress": "0xa753a7395cae905cd615da0b82a53e0560f250af",
+        "symbol": "QQQx",
+        "ticker": "QQQ",
+        "type": 2,
+        "multiplier": "1"
+      },
+      {
+        "chainId": "56",
+        "contractAddress": "0x205812cdbed920aff76c6580abd681a46d11efc7",
+        "symbol": "QQQB",
+        "ticker": "QQQ",
+        "type": 3,
+        "multiplier": "1.000724838657573033"
+      }
+    ],
+    "views": [
+      {
+        "contractAddress": "0x0cde6936d305d5b34667fc46425e852efd73559a",
+        "complete": true,
+        "tokenPriceUsd": "741.572250970391657814",
+        "multiplier": "1.004082430180208355",
+        "listMultiplier": "1.004082430180208355",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": "premarket",
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": "738.517692",
+        "fetchedAt": "2026-09-28T12:00:05.972Z"
+      },
+      {
+        "contractAddress": "0x205812cdbed920aff76c6580abd681a46d11efc7",
+        "complete": true,
+        "tokenPriceUsd": "739.31549630344180531974",
+        "multiplier": "1.000724838657573033",
+        "listMultiplier": "1.000724838657573033",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": null,
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": null,
+        "fetchedAt": "2026-09-28T12:00:05.972Z"
+      },
+      {
+        "contractAddress": "0xa753a7395cae905cd615da0b82a53e0560f250af",
+        "complete": true,
+        "tokenPriceUsd": "725.549857328228325188650869637558211072",
+        "multiplier": "1.0027250296551051",
+        "listMultiplier": "1",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": null,
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": "738.517692",
+        "fetchedAt": "2026-09-28T12:00:05.972Z"
+      }
+    ],
+    "venue": {
+      "marketStatus": "premarket",
+      "openState": true
+    },
+    "intent": "Buy $20 of QQQon",
+    "policy": {
+      "version": 1,
+      "issuer": "ondo",
+      "neverSwitchIssuer": true,
+      "noiseBandBps": 10,
+      "maxRegularPremiumBps": 30,
+      "maxClosedPremiumBps": 80,
+      "implausibleAbsBps": 500,
+      "maxSlippageBps": 50,
+      "quoteTtlSec": 25,
+      "maxOrderUsd": "20",
+      "maxDayUsd": "50",
+      "blockCorporateActions": true
+    },
+    "lastOfficialClose": {
+      "ticker": "QQQ",
+      "priceUsd": "744.594",
+      "asOf": "2026-09-25T20:00:06.276Z"
+    },
+    "filledTodayUsd": "0"
+  },
+  "ticket": {
+    "kind": "decision",
+    "engineVersion": "0.1.0",
+    "asOf": "2026-09-28T12:00:05.972Z",
+    "intentId": "dbecef0ac62b1ecf",
+    "intent": {
+      "raw": "Buy $20 of QQQon",
+      "side": "buy",
+      "unit": "usd",
+      "amount": "20",
+      "query": "QQQon"
+    },
+    "chosen": {
+      "chainId": "56",
+      "contractAddress": "0x0cde6936d305d5b34667fc46425e852efd73559a",
+      "symbol": "QQQon",
+      "ticker": "QQQ",
+      "issuer": "ondo"
+    },
+    "rejected": [
+      {
+        "symbol": "QQQx",
+        "issuer": "xstock",
+        "contractAddress": "0xa753a7395cae905cd615da0b82a53e0560f250af",
+        "reason": "NEVER_SWITCH"
+      },
+      {
+        "symbol": "QQQB",
+        "issuer": "bstock",
+        "contractAddress": "0x205812cdbed920aff76c6580abd681a46d11efc7",
+        "reason": "NEVER_SWITCH"
+      }
+    ],
+    "session": "extended",
+    "sessionSource": "asset",
+    "marketStatus": "premarket",
+    "reasonCode": "TRADING",
+    "reasonMsg": null,
+    "multiplier": "1.004082430180208355",
+    "listMultiplier": "1.004082430180208355",
+    "tokenPriceUsd": "741.572250970391657814",
+    "economicPriceUsd": "738.557143",
+    "referenceUsd": "738.517692",
+    "referenceSource": "stockInfo",
+    "referenceAsOf": "2026-09-28T12:00:05.972Z",
+    "referenceSibling": null,
+    "premiumBps": 1,
+    "overpayUsd": "0.00",
+    "notionalUsd": "20.00",
+    "tokenUnits": "0.02696973",
+    "economicShares": "0.02707983",
+    "unitReadings": null,
+    "formula": "economicPrice = tokenInfo.price / sharesMultiplier",
+    "inputsHash": "22673312caf2b32e7d2071de43c279cc6e6da541bf4362332879c68d29ab14d9",
+    "policyHash": "819a2bcaeeec65005a0d17f38a68e8fa26b165047ffec295b6f9d460a4a36043",
+    "verdict": "ALLOW",
+    "reasons": [
+      "OK"
+    ],
+    "notes": [],
+    "hash": "710f6e4d9787f57bcf1177e1560a29f5ff29c64c13f6b276c02b8a6547deb973",
+    "narration": "ALLOW. QQQon (Ondo) passes every check. $20.00 buys 0.02696973 QQQon tokens = 0.02707983 shares (multiplier 1.004082430180208355). Not the same instrument: QQQx (xStock), QQQB (bStock). Hash 710f6e4d9787…"
+  }
+}

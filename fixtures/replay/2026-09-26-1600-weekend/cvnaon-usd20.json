@@ -1,0 +1,109 @@
+{
+  "name": "cvnaon-usd20",
+  "capture": "fixtures/captures/2026-09-26/160006.json",
+  "input": {
+    "asOf": "2026-09-26T16:00:06.130Z",
+    "universe": [
+      {
+        "chainId": "56",
+        "contractAddress": "0xc145dc2ebdbe8ead1fecdebf46c76eb1fdd0104d",
+        "symbol": "CVNAon",
+        "ticker": "CVNA",
+        "type": 1,
+        "multiplier": "5"
+      }
+    ],
+    "views": [
+      {
+        "contractAddress": "0xc145dc2ebdbe8ead1fecdebf46c76eb1fdd0104d",
+        "complete": true,
+        "tokenPriceUsd": "325.40625",
+        "multiplier": "5",
+        "listMultiplier": "5",
+        "assetStatus": {
+          "openState": false,
+          "marketStatus": "closed",
+          "reasonCode": "MARKET_CLOSED",
+          "reasonMsg": "Weekend or Holiday"
+        },
+        "stockPriceUsd": "65.08125",
+        "fetchedAt": "2026-09-26T16:00:06.130Z"
+      }
+    ],
+    "venue": {
+      "marketStatus": "closed",
+      "openState": false
+    },
+    "intent": "Buy $20 of CVNAon",
+    "policy": {
+      "version": 1,
+      "issuer": "ondo",
+      "neverSwitchIssuer": true,
+      "noiseBandBps": 10,
+      "maxRegularPremiumBps": 30,
+      "maxClosedPremiumBps": 80,
+      "implausibleAbsBps": 500,
+      "maxSlippageBps": 50,
+      "quoteTtlSec": 25,
+      "maxOrderUsd": "20",
+      "maxDayUsd": "50",
+      "blockCorporateActions": true
+    },
+    "lastOfficialClose": {
+      "ticker": "CVNA",
+      "priceUsd": "65.006667",
+      "asOf": "2026-09-25T20:00:06.276Z"
+    },
+    "filledTodayUsd": "0"
+  },
+  "ticket": {
+    "kind": "decision",
+    "engineVersion": "0.1.0",
+    "asOf": "2026-09-26T16:00:06.130Z",
+    "intentId": "ca5ffc3508e13b23",
+    "intent": {
+      "raw": "Buy $20 of CVNAon",
+      "side": "buy",
+      "unit": "usd",
+      "amount": "20",
+      "query": "CVNAon"
+    },
+    "chosen": {
+      "chainId": "56",
+      "contractAddress": "0xc145dc2ebdbe8ead1fecdebf46c76eb1fdd0104d",
+      "symbol": "CVNAon",
+      "ticker": "CVNA",
+      "issuer": "ondo"
+    },
+    "rejected": [],
+    "session": null,
+    "sessionSource": null,
+    "marketStatus": "closed",
+    "reasonCode": "MARKET_CLOSED",
+    "reasonMsg": "Weekend or Holiday",
+    "multiplier": "5",
+    "listMultiplier": "5",
+    "tokenPriceUsd": "325.40625",
+    "economicPriceUsd": null,
+    "referenceUsd": null,
+    "referenceSource": null,
+    "referenceAsOf": null,
+    "referenceSibling": null,
+    "premiumBps": null,
+    "overpayUsd": null,
+    "notionalUsd": "20.00",
+    "tokenUnits": "0.06146163",
+    "economicShares": "0.30730817",
+    "unitReadings": null,
+    "formula": "economicPrice = tokenInfo.price / sharesMultiplier",
+    "inputsHash": "c0d1bc44edb5b28b968c375731440091066e868f7230bc2db0ac0b4c62b220b7",
+    "policyHash": "819a2bcaeeec65005a0d17f38a68e8fa26b165047ffec295b6f9d460a4a36043",
+    "verdict": "BLOCK",
+    "reasons": [
+      "VENUE_CLOSED"
+    ],
+    "notes": [],
+    "hash": "4474e031638525a1e4ab3160fbbeef220333a2ac248b2eb422999e72d308d321",
+    "narration": "BLOCK. Binance reports CVNAon (Ondo) is not open for trading right now. $20.00 buys 0.06146163 CVNAon tokens = 0.30730817 shares (multiplier 5). Hash 4474e0316385…"
+  }
+}

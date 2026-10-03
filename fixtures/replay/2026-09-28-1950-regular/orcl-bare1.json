@@ -1,0 +1,179 @@
+{
+  "name": "orcl-bare1",
+  "capture": "fixtures/captures/2026-09-28/195005.json",
+  "input": {
+    "asOf": "2026-09-28T19:50:05.943Z",
+    "universe": [
+      {
+        "chainId": "56",
+        "contractAddress": "0x03e4bd1ea53f1da84513da0319d1f03dd1bbcf93",
+        "symbol": "ORCLon",
+        "ticker": "ORCL",
+        "type": 1,
+        "multiplier": "1.0079328914586566"
+      },
+      {
+        "chainId": "56",
+        "contractAddress": "0x548308e91ec9f285c7bff05295badbd56a6e4971",
+        "symbol": "ORCLx",
+        "ticker": "ORCL",
+        "type": 2,
+        "multiplier": "1"
+      },
+      {
+        "chainId": "56",
+        "contractAddress": "0x4684d9887fc1c71cba7bab8e88835cec217eb598",
+        "symbol": "ORCLB",
+        "ticker": "ORCL",
+        "type": 3,
+        "multiplier": "1"
+      }
+    ],
+    "views": [
+      {
+        "contractAddress": "0x03e4bd1ea53f1da84513da0319d1f03dd1bbcf93",
+        "complete": true,
+        "tokenPriceUsd": "133.726776710192762924",
+        "multiplier": "1.0079328914586566",
+        "listMultiplier": "1.0079328914586566",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": "regular",
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": "132.696",
+        "fetchedAt": "2026-09-28T19:50:05.943Z"
+      },
+      {
+        "contractAddress": "0x4684d9887fc1c71cba7bab8e88835cec217eb598",
+        "complete": true,
+        "tokenPriceUsd": "132.76",
+        "multiplier": "1",
+        "listMultiplier": "1",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": null,
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": null,
+        "fetchedAt": "2026-09-28T19:50:05.943Z"
+      },
+      {
+        "contractAddress": "0x548308e91ec9f285c7bff05295badbd56a6e4971",
+        "complete": true,
+        "tokenPriceUsd": "164.081527379622704245926877011378587",
+        "multiplier": "1.009318667481834",
+        "listMultiplier": "1",
+        "assetStatus": {
+          "openState": true,
+          "marketStatus": null,
+          "reasonCode": "TRADING",
+          "reasonMsg": null
+        },
+        "stockPriceUsd": "132.696",
+        "fetchedAt": "2026-09-28T19:50:05.943Z"
+      }
+    ],
+    "venue": {
+      "marketStatus": "regular",
+      "openState": true
+    },
+    "intent": "Buy 1 ORCL",
+    "policy": {
+      "version": 1,
+      "issuer": "ondo",
+      "neverSwitchIssuer": true,
+      "noiseBandBps": 10,
+      "maxRegularPremiumBps": 30,
+      "maxClosedPremiumBps": 80,
+      "implausibleAbsBps": 500,
+      "maxSlippageBps": 50,
+      "quoteTtlSec": 25,
+      "maxOrderUsd": "20",
+      "maxDayUsd": "50",
+      "blockCorporateActions": true
+    },
+    "lastOfficialClose": {
+      "ticker": "ORCL",
+      "priceUsd": "132.696",
+      "asOf": "2026-09-28T19:50:05.943Z"
+    },
+    "filledTodayUsd": "0"
+  },
+  "ticket": {
+    "kind": "decision",
+    "engineVersion": "0.1.0",
+    "asOf": "2026-09-28T19:50:05.943Z",
+    "intentId": "37f911a94bc1365c",
+    "intent": {
+      "raw": "Buy 1 ORCL",
+      "side": "buy",
+      "unit": "ambiguous",
+      "amount": "1",
+      "query": "ORCL"
+    },
+    "chosen": {
+      "chainId": "56",
+      "contractAddress": "0x03e4bd1ea53f1da84513da0319d1f03dd1bbcf93",
+      "symbol": "ORCLon",
+      "ticker": "ORCL",
+      "issuer": "ondo"
+    },
+    "rejected": [
+      {
+        "symbol": "ORCLx",
+        "issuer": "xstock",
+        "contractAddress": "0x548308e91ec9f285c7bff05295badbd56a6e4971",
+        "reason": "NEVER_SWITCH"
+      },
+      {
+        "symbol": "ORCLB",
+        "issuer": "bstock",
+        "contractAddress": "0x4684d9887fc1c71cba7bab8e88835cec217eb598",
+        "reason": "NEVER_SWITCH"
+      }
+    ],
+    "session": null,
+    "sessionSource": null,
+    "marketStatus": "regular",
+    "reasonCode": "TRADING",
+    "reasonMsg": null,
+    "multiplier": "1.0079328914586566",
+    "listMultiplier": "1.0079328914586566",
+    "tokenPriceUsd": "133.726776710192762924",
+    "economicPriceUsd": null,
+    "referenceUsd": null,
+    "referenceSource": null,
+    "referenceAsOf": null,
+    "referenceSibling": null,
+    "premiumBps": null,
+    "overpayUsd": null,
+    "notionalUsd": null,
+    "tokenUnits": null,
+    "economicShares": null,
+    "unitReadings": {
+      "asTokens": {
+        "tokens": "1.00000000",
+        "shares": "1.00793289",
+        "usd": "133.73"
+      },
+      "asShares": {
+        "tokens": "0.99212954",
+        "shares": "1.00000000",
+        "usd": "132.67"
+      }
+    },
+    "formula": "economicPrice = tokenInfo.price / sharesMultiplier",
+    "inputsHash": "aa8020ba9c34b3c26409128ff6eb64d237228ba8e83e5f2f8c96288f01086bf5",
+    "policyHash": "819a2bcaeeec65005a0d17f38a68e8fa26b165047ffec295b6f9d460a4a36043",
+    "verdict": "BLOCK",
+    "reasons": [
+      "UNIT_AMBIGUOUS"
+    ],
+    "notes": [],
+    "hash": "5f90d84c230f53144b32f992b7b62a1f1d44f4386e78b380b16d7d6b345c8c56",
+    "narration": "BLOCK. \"1 ORCL\" could mean 1 token = 1.00793289 shares ≈ $133.73, or 1 share = 0.99212954 token ≈ $132.67. One ORCLon token holds 1.0079328914586566 shares. Say \"$… of\" or \"… shares of\". Not the same instrument: ORCLx (xStock), ORCLB (bStock). Hash 5f90d84c230f…"
+  }
+}

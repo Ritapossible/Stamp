@@ -47,6 +47,11 @@ describe("resolveSession", () => {
     expect(resolveSession(asset("premarket"), null, "2026-09-25T13:31:00Z").warn).toBeNull();
   });
 
+  it("reads Ondo's weekend 'offhours' as closed (seen live 26-27 Sep 2026)", () => {
+    const r = resolveSession(asset("offhours"), { marketStatus: "closed", openState: true }, "2026-09-26T16:00:06Z");
+    expect(r).toEqual({ session: "closed", source: "asset", marketStatus: "offhours", warn: null });
+  });
+
   it("marks unknown statuses", () => {
     expect(resolveSession(asset("halftime"), null, "2026-09-25T15:00:00Z")).toMatchObject({ session: "unknown", warn: "SESSION_UNKNOWN" });
     expect(resolveSession(null, null, "2026-09-25T15:00:00Z")).toMatchObject({ session: "unknown", source: null });

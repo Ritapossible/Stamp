@@ -6,6 +6,9 @@ const MAP: Readonly<Record<string, Session>> = {
   postmarket: "extended",
   overnight: "closed",
   closed: "closed",
+  // Ondo's per-token status on weekends (seen 26-27 Sep 2026, with reasonCode TRADING and the
+  // venue saying "closed"): the token trades, the stock market is shut. Not in the docs' list.
+  offhours: "closed",
 };
 
 export interface SessionResult {

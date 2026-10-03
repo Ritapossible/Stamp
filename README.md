@@ -97,9 +97,11 @@ npm test          # engine, sources, API and agent tests, offline
 npm run replay    # recomputes every recorded ticket and checks every hash
 ```
 
-Expected: one line per ticket, then `325 tickets recomputed · all hashes match` (one test case
-per rule, plus four real captures from 25 Sep 2026: premarket, the last regular print, the
-20:00 close pause, and postmarket). For example:
+Expected: one line per ticket, then `621 tickets recomputed · all hashes match`: one test case
+per rule, plus eight real captures - Friday 25 Sep 2026 (premarket, the last regular print, the
+20:00 close pause, postmarket), the weekend (Saturday 16:00 and Sunday 23:30 UTC, when tokens
+trade and the stock doesn't) and Monday 28 Sep (premarket and the last regular print). For
+example:
 
 ```
 ok     golden                  Buy 1 NFLX                  NFLXon    BLOCK  UNIT_AMBIGUOUS                                   476b8e4ef3e9

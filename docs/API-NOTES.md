@@ -130,3 +130,17 @@ Ondo 10, bStock 1, and xStock "10" or "1" depending on which endpoint you ask.
 - Agentic Wallet (`baw` CLI): quote-only is supported ("Quote only"), limit orders work on BSC
   and Solana, and daily spending limits exist. **Tokenized stock swaps are not mentioned.**
 - Wallet Skills: `binance-tokenized-securities-info` is described as Ondo-only.
+
+## 2026-09-29 / 2026-10-03 additions
+
+- **Ondo weekend status.** On Saturday and Sunday, Ondo tokens report
+  `statusInfo.marketStatus: "offhours"` with `reasonCode: "TRADING"`, while the venue status
+  says `closed`. The value is not in the documented list. Stamp maps it to the `closed` session
+  (D27). Some Ondo tokens instead report `closed` with `reasonCode: "MARKET_CLOSED"` and
+  `openState: false`, which blocks as `VENUE_CLOSED`.
+- **Agentic Wallet and tokenized stocks** (correcting the note above). The
+  `binance-agentic-wallet` skill 1.12.0 resolves stocks through the RWA list's `type` filter
+  (1 Ondo, 2 xStock, 3 bStock), shipped a bStock trading-campaign file (ended 1 Sep 2026), and
+  reports "Ondo-related tokens cannot be traded" for limit orders. `baw market-order quote`
+  needs a signed-in wallet (`NOT_LOGGED_IN`), names symbols rather than addresses, and does not
+  bind `market-order swap`. Stamp's path for it is D25.
