@@ -11,7 +11,7 @@ _(your words)_
 ## 2. Where I got stuck
 _(your words)_
 
-## 3. Error messages - clear or not
+## 3. Error messages - clear or not (which docs page had the error, and where on it)
 _(your words)_
 
 ## 4. Edge cases I hit
@@ -30,6 +30,9 @@ _(your words)_
 _(your words)_
 
 ---
+
+## 9. The AI stack: Wallet Skills, Agentic Wallet, the CLIs (`baw`, `bag`)
+_(your words)_
 
 ## Raw log
 

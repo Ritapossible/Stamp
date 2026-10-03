@@ -81,3 +81,5 @@ can be ALLOW. Phone or desktop both work; desktop is easier to read on the recor
 - [ ] `DEVEX.md` sections 1-8 in your words, then the DevEx form.
 - [ ] Record the video; put the link in the README and the form.
 - [ ] Submit the form before Sun 11 Oct 12:00 UTC.
+- [ ] Last push before the lock: the hackathon freezes repos at 11 Oct 12:00 UTC. From then
+      the snapshot job only pings the site (no commits); it stops itself after judging (23 Oct).

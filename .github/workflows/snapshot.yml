@@ -1,7 +1,9 @@
 name: snapshot
 # Records reference prices every 10 min and raw off-hours payloads, committing each tick
 # to the `snapshots` branch (never the code branch). Each tick also pings the live site's
-# /health so the free Render instance never sleeps.
+# /health so the free Render instance never sleeps. From the submission lock (11 Oct 12:00
+# UTC, when the hackathon freezes repos) it only pings and commits nothing; after judging
+# ends (23 Oct) it stops.
 #
 # GitHub's cron did not fire at all for this new repo (only the manual run landed on
 # 2026-09-25), so this workflow does not depend on it: each run loops for ~5.5 h and then
@@ -49,12 +51,22 @@ jobs:
       - name: Tick every 10 minutes for ~5.5 hours
         env:
           STAMP_URL: https://stamp-iizn.onrender.com
+          # The hackathon freezes repos at submission lock: no commits to this repo after it.
+          REPO_FREEZE: "2026-10-11T12:00:00Z"
+          # Judging ends 23 Oct; the keep-awake ping runs until then, then the loop stops.
+          JUDGING_END: "2026-10-24T00:00:00Z"
         run: |
+          freeze=$(date -d "$REPO_FREEZE" +%s)
+          stop=$(date -d "$JUDGING_END" +%s)
           end=$(( $(date +%s) + 330*60 ))
-          while [ "$(date +%s)" -lt "$end" ]; do
+          while [ "$(date +%s)" -lt "$end" ] && [ "$(date +%s)" -lt "$stop" ]; do
             # Keep the free Render instance awake (it sleeps after 15 idle minutes), so a
             # judge's first click doesn't wait ~30 s. /health only: no Binance call from here.
             curl -s -o /dev/null --max-time 90 -w "keep-awake /health %{http_code} %{time_total}s\n" "$STAMP_URL/health" || echo "keep-awake ping failed"
+            if [ "$(date +%s)" -ge "$freeze" ]; then
+              echo "repo frozen since $REPO_FREEZE: ping only, no snapshot commit"
+              now=$(date +%s); sleep $(( 600 - now % 600 + 5 )); continue
+            fi
             (cd code && npx tsx scripts/snapshot.ts --out ../store/data) || echo "tick failed"
             (
               cd store
@@ -71,8 +83,14 @@ jobs:
             now=$(date +%s)
             sleep $(( 600 - now % 600 + 5 ))
           done
-      - name: Start the next loop
+      - name: Start the next loop (until judging ends)
         if: always()
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh workflow run snapshot.yml --repo "$GITHUB_REPOSITORY" --ref "$GITHUB_REF_NAME"
+          JUDGING_END: "2026-10-24T00:00:00Z"
+        run: |
+          if [ "$(date +%s)" -lt "$(date -d "$JUDGING_END" +%s)" ]; then
+            gh workflow run snapshot.yml --repo "$GITHUB_REPOSITORY" --ref "$GITHUB_REF_NAME"
+          else
+            echo "judging is over: the loop stops here"
+          fi
