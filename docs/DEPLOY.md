@@ -32,4 +32,4 @@ Public price data works from anywhere; live quotes only from a non-US region.
   replay proof is unaffected: it is recomputed from `fixtures/` in the repo on every request.
 - **Recorded closes** (the weekend reference) are read from the `snapshots` branch every
   10 minutes via `SNAPSHOTS_REMOTE`.
-- **Deploys** follow pushes to `claude/stamp-pretrade-gate-94h6me` (the repo's default branch).
+- **Deploys** follow pushes to `main` (the repo's default branch).

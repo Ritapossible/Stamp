@@ -17,7 +17,7 @@ off-hours price are checked in code, and every answer is hashed, before anything
 
 **Links**
 - Live: https://stamp-iizn.onrender.com
-- Repo: https://github.com/Ritapossible/Stamp (branch `claude/stamp-pretrade-gate-94h6me`)
+- Repo: https://github.com/Ritapossible/Stamp
 - Video: _(your link)_
 
 **Description (about 200 words)**

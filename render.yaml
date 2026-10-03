@@ -6,7 +6,7 @@ services:
     runtime: node
     region: frankfurt
     plan: free
-    branch: claude/stamp-pretrade-gate-94h6me
+    branch: main
     autoDeploy: true
     buildCommand: npm ci --include=dev && npm run build
     startCommand: npm start

@@ -61,7 +61,7 @@ npm run agentic -- "Buy $20 of NVIDIA"</code></pre>
             <li><code>baw market-order swap</code> with <code>--slippage 0.5</code>, then polls until <code>FINISHED</code> or <code>FAILED</code>. An order id is not a fill.</li>
             <li>The fill ticket reads the BSC receipt: the ticket's token must arrive, no sibling issuer's token may arrive, and the price paid must be within policy.</li>
           </ol>
-          <p>The quote does not bind the swap - that is how <code>baw</code> works - which is why the fill is checked. Agents that can't run the script follow the same rule by hand from <a href="https://github.com/Ritapossible/Stamp/blob/claude/stamp-pretrade-gate-94h6me/skills/stamp-gate/SKILL.md" target="_blank" rel="noopener">skills/stamp-gate/SKILL.md ↗</a>.</p>
+          <p>The quote does not bind the swap - that is how <code>baw</code> works - which is why the fill is checked. Agents that can't run the script follow the same rule by hand from <a href="https://github.com/Ritapossible/Stamp/blob/main/skills/stamp-gate/SKILL.md" target="_blank" rel="noopener">skills/stamp-gate/SKILL.md ↗</a>.</p>
 
           <h2>Pay it from another agent</h2>
           <pre data-copy><code>bag x402 buy https://&lt;agent-host&gt;/x402 --method POST \
