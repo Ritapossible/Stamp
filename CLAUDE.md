@@ -192,3 +192,15 @@ decision → `baw` quote → `prepareAgenticExecution` → confirm → re-check 
 shell, errors passed through verbatim). The person signs `baw` in on their own machine (not
 this container: US egress, and it is their wallet). `skills/stamp-gate/SKILL.md` is the agent
 skill.
+
+## Since 3 Oct (D27, D28)
+- Session map: Ondo's weekend `marketStatus: "offhours"` = closed. Replay = 621 tickets
+  (Fri 25 Sep, Sat 26, Sun 27, Mon 28 Sep sets built with `scripts/build-replay.ts` from the
+  `snapshots` branch).
+- Execution E6b: `wallet.balances()` (Trading API wallet → Wallet API
+  `token-balances-by-address`; native BNB comes back as `0xeee…eee`) → `INSUFFICIENT_BALANCE`.
+  Unusable answer → null → check skipped. Raw response kept in `/v1/execution/:hash/raw`.
+- Browser: `sendTx` / `signTypedData` re-check `eth_accounts` and chain 0x38 first;
+  `accountsChanged` / `chainChanged` invalidate the review (`WALLET_CHANGED`).
+- `npm run agentic` stops xStock before `baw` (Binance documents bStock and Ondo only).
+- `main` is the repo branch; push every change to both `main` and the session branch.

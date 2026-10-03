@@ -15,6 +15,10 @@ Status: design frozen for v1 on 2026-09-25. Changes go through `docs/DECISIONS.m
 > - **The agent is at `agent/`**, not `apps/agent`. Its MCP tools work locally. The paid `/x402`
 >   route is **dormant (503)** until Binance approves a B402 merchant for the agent wallet, so no
 >   agent has paid yet (D24).
+> - **Weekend status `offhours`** (Ondo, not in the docs) now means closed (D27); the replay
+>   covers Friday, the weekend and Monday: 621 tickets.
+> - **Wallet guidance from the handbook** (D28): Wallet API balance check (E6b), every browser
+>   send re-checks the reviewed account and chain 56, and the Agentic path stops xStock.
 > - **Binance Wallet first** for signing in the browser (D22). **Agents** go through the Agentic
 >   Wallet (`baw`): `scripts/agentic.ts` stops before `baw` unless the decision is ALLOW, checks
 >   the `baw` quote (`prepareAgenticExecution`, mode `AGENTIC`), swaps, then checks the BSC
@@ -270,6 +274,7 @@ This step runs only after a decision `ALLOW`, and only when the human presses **
 | E5 | Quoted `toTokenAddress` equals the decision's `chosen.contractAddress`, paid with BSC USDT. | else BLOCK `ISSUER_MISMATCH` |
 | E5b | The quote spends the decision's notional (±$0.01), and the raw amounts are plain integers. | else BLOCK `AMOUNT_MISMATCH` |
 | E6 | Effective price from the quote (`amountIn / amountOut`) versus the decision's `tokenPriceUsd` stays within `maxSlippageBps` (50). | else BLOCK `SLIPPAGE` |
+| E6b | Binance Wallet API balances (`token-balances-by-address`): USDT covers the order and BNB > 0 for gas. Skipped when the API gives no usable answer (D28). | else BLOCK `INSUFFICIENT_BALANCE` |
 | E7 | RFQ: decode `rfq.typedDataToSign`. The token, amount and recipient must match the ticket, and the recipient must be the user's address. SWAP: `pre-transaction/simulate` must pass. | else BLOCK `TYPED_DATA_MISMATCH` / `SIMULATION_FAILED` |
 | E8 | If an approval is needed, simulate the approve tx. | else BLOCK `SIMULATION_FAILED` |
 

@@ -39,7 +39,7 @@
 
           <h2>Execute (a person signs)</h2>
           <div class="endpoint"><span class="m">POST</span><code>/v1/execution</code></div>
-          <p>Body <code>{ decisionHash, user }</code>. Only a stored ALLOW is quoted (else <code>409</code>). Returns the execution ticket, plus <code>tx</code> (SWAP) or <code>typedData</code> (RFQ) only when it is ALLOW, or <code>approvalTx</code> when <code>APPROVAL_REQUIRED</code>. <code>501</code> when the server has no Trading API key.</p>
+          <p>Body <code>{ decisionHash, user }</code>. Only a stored ALLOW is quoted (else <code>409</code>). Returns the execution ticket, plus <code>tx</code> (SWAP) or <code>typedData</code> (RFQ) only when it is ALLOW, or <code>approvalTx</code> when <code>APPROVAL_REQUIRED</code>. Before that, Binance's Wallet API reports the wallet's USDT and BNB: too little blocks as <code>INSUFFICIENT_BALANCE</code>, and the ticket carries <code>balanceQuoteAsset</code> / <code>balanceNative</code>. <code>501</code> when the server has no Trading API key.</p>
           <div class="endpoint"><span class="m">POST</span><code>/v1/execution/:hash/sent</code></div>
           <p>Body <code>{ txHash }</code>: records the transaction your wallet sent (SWAP).</p>
           <div class="endpoint"><span class="m">POST</span><code>/v1/execution/:hash/submit</code></div>
