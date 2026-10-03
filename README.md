@@ -52,6 +52,7 @@ It runs on a free host that a ping every 10 minutes keeps awake.
 > matched Stamp's byte for byte. From US IP addresses the same API answers **`40304` inside an
 > HTTP 200**, for tokenized stocks and for WBNB alike. So don't demo execution from GitHub
 > Actions or a US laptop. Decisions use public endpoints and work everywhere.
+> Submission drafts and the demo script: [`docs/SUBMISSION.md`](docs/SUBMISSION.md).
 > Design: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) · reasoning: [`docs/DECISIONS.md`](docs/DECISIONS.md) ·
 > live API findings: [`docs/API-NOTES.md`](docs/API-NOTES.md) · deploy: [`docs/DEPLOY.md`](docs/DEPLOY.md).
 > Built for the [BNB Hack: Tokenized Stocks Edition](https://www.bnbchain.org/en/hackathons/tokenized-stocks).

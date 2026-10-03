@@ -4,6 +4,20 @@ Today is **Fri 2026-09-25**. Submissions close **Sun 2026-10-11 12:00 UTC**. The
 to **submit on Sat 10 Oct**, leaving a day of margin. US cash hours are 13:30–20:00 UTC while
 EDT is in effect (all of this window). DST ends Sun 1 Nov and starts Sun 8 Mar, so test both.
 
+> **Status, Sat 3 Oct.** The build is done; the day-by-day list below is the original plan
+> and is kept as a record. Built, tested, deployed: engine (decision, execution, fill tickets),
+> RWA client, Trading API SWAP path, Binance Wallet signing, standing order, multi-page site
+> with docs, Agent Studio agent (MCP tools, `/x402` with a free pre-check and durable replay
+> records), Agentic Wallet path (`npm run agentic`, `skills/stamp-gate`), keep-awake ping,
+> link previews, and a 621-ticket replay that includes a real weekend. CI is green.
+>
+> **Left, and only you can do these** (details in `docs/SUBMISSION.md`):
+> 1. One live fill of $20 or less, from outside the US, during US hours. Send the BscScan link.
+> 2. B402 merchant for the agent wallet, then one paid `bag x402 buy` (if approved in time).
+> 3. `DEVEX.md` sections 1-8 in your words, then the DevEx form.
+> 4. Record the video (script in `docs/SUBMISSION.md`), add the link to the README.
+> 5. Submit the project form before Sun 11 Oct 12:00 UTC (target Sat 10 Oct).
+
 Each day has a **done-when** line. A day isn't done until its done-when is true, whatever
 else got built.
 
