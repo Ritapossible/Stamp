@@ -14,11 +14,12 @@ const market: MarketSource = { forIntent: async () => captured };
 const USER = "0x1111111111111111111111111111111111111111";
 const SIG = "0x" + "ab".repeat(65);
 
-async function setup(withWallet = true) {
+async function setup(withWallet = true, balances?: Record<string, string>) {
   let clock = Date.parse(captured.asOf) + 5_000;
   const now = () => new Date(clock).toISOString();
   const store = TicketStore.memory();
   const wallet = new FakeWallet((t) => store.latestTokenPrice(t)!, now);
+  if (balances) wallet.balances = async () => balances;
   const execution = withWallet ? new ExecutionService({ wallet, store, now }) : null;
   const standing = await StandingService.open({ market, store, snapshots: () => new SnapshotStore([]), execution, path: null, now });
   const app = createApp({ market, store, snapshots: () => new SnapshotStore([]), fixturesDir: `${root}fixtures`, rateLimitPerMin: 0, execution, standing });
@@ -54,6 +55,15 @@ describe("one-off execution", () => {
     expect(sub.body.status).toBe("PENDING");
     expect((await call("GET", `/v1/execution/${hash}`)).body.status).toBe("FILLED");
     expect((await call("POST", `/v1/execution/${hash}/submit`, { signature: SIG })).status).toBe(409);
+  });
+
+  it("stops before any approval or signature when the Wallet API says the wallet can't pay", async () => {
+    const { call } = await setup(true, { "0x55d398326f99059ff775485246999027b3197955": "7.25", "": "0.01" });
+    const { body: t } = await call("POST", "/v1/tickets", { intent: "Buy $20 of NVIDIA" });
+    const review = await call("POST", "/v1/execution", { decisionHash: t.ticket.hash, user: USER });
+    expect(review.body.ticket).toMatchObject({ verdict: "BLOCK", reasons: ["INSUFFICIENT_BALANCE"], balanceQuoteAsset: "7.25" });
+    expect(review.body.typedData).toBeNull();
+    expect(review.body.tx).toBeNull();
   });
 
   it("refuses to quote a BLOCK decision", async () => {

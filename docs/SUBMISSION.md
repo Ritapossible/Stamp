@@ -41,10 +41,13 @@ off-hours price are checked in code, and every answer is hashed, before anything
 **Which Binance APIs** (the tie-breaker is depth of use)
 - RWA data API, all five public endpoints: list, venue status, asset status and dynamic in
   every decision; meta in the probe that mapped the issuers.
-- Trading API (HMAC): quote, approve-transaction, swap, pre-transaction/simulate,
-  transaction-detail-by-txhash. Live from Frankfurt; SWAP mode.
-- Binance Wallet in the browser: `binancew3w` provider, EIP-6963, and the "open in Binance
-  app" deep link.
+- Trading API (HMAC): quote, approve-transaction, swap. Live from Frankfurt; SWAP mode.
+- Transaction API: pre-transaction/simulate on the approval and the swap, with balance changes.
+- Wallet API: token-balances-by-address (USDT and BNB) before any approval is asked for;
+  transaction-detail-by-txhash for the fill status.
+- Binance Wallet in the browser, per Binance's provider docs: `binancew3w` provider,
+  `isBinance`, EIP-6963 (`wallet.binance.com`), the `getDeeplink` "open in Binance app" link,
+  a switch to BSC, and `accountsChanged` / `chainChanged` handling.
 - Agentic Wallet (`baw`): market-order quote, swap and list, wallet status and address, behind
   Stamp's decision, execution and fill tickets.
 - BNB Agent Studio: `bag init` agent with MCP tools, a B402 `/x402` seller route at $0.02, and

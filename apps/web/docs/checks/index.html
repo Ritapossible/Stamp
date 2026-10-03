@@ -56,6 +56,7 @@ premium (bps) = round((price per share - reference) / reference × 10000)</code>
               <tr><td>E5</td><td>The quote buys the decision's token with BSC USDT.</td><td><code>ISSUER_MISMATCH</code></td></tr>
               <tr><td>E5b</td><td>The quote spends the decision's dollars (±$0.01).</td><td><code>AMOUNT_MISMATCH</code></td></tr>
               <tr><td>E6</td><td>Quoted price within 0.50% of the decision's price.</td><td><code>SLIPPAGE</code></td></tr>
+              <tr><td>E6b</td><td>Binance's Wallet API shows enough USDT for the order and some BNB for gas. Checked before any approval is asked for; skipped if the API gives no usable answer.</td><td><code>INSUFFICIENT_BALANCE</code></td></tr>
               <tr><td>E7</td><td>SWAP: the transaction is from you, sends no BNB, and simulation shows you gain the chosen token and no sibling. RFQ: the typed data names the token, amount and you.</td><td><code>TX_MISMATCH</code> <code>SIMULATION_FAILED</code> <code>SIMULATION_MISMATCH</code> <code>TYPED_DATA_MISMATCH</code></td></tr>
               <tr><td>E8</td><td>USDT allowance short: an exact-amount approval comes first, then a fresh review.</td><td><code>APPROVAL_REQUIRED</code></td></tr>
             </tbody>

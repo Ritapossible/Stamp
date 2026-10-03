@@ -130,7 +130,8 @@ curl -s -X POST localhost:8787/v1/verify -H 'content-type: application/json' --d
 - v1 is buy-only, spot-only, BSC-only, capped at $20 per order ($50 a day for standing
   orders), and a person signs every fill.
 - The Agentic Wallet builds and signs its own swap, so on that path Stamp checks the quote
-  before and the BSC receipt after, not the transaction itself.
+  before and the BSC receipt after, not the transaction itself. Binance documents it for bStock
+  and Ondo tokens, so xStock orders stop before `baw`.
 - Binance returned SWAP mode, not the RFQ its docs describe, for tokenized stocks from
   Frankfurt. Stamp checks SWAP by simulation and balance changes. The RFQ path is built and
   tested but has not been seen live.

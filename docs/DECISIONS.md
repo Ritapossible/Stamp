@@ -198,3 +198,15 @@ compared with Friday's close. The token is trading (reasonCode TRADING), the ven
 contained it, so every Friday and golden hash is unchanged. Four sets were added from the
 `snapshots` branch: Sat 26 Sep 16:00Z, Sun 27 Sep 23:30Z, Mon 28 Sep 12:00Z and 19:50Z
 (captures pause during Monday cash hours); the replay is now 621 tickets.
+
+### D28 - Follow the handbook's wallet guidance (2026-10-03)
+**Why:** A pass over the hackathon page and the docs it links found three gaps. (1) Binance's
+Wallet API was unused, so a wallet without enough USDT was asked to approve and sign a swap
+that would fail; now `token-balances-by-address` runs before the quote's checks finish and the
+execution ticket blocks `INSUFFICIENT_BALANCE` (E6b) before any approval. An unusable answer
+skips the check instead of guessing. (2) Binance's provider docs ask dApps to handle
+`accountsChanged` and `chainChanged`; a switch after review could have sent a checked
+transaction from another account or chain. Now every send or signature first confirms the
+reviewed account and chain 56, and a change invalidates the review on screen. (3) Binance's
+Agentic Wallet stock-trading guide covers bStock and Ondo only, so `npm run agentic` stops an
+xStock ALLOW before calling `baw`.

@@ -136,6 +136,17 @@ describe("prepareExecution", () => {
     expect(t.approvalRequired).toBe(false);
   });
 
+  block("USDT balance below the order (Wallet API)", { balances: { quoteAsset: "12.5", native: "0.01" } }, "INSUFFICIENT_BALANCE");
+  block("no BNB for gas (Wallet API)", { balances: { quoteAsset: "100", native: "0" } }, "INSUFFICIENT_BALANCE");
+
+  it("checks balances only when the Wallet API reported them, and says which one is short", () => {
+    expect(prepareExecution(input({ balances: { quoteAsset: "20", native: "0.002" } })).verdict).toBe("ALLOW");
+    expect(prepareExecution(input({ balances: { quoteAsset: null, native: null } })).verdict).toBe("ALLOW");
+    expect(prepareExecution(input({ balances: null })).verdict).toBe("ALLOW");
+    expect(prepareExecution(input({ balances: { quoteAsset: "12.5", native: "1" } })).narration).toContain("holds 12.5 USDT; the order needs $20.00");
+    expect(prepareExecution(input({ balances: { quoteAsset: "100", native: "0" } })).narration).toContain("no BNB to pay gas");
+  });
+
   it("allows a better-than-decided price (negative slippage)", () => {
     expect(prepareExecution(input({ bps: -30 })).verdict).toBe("ALLOW");
   });

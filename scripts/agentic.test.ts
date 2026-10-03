@@ -68,6 +68,15 @@ describe("runAgenticBuy: Stamp in front of the Agentic Wallet", () => {
     expect(swap).toEqual(expect.arrayContaining(["--toToken", f.decision.chosen!.contractAddress, "--fromTokenQty", "20.00", "--slippage", "0.5", "--binanceChainId", "56"]));
   });
 
+  it("stops an xStock ALLOW before baw: Binance's Agentic Wallet guide covers bStock and Ondo only", async () => {
+    const f = fakeBaw();
+    const xs = golden("nvda-xstock-discount");
+    expect(xs.verdict === "ALLOW" && xs.chosen?.issuer === "xstock").toBe(true);
+    const run = await runAgenticBuy("Buy $20 of NVDAx", { issuer: "xstock" }, deps(f, xs));
+    expect(run.stoppedAt).toBe("unsupported");
+    expect(f.calls).toEqual([]);
+  });
+
   it("does not swap when the quote names another issuer's token", async () => {
     const f = fakeBaw({ quoteSymbol: "NVDAB" });
     const run = await runAgenticBuy("Buy $20 of NVIDIA", {}, deps(f, f.decision));

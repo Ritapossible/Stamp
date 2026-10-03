@@ -79,6 +79,17 @@ export class ExecutionService {
     // Without the allowance the swap cannot simulate; the ticket says "approve first" instead.
     const swapSimulation = prepared.mode === "SWAP" && prepared.tx && !prepared.approvalRequired ? await this.deps.wallet.simulate(prepared.tx, user) : null;
     const t = prepared.tx as { from?: string; to?: string; value?: string | number; data?: string } | null;
+    // Wallet API balances: an order the wallet can't pay for stops here, before any approval.
+    // If the API gives no usable answer, the check is skipped; the chain would refuse anyway.
+    let balances: { quoteAsset: string | null; native: string | null } | null = null;
+    if (this.deps.wallet.balances) {
+      try {
+        const b = await this.deps.wallet.balances(user, [quoteAsset, ""]);
+        balances = { quoteAsset: b[quoteAsset.toLowerCase()] ?? null, native: b[""] ?? null };
+      } catch {
+        balances = null;
+      }
+    }
 
     const ticket = prepareExecution({
       decision,
@@ -92,6 +103,7 @@ export class ExecutionService {
       approvalRequired: prepared.approvalRequired,
       swapSimulation,
       approvalSimulation,
+      balances,
     });
     const rec: ExecRecord = {
       ticket,

@@ -41,13 +41,16 @@ export interface AgenticDeps {
 
 export interface AgenticRun {
   intent: string;
-  stoppedAt: "decision" | "execution" | "dry-run" | "declined" | "stale" | "order" | "fill";
+  stoppedAt: "decision" | "unsupported" | "execution" | "dry-run" | "declined" | "stale" | "order" | "fill";
   decision: DecisionTicket;
   execution: ExecutionTicket | null;
   orderId: string | null;
   order: AgenticOrder | null;
   fill: FillTicket | null;
 }
+
+/** Issuers Binance documents for Agentic Wallet stock trading. */
+export const AGENTIC_ISSUERS = new Set(["ondo", "bstock"]);
 
 export class NotSignedInError extends Error {
   override name = "NotSignedInError";
@@ -62,6 +65,13 @@ export async function runAgenticBuy(intent: string, opts: { issuer?: Issuer | nu
   deps.log(`decision   ${run.decision.narration}`);
   // A WARN or BLOCK never reaches the wallet: no baw call is made at all.
   if (run.decision.verdict !== "ALLOW" || !run.decision.chosen || !run.decision.notionalUsd) return run;
+  // Binance's Agentic Wallet stock-trading guide covers bStock and Ondo tokens only
+  // (developers.binance.com/en/docs/products/agentic-wallet/use-cases/trading/stock-trading).
+  if (!AGENTIC_ISSUERS.has(run.decision.chosen.issuer)) {
+    run.stoppedAt = "unsupported";
+    deps.log(`stopped    The Agentic Wallet trades bStock and Ondo tokens; ${run.decision.chosen.symbol} is ${run.decision.chosen.issuer}. Nothing was sent to baw. Use the web page with Binance Wallet for this one.`);
+    return run;
+  }
 
   if (!(await deps.wallet.connected())) throw new NotSignedInError();
   const user = await deps.wallet.bscAddress();

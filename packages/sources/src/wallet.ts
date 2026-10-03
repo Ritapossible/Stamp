@@ -43,6 +43,11 @@ export interface StockWallet {
   status(orderId: string): Promise<OrderStatus>;
   /** SWAP: status of a transaction the human's wallet broadcast. */
   txStatus(txHash: string): Promise<OrderStatus>;
+  /**
+   * Balances as decimal strings, keyed by lowercase token address ("" = native BNB). A token the
+   * source didn't report is absent, never "0": absent means unknown.
+   */
+  balances?(user: string, tokens: string[]): Promise<Record<string, string>>;
 }
 
 /**
@@ -52,6 +57,11 @@ export interface StockWallet {
  */
 export class FakeWallet implements StockWallet {
   readonly name = "fake";
+
+  /** Demo balances: plenty of USDT and BNB, so the fake flow reaches the approval and the swap. */
+  async balances(_user: string, tokens: string[]): Promise<Record<string, string>> {
+    return Object.fromEntries(tokens.map((t) => [t.toLowerCase(), t === "" ? "1" : "1000"]));
+  }
   private seq = 0;
   private readonly filled = new Set<string>();
 

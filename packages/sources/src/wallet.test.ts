@@ -140,3 +140,39 @@ describe("SWAP mode (shape seen live from Frankfurt, 2026-09-29)", () => {
     expect((await new TradingApiWallet(new TradingApiClient({ apiKey: "k", secret: "s", fetchFn: odd.fn })).simulate({ to: ROUTER }, USER)).ok).toBe(false);
   });
 });
+
+describe("TradingApiWallet.balances (Wallet API)", () => {
+  it("asks for USDT and native BNB and reads data[].tokenAssets[].balance", async () => {
+    const f = fakeFetch({
+      code: 0,
+      msg: "success",
+      success: true,
+      data: [
+        {
+          tokenAssets: [
+            { binanceChainId: "56", tokenContractAddress: "0x55d398326f99059fF775485246999027B3197955", symbol: "USDT", balance: "12.5", rawBalance: "12500000000000000000" },
+            { binanceChainId: "56", tokenContractAddress: "", symbol: "BNB", balance: "0.0031", rawBalance: "3100000000000000" },
+            { binanceChainId: "1", tokenContractAddress: "0xabc", symbol: "OTHER", balance: "9" },
+          ],
+        },
+      ],
+    });
+    const w = new TradingApiWallet(new TradingApiClient({ apiKey: "k", secret: "s", fetchFn: f.fn }));
+    const b = await w.balances("0x1111111111111111111111111111111111111111", [BSC_USDT, ""]);
+    expect(b).toEqual({ [BSC_USDT]: "12.5", "": "0.0031" });
+    expect(f.calls[0]!.url).toMatch(/\/build\/api\/v1\/dex\/balance\/token-balances-by-address$/);
+    expect(JSON.parse(String(f.calls[0]!.init.body))).toEqual({
+      address: "0x1111111111111111111111111111111111111111",
+      tokenContractAddresses: [
+        { binanceChainId: "56", tokenContractAddress: BSC_USDT },
+        { binanceChainId: "56", tokenContractAddress: "" },
+      ],
+    });
+  });
+
+  it("leaves out anything it can't read, so the check is skipped rather than guessed", async () => {
+    const f = fakeFetch({ code: 0, data: [{ tokenAssets: [{ binanceChainId: "56", tokenContractAddress: "", balance: 3.1 }] }] });
+    const w = new TradingApiWallet(new TradingApiClient({ apiKey: "k", secret: "s", fetchFn: f.fn }));
+    expect(await w.balances("0x1111111111111111111111111111111111111111", [BSC_USDT, ""])).toEqual({});
+  });
+});

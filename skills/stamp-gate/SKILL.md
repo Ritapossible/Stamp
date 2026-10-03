@@ -9,7 +9,7 @@ metadata:
   author: stamp
   version: '0.1.0'
   requires:
-    skills: [binance-agentic-wallet]
+    skills: [binance-agentic-wallet, binance-tokenized-securities-info]
     bins: [baw, node]
 ---
 
@@ -18,6 +18,12 @@ metadata:
 A tokenized stock is not a share. `NFLXon` holds 10 Netflix shares and `NFLXB` holds 1;
 `NVDAon`, `NVDAx` and `NVDAB` are three different legal products. You, the agent that wants
 the fill, should not be the one who decides whether the order is right. Stamp decides.
+
+## Before you start
+
+Binance's own stock-trading guide for the Agentic Wallet covers **bStock and Ondo** tokens and
+asks for the `binance-tokenized-securities-info` skill, USDT to buy and a little BNB for gas.
+Stamp's script stops an xStock ALLOW before calling `baw` for that reason.
 
 ## The rule
 

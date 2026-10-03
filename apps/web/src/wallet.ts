@@ -8,7 +8,37 @@
  */
 export interface Eip1193 {
   request(args: { method: string; params?: unknown[] }): Promise<unknown>;
+  on?(event: string, listener: (...args: unknown[]) => void): void;
   isBinance?: boolean;
+}
+
+/**
+ * Fired on window when the connected wallet changes account or network after a review
+ * (Binance's provider docs: listen to accountsChanged and chainChanged). Any reviewed
+ * transaction is then stale and has to be reviewed again.
+ */
+export const WALLET_CHANGED = "stamp:wallet-changed";
+const watched = new WeakSet<object>();
+
+function watch(p: Eip1193): void {
+  if (watched.has(p) || typeof p.on !== "function") return;
+  watched.add(p);
+  p.on("accountsChanged", () => window.dispatchEvent(new CustomEvent(WALLET_CHANGED, { detail: "account" })));
+  p.on("chainChanged", () => window.dispatchEvent(new CustomEvent(WALLET_CHANGED, { detail: "network" })));
+}
+
+/**
+ * Right before anything is sent or signed: the wallet must still be on BSC and on the account
+ * the execution ticket was checked for. A switch after review would otherwise send a checked
+ * transaction from a different account or to a different chain.
+ */
+async function assertStillReviewed(p: Eip1193, user: string): Promise<void> {
+  const accounts = (await p.request({ method: "eth_accounts" })) as string[];
+  if (!accounts?.[0] || accounts[0].toLowerCase() !== user.toLowerCase()) {
+    throw new Error(`Your wallet is now on a different account than the one reviewed (${user.slice(0, 8)}…). Switch back, or check the order again.`);
+  }
+  const chainId = String(await p.request({ method: "eth_chainId" })).toLowerCase();
+  if (chainId !== "0x38") throw new Error("Your wallet left BNB Smart Chain after the review. Switch back to BSC (chain 56) to continue.");
 }
 
 interface Announced {
@@ -63,16 +93,19 @@ export async function connect(): Promise<{ user: string; provider: Eip1193; name
       throw new Error("Switch the wallet to BNB Smart Chain (chain 56) to continue.");
     }
   }
+  watch(found.provider);
   return { user: accounts[0], provider: found.provider, name: found.name };
 }
 
 /** RFQ mode: sign exactly the typed data the execution ticket was checked against. */
 export async function signTypedData(p: Eip1193, user: string, typedData: unknown): Promise<string> {
+  await assertStillReviewed(p, user);
   return (await p.request({ method: "eth_signTypedData_v4", params: [user, JSON.stringify(typedData)] })) as string;
 }
 
 /** SWAP mode and approvals: the wallet sends exactly the checked transaction. Returns the tx hash. */
 export async function sendTx(p: Eip1193, tx: { from?: string | null; to: string; value?: string; data: string }, user: string): Promise<string> {
+  await assertStillReviewed(p, user);
   const value = BigInt(tx.value ?? "0");
   return (await p.request({
     method: "eth_sendTransaction",

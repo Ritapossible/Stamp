@@ -1,7 +1,16 @@
 /** A decision ticket on screen, and the review & sign flow that follows an ALLOW. */
 import { api, ApiError, type ExecView, type Ticket } from "./api";
 import { h, mount, roundNum, shortHash, trimNum } from "./dom";
-import { binanceAppLink, connect, type Eip1193, findWallet, sendTx, signTypedData, waitReceipt } from "./wallet";
+import { binanceAppLink, connect, type Eip1193, findWallet, sendTx, signTypedData, WALLET_CHANGED, waitReceipt } from "./wallet";
+
+// A reviewed order is only good for the account and network it was reviewed on.
+window.addEventListener(WALLET_CHANGED, (e) => {
+  const what = (e as CustomEvent<string>).detail;
+  document.querySelectorAll<HTMLElement>(".exec").forEach((area) => {
+    if (!area.hasChildNodes()) return;
+    mount(area, h("p", { class: "notice error" }, `Your wallet changed ${what}. Anything reviewed before is no longer valid: press review again.`));
+  });
+});
 
 export const ISSUER_NAME: Record<string, string> = { ondo: "Ondo", xstock: "xStock", bstock: "bStock" };
 

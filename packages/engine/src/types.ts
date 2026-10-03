@@ -47,6 +47,7 @@ export type ReasonCode =
   | "APPROVAL_REQUIRED"
   | "TX_MISMATCH"
   | "SIMULATION_MISMATCH"
+  | "INSUFFICIENT_BALANCE"
   // agentic wallet: after the swap, checked against the BSC receipt
   | "FILL_FAILED"
   | "FILL_NOT_RECEIVED"
@@ -245,6 +246,11 @@ export interface ExecuteInput {
   swapSimulation: SimulationResult | null;
   /** Present when an ERC-20 approval is needed first. */
   approvalSimulation: SimulationResult | null;
+  /**
+   * The user's balances from Binance's Wallet API, as decimal strings: the stablecoin that pays
+   * and BNB for gas. null where the API gave no usable answer; then the check is skipped.
+   */
+  balances?: { quoteAsset: string | null; native: string | null } | null;
 }
 
 export interface TypedDataChecks {
@@ -282,6 +288,9 @@ export interface ExecutionTicket {
   approvalRequired: boolean;
   swapSimulation: SimulationResult | null;
   approvalSimulation: SimulationResult | null;
+  /** Wallet API balances at review time (null: not checked). */
+  balanceQuoteAsset: string | null;
+  balanceNative: string | null;
   verdict: Verdict;
   reasons: ReasonCode[];
   hash: string;

@@ -235,6 +235,31 @@ export class TradingApiWallet implements StockWallet {
     return { orderId: typeof pick(d, "orderId") === "string" ? (pick(d, "orderId") as string) : i.orderId };
   }
 
+  /**
+   * Wallet API: POST /api/v1/dex/balance/token-balances-by-address, up to 20 (chain, token)
+   * pairs; "" asks for native BNB. Reads data[].tokenAssets[].balance (a decimal string).
+   */
+  async balances(user: string, tokens: string[]): Promise<Record<string, string>> {
+    const res = await this.client.post("/api/v1/dex/balance/token-balances-by-address", {
+      address: user,
+      tokenContractAddresses: tokens.map((t) => ({ binanceChainId: BSC, tokenContractAddress: t })),
+    });
+    const out: Record<string, string> = {};
+    const groups = pick(res, "data");
+    for (const g of Array.isArray(groups) ? groups : []) {
+      const assets = pick(g, "tokenAssets");
+      for (const a of Array.isArray(assets) ? assets : []) {
+        const chain = String(pick(a, "binanceChainId") ?? "");
+        const token = pick(a, "tokenContractAddress");
+        const balance = pick(a, "balance");
+        if (chain === BSC && typeof token === "string" && typeof balance === "string" && /^\d+(\.\d+)?$/.test(balance)) {
+          out[token.toLowerCase()] = balance;
+        }
+      }
+    }
+    return out;
+  }
+
   async txStatus(txHash: string): Promise<OrderStatus> {
     const res = await this.client.get("/api/v1/dex/post-transaction/transaction-detail-by-txhash", { binanceChainId: BSC, txHash });
     const d = pick(res, "data");

@@ -55,7 +55,7 @@ baw auth signin                     # confirm in the Binance App
 npm run agentic -- "Buy $20 of NVIDIA" --dry-run
 npm run agentic -- "Buy $20 of NVIDIA"</code></pre>
           <ol>
-            <li>Stamp decides. Anything but ALLOW stops here, and <code>baw</code> is never called.</li>
+            <li>Stamp decides. Anything but ALLOW stops here, and <code>baw</code> is never called. So does an xStock ALLOW: Binance's Agentic Wallet stock-trading guide covers bStock and Ondo tokens.</li>
             <li><code>baw market-order quote</code> for the ticket's contract address and dollars. The execution ticket checks the quoted token symbol, the dollars, the price (0.50%) and the age.</li>
             <li>You type <code>yes</code>. Stamp quotes and checks again, because the decision is only good for 120 s.</li>
             <li><code>baw market-order swap</code> with <code>--slippage 0.5</code>, then polls until <code>FINISHED</code> or <code>FAILED</code>. An order id is not a fill.</li>

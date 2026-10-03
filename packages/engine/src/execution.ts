@@ -45,6 +45,8 @@ export function prepareExecution(input: ExecuteInput): ExecutionTicket {
     approvalRequired: input.approvalRequired === true,
     swapSimulation: input.swapSimulation,
     approvalSimulation: input.approvalSimulation,
+    balanceQuoteAsset: input.balances?.quoteAsset ?? null,
+    balanceNative: input.balances?.native ?? null,
   };
 
   const finish = (block: ReasonCode | null): ExecutionTicket => {
@@ -90,6 +92,12 @@ export function prepareExecution(input: ExecuteInput): ExecutionTicket {
   const decided = new Dec(decision.tokenPriceUsd);
   draft.slippageBps = toInt(effective.minus(decided).div(decided).mul(BPS));
   if (draft.slippageBps > policy.maxSlippageBps) return finish("SLIPPAGE");
+
+  // E6b - the wallet can pay: enough of the stablecoin, and some BNB for gas. Checked before any
+  // approval or signature is asked for. A balance the Wallet API didn't report is not checked.
+  const haveQuote = parseDec(draft.balanceQuoteAsset);
+  const haveNative = parseDec(draft.balanceNative);
+  if ((haveQuote && haveQuote.lt(amountIn)) || (haveNative && haveNative.lte(0))) return finish("INSUFFICIENT_BALANCE");
 
   // E7 - what will be signed matches the ticket
   if (quote.executionMode === "RFQ") {
@@ -166,6 +174,8 @@ export function prepareAgenticExecution(input: AgenticExecuteInput & { quoteAsse
     approvalRequired: false,
     swapSimulation: null,
     approvalSimulation: null,
+    balanceQuoteAsset: null,
+    balanceNative: null,
   };
   const finish = (block: ReasonCode | null): ExecutionTicket => {
     const verdict: Verdict = block ? "BLOCK" : "ALLOW";
@@ -358,6 +368,13 @@ function narrateExecution(t: Omit<ExecutionTicket, "narration">): string {
       return `${head} The quote pays $${t.effectivePriceUsd} per token, ${t.slippageBps} bps worse than the decision saw. ${tail}`;
     case "TYPED_DATA_MISMATCH":
       return `${head} The order you would sign does not match the ticket (${describeChecks(t.typedDataChecks)}). ${tail}`;
+    case "INSUFFICIENT_BALANCE": {
+      const usdt = parseDec(t.balanceQuoteAsset);
+      const short = usdt && t.amountInUsd && usdt.lt(new Dec(t.amountInUsd));
+      return short
+        ? `${head} This wallet holds ${trim(t.balanceQuoteAsset)} USDT; the order needs $${t.amountInUsd}. Nothing was sent to sign. ${tail}`
+        : `${head} This wallet holds no BNB to pay gas on BSC. Add a little BNB, then review again. ${tail}`;
+    }
     case "APPROVAL_REQUIRED":
       return `${head} Approve USDT for the swap router first (one transaction in your wallet), then review again. ${tail}`;
     case "TX_MISMATCH":
