@@ -1905,3 +1905,13 @@ pre code,
   color: var(--btn-fg);
   text-decoration: none;
 }
+
+.wallet-steps {
+  margin: 0 0 12px;
+  padding-left: 20px;
+  font-size: 15px;
+}
+
+.wallet-steps li {
+  margin: 4px 0;
+}
