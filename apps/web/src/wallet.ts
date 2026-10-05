@@ -1,6 +1,7 @@
 /**
- * The human's own wallet. Binance Wallet first, then any other injected wallet. Stamp never
- * holds a key: the wallet signs or sends, and Stamp only checks what it is asked to sign.
+ * The human's own wallet: Binance Wallet only. Other injected wallets (MetaMask, Rabby, ...)
+ * are never picked, even when they sit on window.ethereum. Stamp never holds a key: the
+ * wallet signs or sends, and Stamp only checks what it is asked to sign.
  *
  * Binance Wallet detection, per https://developers.binance.com/docs/binance-w3w/evm-compatible-provider
  *  - inside the Binance app's dApp browser: window.binancew3w.ethereum (or window.ethereum.isBinance)
@@ -63,9 +64,7 @@ export function findWallet(): Found | null {
   const bin = announced.find((a) => BINANCE_RDNS.has(a.info.rdns));
   if (bin) return { provider: bin.provider, name: bin.info.name || "Binance Wallet", binance: true };
   if (w.ethereum?.isBinance) return { provider: w.ethereum, name: "Binance Wallet", binance: true };
-  const other = announced[0];
-  if (other) return { provider: other.provider, name: other.info.name, binance: false };
-  if (w.ethereum) return { provider: w.ethereum, name: "your wallet", binance: false };
+  // Anything else (MetaMask, Rabby, ...) is not Binance Wallet: Stamp shows how to get it instead.
   return null;
 }
 
@@ -81,6 +80,8 @@ export function binanceAppLink(url = location.href, chainId = 56): { bnc: string
 }
 
 export async function connect(): Promise<{ user: string; provider: Eip1193; name: string }> {
+  // Ask again in case the extension loaded after this page did.
+  window.dispatchEvent(new Event("eip6963:requestProvider"));
   const found = findWallet();
   if (!found) throw new Error("NO_WALLET");
   const accounts = (await found.provider.request({ method: "eth_requestAccounts" })) as string[];

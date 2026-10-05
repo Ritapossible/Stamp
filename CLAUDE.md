@@ -193,7 +193,7 @@ shell, errors passed through verbatim). The person signs `baw` in on their own m
 this container: US egress, and it is their wallet). `skills/stamp-gate/SKILL.md` is the agent
 skill.
 
-## Since 3 Oct (D27, D28)
+## Since 3 Oct (D27-D29)
 - Session map: Ondo's weekend `marketStatus: "offhours"` = closed. Replay = 621 tickets
   (Fri 25 Sep, Sat 26, Sun 27, Mon 28 Sep sets built with `scripts/build-replay.ts` from the
   `snapshots` branch).
@@ -203,4 +203,5 @@ skill.
 - Browser: `sendTx` / `signTypedData` re-check `eth_accounts` and chain 0x38 first;
   `accountsChanged` / `chainChanged` invalidate the review (`WALLET_CHANGED`).
 - `npm run agentic` stops xStock before `baw` (Binance documents bStock and Ondo only).
+- Browser wallet is Binance Wallet only (D29): Rabby, MetaMask etc. are never picked; they get the no-wallet help.
 - `main` is the repo branch; push every change to both `main` and the session branch.

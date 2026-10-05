@@ -210,3 +210,12 @@ transaction from another account or chain. Now every send or signature first con
 reviewed account and chain 56, and a change invalidates the review on screen. (3) Binance's
 Agentic Wallet stock-trading guide covers bStock and Ondo only, so `npm run agentic` stops an
 xStock ALLOW before calling `baw`.
+
+### D29 - Binance Wallet only; no fallback to other wallets (2026-10-05)
+**Why:** D22 ended with "and only then any other wallet". On a laptop with Rabby and no Binance
+Wallet, **connect Binance Wallet** opened Rabby, so the button said one wallet and opened
+another. This is a Binance Web3 Wallet hackathon, and the button names Binance. Now only the
+three Binance signals count (`window.binancew3w.ethereum`, EIP-6963 rdns `wallet.binance.com` /
+`com.binance.wallet`, `window.ethereum.isBinance`). Anything else gets the same help as no
+wallet: **open in Binance app** and **get Binance Wallet**. The page also asks for EIP-6963
+announcements again on click, in case the extension loaded after the page.
