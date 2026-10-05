@@ -2,7 +2,7 @@
 
 Drafts for the submission form and the demo video. Edit freely; every fact here is checked
 against the code and the live site as of 3 Oct 2026. The DevEx report is not here: it is
-`DEVEX.md`, sections 1-8, in your own words.
+`DEVEX.md`, sections 1-9, in your own words.
 
 - Submit: https://forms.gle/yToDUzaDMwWnq6R6A
 - DevEx template: https://forms.gle/EUQ39xf54GHjC2ys5
@@ -78,7 +78,7 @@ can be ALLOW. Phone or desktop both work; desktop is easier to read on the recor
 - [ ] One live fill of $20 or less (Binance Wallet on the site, or `npm run agentic`), from
       outside the US; send the BscScan link so it goes in the README.
 - [ ] B402 merchant for the agent wallet, then one paid `bag x402 buy`, if approval arrives in time.
-- [ ] `DEVEX.md` sections 1-8 in your words, then the DevEx form.
+- [ ] `DEVEX.md` sections 1-9 in your words, then the DevEx form.
 - [ ] Record the video; put the link in the README and the form.
 - [ ] Submit the form before Sun 11 Oct 12:00 UTC.
 - [ ] Last push before the lock: the hackathon freezes repos at 11 Oct 12:00 UTC. From then

@@ -10,7 +10,7 @@
  *                       https://raw.githubusercontent.com/Ritapossible/Stamp/snapshots
  *                       - used when the host has no local snapshots (Render free has no disk)
  *   WEB_DIR             built web page (default apps/web/dist); skipped if missing
- *   STAMP_TRADING_API_KEY + STAMP_TRADING_API_SECRET  → live Binance Trading API (RFQ)
+ *   STAMP_TRADING_API_KEY + STAMP_TRADING_API_SECRET  → live Binance Trading API (SWAP from Frankfurt)
  *   STAMP_FAKE_WALLET=1 → labelled fake wallet (vendor "fake"), demo only
  * The server never holds a signing key; the human's wallet signs every fill.
  */

@@ -16,3 +16,18 @@ jobs:
       - run: npm test
       - run: npm run build
       - run: npm run replay
+  agent:
+    # The Agent Studio agent is its own pnpm workspace (scaffolded by `bag init`). Its tests run
+    # in the root `npm test`; this job typechecks it against its own dependencies.
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: agent
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      - run: npx -y pnpm@10.24.0 install --frozen-lockfile
+      - run: npx tsc --noEmit -p .
+        working-directory: agent/app/agent

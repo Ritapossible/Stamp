@@ -50,9 +50,9 @@
           <h2>Standing order</h2>
           <div class="endpoint"><span class="m get">GET</span><code>/v1/standing</code></div>
           <div class="endpoint"><span class="m">POST</span><code>/v1/standing</code></div>
-          <p>List orders and <code>filledTodayUsd</code>, or create <code>{ intent, user }</code>. One active order at a time (<code>409</code>).</p>
+          <p><code>GET /v1/standing?user=0x…</code> lists that wallet's orders and its <code>filledTodayUsd</code>. <code>POST</code> creates <code>{ intent, user }</code>: one active order per wallet (<code>409</code>), and at most 25 active on the server (<code>503</code>).</p>
           <div class="endpoint"><span class="m">POST</span><code>/v1/standing/:id/{recheck,review,cancel,sent}</code></div>
-          <p><code>review</code> decides again before quoting, because the last check may be ten minutes old.</p>
+          <p>Body <code>{ user }</code> (plus <code>txHash</code> for <code>sent</code>): the wallet that owns the order, else <code>403</code>. <code>review</code> decides again before quoting, because the last check may be ten minutes old.</p>
 
           <h2>Health</h2>
           <div class="endpoint"><span class="m get">GET</span><code>/health</code></div>

@@ -2,13 +2,16 @@ import "../common";
 import { api, ApiError, type StandingOrder } from "../api";
 import { $, h, mount } from "../dom";
 import { carryOut, connectOrExplain, fact } from "../ticket";
+import { connectedAccount } from "../wallet";
 
-// --- standing order ---
+// --- standing order: each wallet sees and acts on its own order only ---
+let user: string | null = null;
+
 async function loadStanding(): Promise<void> {
   const body = $("standing-body");
-  let data: { orders: StandingOrder[]; filledTodayUsd: string };
+  let data: { orders: StandingOrder[]; filledTodayUsd: string } = { orders: [], filledTodayUsd: "0.00" };
   try {
-    data = await api.standing();
+    if (user) data = await api.standing(user);
   } catch (err) {
     return mount(body, h("p", { class: "placeholder" }, err instanceof ApiError && err.status === 501 ? "Standing orders are switched off on this server." : "Standing orders are unavailable right now."));
   }
@@ -32,11 +35,15 @@ async function loadStanding(): Promise<void> {
       const act = (a: "recheck" | "review" | "cancel", label: string, primary = false) =>
         h("button", { class: `btn small${primary ? "" : " ghost"}`, type: "button", onclick: async () => {
           try {
-            await api.standingAction(active.id, a);
+            await api.standingAction(active.id, a, active.user);
           } catch (err) {
             alert((err as Error).message);
           }
-          void loadStanding();
+          // A wallet that already connected to this site is read without a popup.
+void connectedAccount().then((a) => {
+  user = a;
+  void loadStanding();
+});
         } }, label);
       parts.push(h("div", { class: "ticket-actions" }, act("recheck", "recheck now"), active.state === "READY" ? act("review", "review →", true) : null, act("cancel", "cancel")));
       if (active.state === "AWAITING_SIGNATURE" && active.executionHash) {
@@ -49,10 +56,14 @@ async function loadStanding(): Promise<void> {
           try {
             const view = await api.execution(active.executionHash!);
             await carryOut(view, w, area, async () => {
-              await api.standingAction(active.id, "review");
-              void loadStanding();
+              await api.standingAction(active.id, "review", active.user);
+              // A wallet that already connected to this site is read without a popup.
+void connectedAccount().then((a) => {
+  user = a;
+  void loadStanding();
+});
             }, async (txHash) => {
-              await api.standingSent(active.id, txHash);
+              await api.standingSent(active.id, txHash, active.user);
             });
           } catch (err) {
             mount(area, h("p", { class: "notice error" }, (err as Error).message));
@@ -69,17 +80,35 @@ async function loadStanding(): Promise<void> {
     start.addEventListener("click", async () => {
       const w = await connectOrExplain(note);
       if (!w) return;
+      user = w.user;
       try {
         await api.createStanding(field.value.trim(), w.user);
-        void loadStanding();
+        // A wallet that already connected to this site is read without a popup.
+void connectedAccount().then((a) => {
+  user = a;
+  void loadStanding();
+});
       } catch (err) {
+        // 409: this wallet already has an active order, so show it instead of an error.
+        if (err instanceof ApiError && err.status === 409) return // A wallet that already connected to this site is read without a popup.
+void connectedAccount().then((a) => {
+  user = a;
+  void loadStanding();
+});
         mount(note, h("p", { class: "notice error" }, (err as Error).message));
       }
     });
     parts.push(h("div", { class: "order-form" }, field, start), note);
-    if (!shown) parts.unshift(h("p", { class: "placeholder" }, "No standing order yet. Park one: it is re-checked every ten minutes and waits for your signature when the verdict is ALLOW."));
+    if (!shown)
+      parts.unshift(
+        h("p", { class: "placeholder" }, user ? "No standing order for this wallet yet. Park one: it is re-checked every ten minutes and waits for your signature when the verdict is ALLOW." : "Park an order: it is re-checked every ten minutes and waits for your signature when the verdict is ALLOW. Each wallet sees only its own order."),
+      );
   }
   mount(body, ...parts);
 }
 
-void loadStanding();
+// A wallet that already connected to this site is read without a popup.
+void connectedAccount().then((a) => {
+  user = a;
+  void loadStanding();
+});

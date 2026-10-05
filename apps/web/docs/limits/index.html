@@ -21,6 +21,8 @@
             <li><b>Only orders that ask Stamp first.</b> Binance Wallet and the Trading API don't know about Stamp tickets. A caller that skips Stamp can still trade.</li>
             <li>Buy only, spot only, BSC mainnet only, $20 an order ($50 a day for standing orders), and a person signs every fill.</li>
             <li>The server never holds a signing key. The approval is for the exact order amount, never unlimited.</li>
+            <li>In the browser, only Binance Wallet connects. MetaMask, Rabby and other wallets are never picked, even when they are installed.</li>
+            <li>A standing order belongs to the wallet address that parked it, and only that address can act on it. Naming an address is not a login, but nothing moves without that wallet's signature. The server holds at most 25 active standing orders, and Render's restarts clear them (see Hosting).</li>
           </ol>
 
           <h2>Data, per issuer</h2>
@@ -58,7 +60,7 @@
           </ul>
 
           <h2>Hosting</h2>
-          <p>This site runs on a free Render instance. A ping every ten minutes keeps it awake, but it has no disk, so tickets made here are lost when it restarts or redeploys. A ticket and its inputs still verify anywhere with <code>POST /v1/verify</code>, and the recorded fixtures verify offline with <code>npm run replay</code>.</p>
+          <p>This site runs on a free Render instance. A ping every ten minutes keeps it awake, but it has no disk, so tickets and standing orders made here are lost when it restarts or redeploys. A ticket and its inputs still verify anywhere with <code>POST /v1/verify</code>, and the recorded fixtures verify offline with <code>npm run replay</code>.</p>
           
         </article>
       </div>

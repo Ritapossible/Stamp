@@ -41,9 +41,11 @@ It runs on a free host that a ping every 10 minutes keeps awake.
 > **Live mainnet fill:** _not yet. The Frankfurt review reached `APPROVAL_REQUIRED` with matching
 > approve calldata; the first ≤ $20 fill and its BscScan link go here._
 >
-> **Status (2026-09-29).** Working and deployed: the verdict engine, the Binance data client,
-> the free API with replay and verify, execution tickets (SWAP and RFQ), the standing order,
-> and the multi-page site with docs (light and dark). Built and tested, not yet run live: the
+> **Status (2026-10-05).** Working and deployed: the verdict engine, the Binance data client,
+> the free API with replay and verify, execution tickets (SWAP and RFQ) with a Wallet API
+> balance check, Binance Wallet in the browser (Binance Wallet only; no other wallet is ever
+> picked), standing orders (one per wallet, re-checked every 10 minutes), and the multi-page
+> site with docs (light and dark). Built and tested, not yet run live: the
 > Agent Studio agent (MCP tools work locally; the paid `/x402` route waits on B402 merchant
 > approval) and the Agentic Wallet path (tested against a scripted `baw`; the first live swap
 > has to run on a signed-in wallet outside the US).

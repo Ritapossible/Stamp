@@ -7,7 +7,8 @@ import { ExecError, type ExecutionService } from "./execution.js";
 import type { TicketStore } from "./tickets.js";
 
 /**
- * One standing order: one intent, one policy, rechecked every 10 minutes.
+ * Standing orders: one intent, one policy, rechecked every 10 minutes. Each wallet has at most
+ * one active order and its own daily cap; the server holds at most MAX_ACTIVE active orders.
  *
  *   PARKED ──recheck ALLOW──► READY ──review (fresh decision + execution ALLOW)──► AWAITING_SIGNATURE
  *     ▲  ◄──recheck WARN/BLOCK── READY                                                │ sign + submit
@@ -41,6 +42,8 @@ export interface StandingOrder {
 }
 
 const ACTIVE: StandingState[] = ["PARKED", "READY", "AWAITING_SIGNATURE", "SUBMITTED"];
+/** Every active order is re-decided each tick against live Binance data, so the total is capped. */
+export const MAX_ACTIVE = 25;
 
 export class StandingService {
   private readonly orders = new Map<string, StandingOrder>();
@@ -78,18 +81,20 @@ export class StandingService {
     return svc;
   }
 
-  list(): StandingOrder[] {
-    return [...this.orders.values()];
+  /** All orders, or one wallet's orders when `user` is given. */
+  list(user?: string): StandingOrder[] {
+    const all = [...this.orders.values()];
+    return user ? all.filter((o) => o.user === user.toLowerCase()) : all;
   }
 
   get(id: string): StandingOrder | null {
     return this.orders.get(id) ?? null;
   }
 
-  /** USD filled today (UTC day), across all standing orders. */
-  filledTodayUsd(now = this.deps.now()): string {
+  /** USD filled today (UTC day): one wallet's when `user` is given, else across all orders. */
+  filledTodayUsd(now = this.deps.now(), user?: string): string {
     const day = now.slice(0, 10);
-    return this.list()
+    return this.list(user)
       .filter((o) => o.state === "FILLED" && o.filledAt?.slice(0, 10) === day && o.filledUsd)
       .reduce((sum, o) => sum.plus(new Dec(o.filledUsd!)), new Dec(0))
       .toFixed(2);
@@ -99,7 +104,8 @@ export class StandingService {
     const errors = validatePolicy(policy);
     if (errors.length) throw new ExecError(`bad policy: ${errors.join("; ")}`, 400);
     if (!/^0x[0-9a-fA-F]{40}$/.test(user)) throw new ExecError("user must be a 0x address", 400);
-    if (this.list().some((o) => ACTIVE.includes(o.state))) throw new ExecError("a standing order is already active; cancel it first", 409);
+    if (this.list(user).some((o) => ACTIVE.includes(o.state))) throw new ExecError("this wallet already has an active standing order; cancel it first", 409);
+    if (this.list().filter((o) => ACTIVE.includes(o.state)).length >= MAX_ACTIVE) throw new ExecError("this demo server is holding the most standing orders it rechecks; try again later", 503);
     const now = this.deps.now();
     const order: StandingOrder = {
       id: `so-${++this.seq}`,
@@ -220,7 +226,7 @@ export class StandingService {
       intent: o.intent,
       policy: o.policy,
       lastOfficialClose: ticker ? this.deps.snapshots().lastOfficialClose(ticker, market.asOf) : null,
-      filledTodayUsd: this.filledTodayUsd(market.asOf),
+      filledTodayUsd: this.filledTodayUsd(market.asOf, o.user),
     };
     const ticket = decide(input);
     await this.deps.store.put({ ticket, input });
@@ -232,6 +238,15 @@ export class StandingService {
     const o = this.orders.get(id);
     if (!o) throw new ExecError("standing order not found", 404);
     return o;
+  }
+
+  /**
+   * The order must belong to the wallet the caller names. This is not authentication (anyone
+   * can name an address); it stops one visitor acting on another's order by id. Funds are
+   * never at stake here: only the owner's wallet can sign.
+   */
+  assertOwner(id: string, user: string): void {
+    if (this.require(id).user !== user.toLowerCase()) throw new ExecError("this standing order belongs to another wallet", 403);
   }
 
   private async transition(o: StandingOrder, state: StandingState, note: string, ticketHash: string | null): Promise<void> {

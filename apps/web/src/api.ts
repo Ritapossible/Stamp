@@ -141,8 +141,8 @@ export const api = {
   submit: (hash: string, signature: string) => call<ExecView>("POST", `/v1/execution/${hash}/submit`, { signature }),
   sent: (hash: string, txHash: string) => call<ExecView>("POST", `/v1/execution/${hash}/sent`, { txHash }),
   execution: (hash: string) => call<ExecView>("GET", `/v1/execution/${hash}`),
-  standingSent: (id: string, txHash: string) => call<StandingOrder>("POST", `/v1/standing/${id}/sent`, { txHash }),
-  standing: () => call<{ orders: StandingOrder[]; filledTodayUsd: string }>("GET", "/v1/standing"),
+  standingSent: (id: string, txHash: string, user: string) => call<StandingOrder>("POST", `/v1/standing/${id}/sent`, { txHash, user }),
+  standing: (user: string) => call<{ orders: StandingOrder[]; filledTodayUsd: string }>("GET", `/v1/standing?user=${encodeURIComponent(user)}`),
   createStanding: (intent: string, user: string) => call<StandingOrder>("POST", "/v1/standing", { intent, user }),
-  standingAction: (id: string, action: "recheck" | "review" | "cancel") => call<StandingOrder>("POST", `/v1/standing/${id}/${action}`),
+  standingAction: (id: string, action: "recheck" | "review" | "cancel", user: string) => call<StandingOrder>("POST", `/v1/standing/${id}/${action}`, { user }),
 };

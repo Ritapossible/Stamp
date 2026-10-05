@@ -4,7 +4,7 @@ import { buildUniverse, type CaptureFile, FakeWallet, fromCapture, SnapshotStore
 import { describe, expect, it } from "vitest";
 import { createApp, type MarketSource } from "./app.js";
 import { ExecutionService } from "./execution.js";
-import { StandingService } from "./standing.js";
+import { MAX_ACTIVE, StandingService } from "./standing.js";
 import { TicketStore } from "./tickets.js";
 
 const root = fileURLToPath(new URL("../../../", import.meta.url));
@@ -100,8 +100,8 @@ describe("standing order", () => {
       const created = await call("POST", "/v1/standing", { intent: "Buy $20 of NVIDIA", user: USER });
       expect(created.body.state).toBe("READY");
       const id = created.body.id;
-      expect((await call("POST", `/v1/standing/${id}/review`)).body.state).toBe("AWAITING_SIGNATURE");
-      expect((await call("POST", `/v1/standing/${id}/submit`, { signature: SIG })).body.state).toBe("SUBMITTED");
+      expect((await call("POST", `/v1/standing/${id}/review`, { user: USER })).body.state).toBe("AWAITING_SIGNATURE");
+      expect((await call("POST", `/v1/standing/${id}/submit`, { signature: SIG, user: USER })).body.state).toBe("SUBMITTED");
       await standing.tick();
       expect(standing.get(id)!.state).toBe("FILLED");
       expect(standing.filledTodayUsd()).toBe(`${20 * i}.00`);
@@ -117,15 +117,34 @@ describe("standing order", () => {
     const a = await call("POST", "/v1/standing", { intent: "Buy 1 NFLX", user: USER });
     expect(a.body.state).toBe("PARKED");
     expect((await call("POST", "/v1/standing", { intent: "Buy $20 of NVIDIA", user: USER })).status).toBe(409);
-    expect((await call("POST", `/v1/standing/${a.body.id}/review`)).status).toBe(409);
-    expect((await call("POST", `/v1/standing/${a.body.id}/cancel`)).body.state).toBe("CANCELLED");
-    expect((await call("GET", "/v1/standing")).body.orders).toHaveLength(1);
+    expect((await call("POST", `/v1/standing/${a.body.id}/review`, { user: USER })).status).toBe(409);
+    expect((await call("POST", `/v1/standing/${a.body.id}/cancel`, { user: USER })).body.state).toBe("CANCELLED");
+    expect((await call("GET", `/v1/standing?user=${USER}`)).body.orders).toHaveLength(1);
+  });
+
+  it("keeps each wallet's orders, cap and actions to that wallet", async () => {
+    const { call } = await setup();
+    const OTHER = "0x2222222222222222222222222222222222222222";
+    const a = await call("POST", "/v1/standing", { intent: "Buy 1 NFLX", user: USER });
+    // another visitor can park their own order, and doesn't see or touch the first one
+    expect((await call("POST", "/v1/standing", { intent: "Buy 1 NFLX", user: OTHER })).status).toBe(200);
+    expect((await call("GET", `/v1/standing?user=${OTHER}`)).body.orders.map((o: { user: string }) => o.user)).toEqual([OTHER]);
+    expect((await call("POST", `/v1/standing/${a.body.id}/cancel`, { user: OTHER })).status).toBe(403);
+    expect((await call("POST", `/v1/standing/${a.body.id}/cancel`)).status).toBe(400);
+    expect((await call("GET", "/v1/standing")).status).toBe(400);
+  });
+
+  it("caps how many active orders the server holds", async () => {
+    const { call } = await setup();
+    const addr = (i: number) => `0x${i.toString(16).padStart(40, "0")}`;
+    for (let i = 1; i <= MAX_ACTIVE; i++) expect((await call("POST", "/v1/standing", { intent: "Buy 1 NFLX", user: addr(i) })).status).toBe(200);
+    expect((await call("POST", "/v1/standing", { intent: "Buy 1 NFLX", user: addr(MAX_ACTIVE + 1) })).status).toBe(503);
   });
 
   it("parks again when the human does not sign before the quote expires", async () => {
     const { call, standing, advance } = await setup();
     const { body } = await call("POST", "/v1/standing", { intent: "Buy $20 of NVIDIA", user: USER });
-    await call("POST", `/v1/standing/${body.id}/review`);
+    await call("POST", `/v1/standing/${body.id}/review`, { user: USER });
     advance(26);
     await standing.tick(); // one step per tick: the expired quote parks the order
     expect(standing.get(body.id)!.state).toBe("PARKED");

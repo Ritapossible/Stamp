@@ -79,6 +79,18 @@ export function binanceAppLink(url = location.href, chainId = 56): { bnc: string
   return { bnc, http: `https://app.binance.com/en/download?_dp=${btoa(bnc)}` };
 }
 
+/** The Binance Wallet account this site is already connected to, without opening the wallet. */
+export async function connectedAccount(): Promise<string | null> {
+  const found = findWallet();
+  if (!found) return null;
+  try {
+    const accounts = (await found.provider.request({ method: "eth_accounts" })) as string[];
+    return accounts?.[0] ?? null;
+  } catch {
+    return null;
+  }
+}
+
 export async function connect(): Promise<{ user: string; provider: Eip1193; name: string }> {
   // Ask again in case the extension loaded after this page did.
   window.dispatchEvent(new Event("eip6963:requestProvider"));

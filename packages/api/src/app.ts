@@ -1,6 +1,7 @@
 import { type DecideInput, decide, type DecisionTicket, parseIntent, ticketHash } from "@stamp/engine";
 import type { MarketInputs, SnapshotStore } from "@stamp/sources";
 import { Hono } from "hono";
+import { bodyLimit } from "hono/body-limit";
 import { replayAll } from "./replay.js";
 import { effectivePolicy, TicketRequest, VerifyRequest } from "./schema.js";
 import { type TicketStore, TicketTamperedError } from "./tickets.js";
@@ -35,6 +36,8 @@ const Address = z.string().regex(/^0x[0-9a-fA-F]{40}$/);
 const ExecutionRequest = z.object({ decisionHash: z.string().regex(/^[0-9a-f]{64}$/), user: Address }).strict();
 const SubmitRequest = z.object({ signature: z.string().regex(/^0x[0-9a-fA-F]+$/).max(1000) }).strict();
 const StandingRequest = z.object({ intent: z.string().min(1).max(200), policy: z.record(z.string(), z.unknown()).optional(), user: Address }).strict();
+const OwnerRequest = z.object({ user: Address }).strict();
+const TxHash = z.string().regex(/^0x[0-9a-fA-F]{64}$/);
 
 /** What the browser needs to show the ticket and hand the exact typed data to the wallet. */
 function execView(rec: ExecRecord) {
@@ -66,10 +69,22 @@ export function createApp(deps: AppDeps): Hono {
   const limit = deps.rateLimitPerMin ?? 60;
   const buckets = new Map<string, { tokens: number; at: number }>();
 
+  app.use("*", async (c, next) => {
+    await next();
+    c.header("X-Content-Type-Options", "nosniff");
+    c.header("Referrer-Policy", "strict-origin-when-cross-origin");
+  });
+
+  // The largest legitimate body is a recorded decision input sent back to /v1/verify.
+  app.use("/v1/*", bodyLimit({ maxSize: 1024 * 1024, onError: (c) => c.json({ error: "request body too large (1 MB max)" }, 413) }));
+
   app.use("/v1/*", async (c, next) => {
     if (limit > 0) {
       const key = c.req.header("x-forwarded-for")?.split(",")[0]?.trim() || c.req.header("x-real-ip") || "local";
       const now = Date.now();
+      // A bucket idle for a minute is full again, so dropping it changes nothing; this keeps
+      // the map bounded when callers vary the forwarded address.
+      if (buckets.size > 5000) for (const [k, v] of buckets) if (now - v.at > 60_000) buckets.delete(k);
       const b = buckets.get(key) ?? { tokens: limit, at: now };
       b.tokens = Math.min(limit, b.tokens + ((now - b.at) / 60_000) * limit);
       b.at = now;
@@ -190,7 +205,7 @@ export function createApp(deps: AppDeps): Hono {
   app.post("/v1/execution/:hash/sent", (c) =>
     guarded(c, async () => {
       if (!deps.execution) return c.json({ error: NO_WALLET }, 501);
-      const body = z.object({ txHash: z.string() }).strict().safeParse(await c.req.json().catch(() => null));
+      const body = z.object({ txHash: TxHash }).strict().safeParse(await c.req.json().catch(() => null));
       if (!body.success) return c.json({ error: "bad request", issues: body.error.issues }, 400);
       return c.json(execView(await deps.execution.sent(c.req.param("hash"), body.data.txHash)));
     }),
@@ -210,8 +225,13 @@ export function createApp(deps: AppDeps): Hono {
     }),
   );
 
-  // - the one standing order -
-  app.get("/v1/standing", (c) => (deps.standing ? c.json({ orders: deps.standing.list(), filledTodayUsd: deps.standing.filledTodayUsd() }) : c.json({ error: "standing orders disabled" }, 501)));
+  // - standing orders: one active order per wallet -
+  app.get("/v1/standing", (c) => {
+    if (!deps.standing) return c.json({ error: "standing orders disabled" }, 501);
+    const user = Address.safeParse(c.req.query("user"));
+    if (!user.success) return c.json({ error: "pass ?user=0x… (the wallet whose orders to list)" }, 400);
+    return c.json({ orders: deps.standing.list(user.data), filledTodayUsd: deps.standing.filledTodayUsd(undefined, user.data) });
+  });
 
   app.post("/v1/standing", (c) =>
     guarded(c, async () => {
@@ -226,10 +246,14 @@ export function createApp(deps: AppDeps): Hono {
     }),
   );
 
+  // Every action names the wallet that owns the order (body `user`), so one visitor can't act on another's.
   for (const action of ["recheck", "review", "cancel"] as const) {
     app.post(`/v1/standing/:id/${action}`, (c) =>
       guarded(c, async () => {
         if (!deps.standing) return c.json({ error: "standing orders disabled" }, 501);
+        const body = OwnerRequest.safeParse(await c.req.json().catch(() => null));
+        if (!body.success) return c.json({ error: "bad request", issues: body.error.issues }, 400);
+        deps.standing.assertOwner(c.req.param("id"), body.data.user);
         return c.json(await deps.standing[action](c.req.param("id")));
       }),
     );
@@ -238,8 +262,9 @@ export function createApp(deps: AppDeps): Hono {
   app.post("/v1/standing/:id/sent", (c) =>
     guarded(c, async () => {
       if (!deps.standing) return c.json({ error: "standing orders disabled" }, 501);
-      const body = z.object({ txHash: z.string().regex(/^0x[0-9a-fA-F]{64}$/) }).strict().safeParse(await c.req.json().catch(() => null));
+      const body = OwnerRequest.extend({ txHash: TxHash }).strict().safeParse(await c.req.json().catch(() => null));
       if (!body.success) return c.json({ error: "bad request", issues: body.error.issues }, 400);
+      deps.standing.assertOwner(c.req.param("id"), body.data.user);
       return c.json(await deps.standing.sent(c.req.param("id"), body.data.txHash));
     }),
   );
@@ -247,8 +272,9 @@ export function createApp(deps: AppDeps): Hono {
   app.post("/v1/standing/:id/submit", (c) =>
     guarded(c, async () => {
       if (!deps.standing) return c.json({ error: "standing orders disabled" }, 501);
-      const body = SubmitRequest.safeParse(await c.req.json().catch(() => null));
+      const body = SubmitRequest.extend({ user: Address }).strict().safeParse(await c.req.json().catch(() => null));
       if (!body.success) return c.json({ error: "bad request", issues: body.error.issues }, 400);
+      deps.standing.assertOwner(c.req.param("id"), body.data.user);
       return c.json(await deps.standing.submit(c.req.param("id"), body.data.signature));
     }),
   );

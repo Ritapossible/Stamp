@@ -25,7 +25,7 @@ export interface ExecRecord {
 export class ExecError extends Error {
   constructor(
     message: string,
-    readonly status: 400 | 404 | 409 | 502,
+    readonly status: 400 | 403 | 404 | 409 | 502 | 503,
   ) {
     super(message);
   }

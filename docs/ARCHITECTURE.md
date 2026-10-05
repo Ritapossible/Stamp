@@ -124,7 +124,7 @@ The engine is pure: data in, ticket out. Everything that does I/O lives in `sour
 |---|---|
 | `server.ts` | Routes (§8). The same body validation (zod) is used by HTTP and MCP. |
 | `tickets.ts` | Append-only JSONL store, indexed by hash. `GET /v1/tickets/:hash` re-hashes the stored ticket on read and returns 500 if it drifts. |
-| `standing.ts` | The single standing order state machine (§9). The daily cap is computed from `FILLED` tickets. |
+| `standing.ts` | The standing order state machine (§9): one active order per wallet, 25 on the server. Each wallet's daily cap is computed from its `FILLED` orders. |
 | `clock.ts` | Real clock, or a fixture clock when `asOf` is supplied (replay only). |
 
 ### 4.4 `apps/web`
@@ -359,7 +359,8 @@ interface DecisionTicket {
 
 ## 9. Standing order (`standing.ts`)
 
-There is one policy, one ticker and one USD amount.
+Each order has one policy, one ticker and one USD amount. Each wallet has at most one active
+order, and the server holds at most 25 active orders, since every tick re-decides each one.
 
 ```
 PARKED ──(every 10 min)──► RECHECK
@@ -374,7 +375,7 @@ READY/AWAITING_SIGNATURE time out (quote TTL) ──► PARKED
 The worker never holds a key. Every state change appends the order's full snapshot to
 `data/standing.jsonl` (the last line per id wins on restart). Each tick does one step per
 order: an expired quote parks the order, and the next tick re-decides it. `FILLED` is
-terminal; the daily cap counts every order filled that UTC day. Implemented in
+terminal; the daily cap counts every order that wallet filled that UTC day. Implemented in
 `packages/api/src/standing.ts` and `execution.ts`.
 
 ## 10. HTTP surface
@@ -391,8 +392,8 @@ Free (judges and web):
 | POST | `/v1/execution` | `{ decisionHash, user }` → quote, then `{ wallet, ticket, typedData }`. Only a stored ALLOW decision is quoted (else 409). `typedData` is returned only when the execution ticket is ALLOW. 501 when no wallet is configured. |
 | POST | `/v1/execution/:hash/submit` | `{ signature }` → forwards the human's signature. Refused unless the execution is ALLOW, not yet submitted, and the quote is under 30 s old. |
 | GET | `/v1/execution/:hash` | Status, polled from the wallet (`PENDING` / `FILLED` / `FAILED`). |
-| GET/POST | `/v1/standing` | List orders plus `filledTodayUsd`, or create `{ intent, policy?, user }`. Only one active order at a time (409). |
-| POST | `/v1/standing/:id/{recheck,review,submit,cancel}` | State transitions (§9). `review` re-decides first, because the last decision may be 10 minutes old. |
+| GET/POST | `/v1/standing` | `GET ?user=0x…` lists that wallet's orders plus its `filledTodayUsd`; `POST` creates `{ intent, policy?, user }`. One active order per wallet (409), at most 25 active on the server (503). |
+| POST | `/v1/standing/:id/{recheck,review,submit,sent,cancel}` | State transitions (§9). Body names the owning wallet `{ user }`, else 403. `review` re-decides first, because the last decision may be 10 minutes old. |
 
 Wallet selection at startup: `STAMP_TRADING_API_KEY` + `STAMP_TRADING_API_SECRET` → Trading API;
 `STAMP_FAKE_WALLET=1` → the labelled fake wallet; neither → execution routes answer 501.

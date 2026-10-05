@@ -219,3 +219,18 @@ three Binance signals count (`window.binancew3w.ethereum`, EIP-6963 rdns `wallet
 `com.binance.wallet`, `window.ethereum.isBinance`). Anything else gets the same help as no
 wallet: **open in Binance app** and **get Binance Wallet**. The page also asks for EIP-6963
 announcements again on click, in case the extension loaded after the page.
+
+### D30 - Standing orders belong to a wallet (2026-10-05)
+**Why:** The standing order was one per server. The first visitor to park an order blocked
+everyone else (409), every visitor saw that order with its cancel button, and all visitors
+shared one $50 daily cap. With several judges on the live site that is a broken demo. Now
+each wallet has at most one active order, `GET /v1/standing?user=` lists only that wallet's
+orders, its daily cap counts only its own fills, and every action must name the owning wallet
+(else 403). Naming an address is not authentication, but nothing here moves funds: only the
+owner's wallet can sign. The server holds at most 25 active orders (503 after that), because
+every 10-minute tick re-decides each one against live Binance data. The page reads an already
+connected Binance Wallet with `eth_accounts`, so no popup opens on load.
+
+Same pass, small hardening: a 1 MB body limit on `/v1/*`, `txHash` validated on
+`/v1/execution/:hash/sent`, idle rate-limit buckets dropped so the map stays bounded, and
+`nosniff` / `Referrer-Policy` headers.
