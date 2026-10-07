@@ -32,6 +32,16 @@ export class ExecError extends Error {
 }
 
 const ADDRESS = /^0x[0-9a-fA-F]{40}$/;
+/** Binance's Trading API refuses smaller orders: "Minimum order amount is 5 USD." (code 40375). */
+export const BINANCE_MIN_ORDER_USD = "5";
+
+/** Binance's error, said plainly: the code and message, without the request URL. */
+function walletError(err: unknown): string {
+  const body = (err as { body?: { code?: unknown; msg?: unknown; message?: unknown } } | null)?.body;
+  const msg = body?.msg ?? body?.message;
+  if (typeof msg === "string" && msg) return `Binance said: ${msg}${body?.code !== undefined ? ` (code ${String(body.code)})` : ""}`;
+  return `wallet: ${err instanceof Error ? err.message : String(err)}`;
+}
 /** Binance quotes expire in about 30 s; a signature after that is refused before submitting. */
 const SUBMIT_WINDOW_SEC = 30;
 
@@ -64,6 +74,9 @@ export class ExecutionService {
     if (decision.verdict !== "ALLOW" || !decision.chosen || !decision.notionalUsd) {
       throw new ExecError(`decision is ${decision.verdict} (${decision.reasons.join(", ")}); only ALLOW can be signed`, 409);
     }
+    if (new Dec(decision.notionalUsd).lt(BINANCE_MIN_ORDER_USD)) {
+      throw new ExecError(`Binance's minimum order is $${BINANCE_MIN_ORDER_USD}; this order is $${decision.notionalUsd}. Check an order of $${BINANCE_MIN_ORDER_USD} or more (Stamp's cap is $20).`, 409);
+    }
     const quoteAsset = this.deps.quoteAsset ?? BSC_USDT;
     const amountInRaw = new Dec(decision.notionalUsd).mul(new Dec(10).pow(18)).toFixed(0);
 
@@ -73,7 +86,7 @@ export class ExecutionService {
       quote = await this.deps.wallet.quote({ fromToken: quoteAsset, toToken: decision.chosen.contractAddress, amountInRaw, user });
       prepared = await this.deps.wallet.prepare(quote, user, stored.input.policy.maxSlippageBps);
     } catch (err) {
-      throw new ExecError(`wallet: ${err instanceof Error ? err.message : String(err)}`, 502);
+      throw new ExecError(walletError(err), 502);
     }
     const approvalSimulation = prepared.approvalTx ? await this.deps.wallet.simulate(prepared.approvalTx, user) : null;
     // Without the allowance the swap cannot simulate; the ticket says "approve first" instead.
@@ -145,7 +158,7 @@ export class ExecutionService {
       rec.submittedOrderId = orderId;
       rec.status = "PENDING";
     } catch (err) {
-      throw new ExecError(`wallet: ${err instanceof Error ? err.message : String(err)}`, 502);
+      throw new ExecError(walletError(err), 502);
     }
     return rec;
   }

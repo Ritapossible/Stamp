@@ -759,6 +759,7 @@ select.order-input {
   border: 1px solid var(--line-strong);
   font: 400 14px/1.6 var(--mono);
   color: var(--fg-2);
+  overflow-wrap: anywhere;
 }
 
 .notice.error {

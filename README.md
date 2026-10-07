@@ -39,7 +39,7 @@ It runs on a free host that a ping every 10 minutes keeps awake.
 
 > **Demo video:** _not recorded yet - the link goes here._
 > **Live mainnet fill:** _not yet. The Frankfurt review reached `APPROVAL_REQUIRED` with matching
-> approve calldata; the first ≤ $20 fill and its BscScan link go here._
+> approve calldata; the first $5-$20 fill (Binance's minimum is $5) and its BscScan link go here._
 >
 > **Status (2026-10-05).** Working and deployed: the verdict engine, the Binance data client,
 > the free API with replay and verify, execution tickets (SWAP and RFQ) with a Wallet API

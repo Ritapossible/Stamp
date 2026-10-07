@@ -12,7 +12,7 @@ EDT is in effect (all of this window). DST ends Sun 1 Nov and starts Sun 8 Mar, 
 > link previews, and a 621-ticket replay that includes a real weekend. CI is green.
 >
 > **Left, and only you can do these** (details in `docs/SUBMISSION.md`):
-> 1. One live fill of $20 or less, from outside the US, during US hours. Send the BscScan link.
+> 1. One live fill of $5 to $20 (Binance's minimum is $5), from outside the US, during US hours. Send the BscScan link.
 > 2. B402 merchant for the agent wallet, then one paid `bag x402 buy` (if approved in time).
 > 3. `DEVEX.md` sections 1-9 in your words, then the DevEx form.
 > 4. Record the video (script in `docs/SUBMISSION.md`), add the link to the README.

@@ -19,7 +19,7 @@
           <h2>Scope</h2>
           <ol>
             <li><b>Only orders that ask Stamp first.</b> Binance Wallet and the Trading API don't know about Stamp tickets. A caller that skips Stamp can still trade.</li>
-            <li>Buy only, spot only, BSC mainnet only, $20 an order ($50 a day for standing orders), and a person signs every fill.</li>
+            <li>Buy only, spot only, BSC mainnet only, $20 an order ($50 a day for standing orders), and a person signs every fill. Binance's Trading API refuses orders under $5 (code 40375), so a smaller ALLOW stops at review.</li>
             <li>The server never holds a signing key. The approval is for the exact order amount, never unlimited.</li>
             <li>In the browser, only Binance Wallet connects. MetaMask, Rabby and other wallets are never picked, even when they are installed.</li>
             <li>A standing order belongs to the wallet address that parked it, and only that address can act on it. Naming an address is not a login, but nothing moves without that wallet's signature. The server holds at most 25 active standing orders, and Render's restarts clear them (see Hosting).</li>

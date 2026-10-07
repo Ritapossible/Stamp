@@ -84,6 +84,15 @@ describe("one-off execution", () => {
     expect(r.body.error).toMatch(/review again/);
   });
 
+  it("stops an ALLOW under Binance's $5 minimum before asking Binance for a quote", async () => {
+    const { call } = await setup();
+    const { body: t } = await call("POST", "/v1/tickets", { intent: "Buy $0.01 of NVIDIA" });
+    expect(t.ticket.verdict).toBe("ALLOW");
+    const review = await call("POST", "/v1/execution", { decisionHash: t.ticket.hash, user: USER });
+    expect(review.status).toBe(409);
+    expect(review.body.error).toMatch(/minimum order is \$5; this order is \$0\.01/);
+  });
+
   it("validates inputs", async () => {
     const { call } = await setup();
     expect((await call("POST", "/v1/execution", { decisionHash: "x", user: USER })).status).toBe(400);

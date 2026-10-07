@@ -75,7 +75,7 @@ can be ALLOW. Phone or desktop both work; desktop is easier to read on the recor
 
 ## Before you submit
 
-- [ ] One live fill of $20 or less (Binance Wallet on the site, or `npm run agentic`), from
+- [ ] One live fill of $5 to $20 (Binance's minimum order is $5) (Binance Wallet on the site, or `npm run agentic`), from
       outside the US; send the BscScan link so it goes in the README.
 - [ ] B402 merchant for the agent wallet, then one paid `bag x402 buy`, if approval arrives in time.
 - [ ] `DEVEX.md` sections 1-9 in your words, then the DevEx form.
