@@ -114,7 +114,7 @@ function noWalletHelp(): HTMLElement {
   return h(
     "div",
     { class: "notice" },
-    h("p", { style: "margin:0 0 12px" }, "Sign with Binance Wallet. On a phone, open this page inside the Binance app; on a computer, install the Binance Wallet extension. Any other BSC wallet works too."),
+    h("p", { style: "margin:0 0 12px" }, "Sign with Binance Wallet. On a phone, open this page inside the Binance app; on a computer, install the Binance Wallet extension. Only Binance Wallet can sign here."),
     h("div", { class: "hash-row" }, h("a", { class: "btn small", href: link.http }, "open in Binance app →"), h("a", { class: "chip", href: "https://www.binance.com/en/web3wallet", target: "_blank", rel: "noopener" }, "get Binance Wallet ↗")),
   );
 }
