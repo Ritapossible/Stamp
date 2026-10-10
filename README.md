@@ -37,7 +37,7 @@ It runs on a free host that a ping every 10 minutes keeps awake.
   <img src="docs/screenshots/hero-light-phone.png" alt="Stamp home page on a phone, light theme" width="28%" />
 </p>
 
-> **Demo video:** _not recorded yet - the link goes here._
+> **Demo video (3:38):** https://youtu.be/mLF6l5rf4W0
 > **Live mainnet fill:** _not yet. The Frankfurt review reached `APPROVAL_REQUIRED` with matching
 > approve calldata; the first $5-$20 fill (Binance's minimum is $5) and its BscScan link go here._
 >

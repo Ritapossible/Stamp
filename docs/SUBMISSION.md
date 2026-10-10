@@ -18,7 +18,7 @@ off-hours price are checked in code, and every answer is hashed, before anything
 **Links**
 - Live: https://stamp-iizn.onrender.com
 - Repo: https://github.com/Ritapossible/Stamp
-- Video: _(your link)_
+- Video: https://youtu.be/mLF6l5rf4W0
 
 **Description (about 200 words)**
 
@@ -79,7 +79,7 @@ can be ALLOW. Phone or desktop both work; desktop is easier to read on the recor
       outside the US; send the BscScan link so it goes in the README.
 - [ ] B402 merchant for the agent wallet, then one paid `bag x402 buy`, if approval arrives in time.
 - [ ] `DEVEX.md` sections 1-9 in your words, then the DevEx form.
-- [ ] Record the video; put the link in the README and the form.
-- [ ] Submit the form before Sun 11 Oct 12:00 UTC.
+- [x] Record the video; put the link in the README and the form.
+- [x] Submit the form before Sun 11 Oct 12:00 UTC (submitted 10 Oct).
 - [ ] Last push before the lock: the hackathon freezes repos at 11 Oct 12:00 UTC. From then
       the snapshot job only pings the site (no commits); it stops itself after judging (23 Oct).
